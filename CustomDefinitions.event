@@ -1,0 +1,2 @@
+#define FreeSpace 0xefb2e0 //0xb2a610
+#define FreeSpaceBLRange 0x1c1ec0

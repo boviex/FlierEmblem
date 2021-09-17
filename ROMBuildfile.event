@@ -1,0 +1,184 @@
+#ifdef _FE8_
+    #include "EventAssembler/EAstdlib.event"
+    #include "CustomDefinitions.event"
+    #include "Extensions/Hack Installation.txt"
+    #include "fe8u_funcs.event"
+
+#define MenuCommand(name,description,colour,usability,effect) "WORD $80d7d94; SHORT name description; BYTE colour $4e; SHORT 0; POIN usability|1; WORD 0; POIN effect|1; WORD 0 0 0"
+#define MenuCommand(name,description,colour,usability,effect, unknown1, unknown2) "WORD $80d7d94; SHORT name description; BYTE colour $4e; SHORT 0; POIN usability|1; WORD 0; POIN effect|1; POIN 0 unknown1 unknown2"
+
+#define NormalText 0x0
+#define GrayText 0x1
+#define BlueText 0x2
+#define OrangeText 0x3
+#define GreenText 0x4
+#define BlackText 0x5
+
+#define RefreshWMSprite 0x80bf555
+#define RefreshWMProc 0x80b9155
+
+ORG FreeSpaceBLRange
+#include "src/soar_voxel.lyn.event"
+ALIGN 4
+// #include "src/soar_wram.lyn.event":
+#include "arm/soar_wram.arm.lyn.event"
+// NewWMLoop:
+// #include "src/soar_wram.arm.event" //first run thru assemble arm nothumb and then use lyn (force longcalls) also make sure gkeystate is not poin
+ALIGN 4
+PUSH
+
+ORG $c5808
+POIN NewTitleLogo
+ORG $c5830
+POIN NewTitleScroll
+
+//world map menu pointer is at a3e208 and is read at 4ed5a.
+ORG 0xa3e208
+POIN newWMMenu
+
+// ORG 0x591700 //replace gamectrl loop
+ORG 0xa3dd5c //replace NewWorldMap 
+// POIN CreateNewWorldMap|1
+
+ORG 0xa3dd6c //replace worldmapProc
+ORG 0xc3e7c //replace Gmap_Rader whatever that is lol
+// POIN ProcWorldMap_new
+
+ORG 0xd1982
+SHORT 0x4770 //bx lr instead of pop pc to allow call from arm
+
+ORG 0x5926F4+(0x80*0xd8)
+#incext Png2Dmp "graphics/featherbraceicon.png"
+
+POP
+
+ORG FreeSpace
+NewTitleLogo:
+#incext Png2Dmp "graphics/FE_Title.png" --lz77
+NewTitleScroll:
+#incext Png2Dmp "graphics/scroll.png" --lz77
+ALIGN 4
+#include "EngineHacks/fe8_chnames.event"
+ALIGN 4
+
+SkyBG:
+#incbin "graphics/sky.img.bin"
+ALIGN 4
+#include "src/hostable.lyn.event"
+ALIGN 4
+#include "EngineHacks/_FE8EssentialFixes.event"
+ALIGN 4
+{
+#include "Events/newWMPrologue.event"
+#include "Events/newPrologue.event"
+}
+{
+#include "Events/newLordsSplit.event"
+}
+{
+#include "Events/newCh1.event"
+}
+#include "Events/unlockAllLoc.event"
+
+#include "Music/Music Installer.event"
+ALIGN 4 
+newWMMenu:
+MenuCommand($8a, $8b, GreenText, SoarUsability, StartSoaring)
+BYTE $58 $68 $20 $08 $6E $06 $CF $06 $00 $00 $00 $00 $75 $C6 $0B $08 $00 $00 $00 $00 $7D $C7 $0B $08 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+BYTE $48 $68 $20 $08 $6F $06 $D0 $06 $00 $01 $00 $00 $AD $C6 $0B $08 $00 $00 $00 $00 $A5 $C7 $0B $08 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+BYTE $38 $68 $20 $08 $70 $06 $D1 $06 $00 $02 $00 $00 $E5 $C6 $0B $08 $00 $00 $00 $00 $CD $C7 $0B $08 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+BYTE $28 $68 $20 $08 $71 $06 $78 $06 $00 $03 $00 $00 $49 $F4 $04 $08 $00 $00 $00 $00 $F5 $C7 $0B $08 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+BYTE $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00 $00
+
+ALIGN 4
+
+// wmTiles:
+// #incbin "graphics/wmap.img.bin"
+// ALIGN 4
+
+// wmMap:
+// #incbin "graphics/wmap.map.bin"
+// ALIGN 4
+
+// wmPal:
+// #incbin "graphics/wmap.pal.bin"
+// ALIGN 4
+
+colourMap:
+#incbin "graphics/ue4_magvel_wmap.img.bin"
+// #incbin "graphics/wmap.img.bin"
+ALIGN 4
+
+heightMap:
+#incbin "graphics/magvel_hmap.img.bin"
+// #incbin "graphics/whmap.img.bin"
+ALIGN 4
+
+pleftmatrix:
+#incbin "src/pleftmatrix.dmp"
+ALIGN 4
+
+pkSprite:
+#incbin "graphics/sprites/pk.img.bin"
+ALIGN 4
+
+pkPal:
+#incbin "graphics/sprites/pk.pal.bin"
+ALIGN 4
+
+miniCursorSprite:
+#incbin "graphics/sprites/cursor.img.bin"
+
+minimapSprite:
+#incbin "graphics/sprites/minimap.img.bin"
+ALIGN 4
+
+minimapPal:
+#incbin "graphics/sprites/minimap.pal.bin"
+ALIGN 4
+
+locationSprites:
+#incbin "graphics/sprites/locations.img.bin"
+ALIGN 4
+
+//Text
+#include "Text/InstallTextData.text.event"
+
+//CSV tables
+//#include "Tables/Table Installer.event"
+
+//Engine Hacks
+//#include "Engine Hacks/_MasterHackInstaller.event"
+
+//Graphics
+//#include "Mugs/Mug Installer.event"
+//#include "Graphics/Master Graphics Installer.event"
+
+//Music
+//#include "Music/Music Installer.event"
+
+//Events
+//#include "Events/Master Events Installer.event"
+//#include "Events/World Map Events Installer.event"
+
+//Maps
+//#include "Maps/Master Map Installer.event"
+
+//Palettes
+//#include "Blitz Palettes/Palette Setup.event"   
+
+ALIGN 4
+SpawnLordEvent:
+MUSC 0x2c
+ENDA
+
+ALIGN 4
+EndOfFreeSpace:
+MESSAGE Used hack space ends at currentOffset
+
+ORG 0x1FFFFFF
+BYTE 00
+
+#else
+    ERROR You are not assembling FE8 events!
+#endif

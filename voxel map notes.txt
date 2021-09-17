@@ -1,0 +1,25 @@
+voxel map notes
+
+First, get a heightmap(8bpp bitmap) and a colourmap(16bpp bitmap) (16x16 for now?)
+
+tempgfx? is this to fill the screen while waiting to render?
+
+mode5 is 128x160 and screen is 160x240 so it is scaled (125% and 150% but how does that map to 0xA0 (0.625 or 1/1.6 should be 0xAA but A8 works) and 0xBE(0.7421875 or 1/1.3473684211 should be 0xcc but c8 works))
+(can we rotate 90deg and scale 187.5%? i.e. pa 0x100 and pd 0x88)
+
+main loop:
+	use memset to fill vram with sky colour? (or memcpy to use a skybox)
+	Render()
+	  take coords, angle, fov (assume 90?)
+	  loop from min to max distance from point, incrementing by INC_STEP (i.e. for each row)
+	    Get the line from left edge to right edge (use a lookup?) and stretch to screen width
+	    For each column in the new line, draw a vertical line down if it is on the heightmap (stopping if it hits a drawn line?)
+
+how do we tell what is in view and what is occluded?
+
+Ybuffer is an array of size screenwidth and each contains the max height so far.
+how do we change detail going away from screen?
+
+for each row:
+pleft = (-sin(a)-cos(a)+x, sin(a)-cos(a))+y)
+pright = (cos(a)-sin(a)+x, -sin(a)-cos(a)+y)

@@ -1,0 +1,7 @@
+[OpenMidRight][LoadFace][0x30][0x01][OpenMidRight]You there! Renais dogs! Where[.][NL]
+do you think you're going?[A][OpenMidRight][ClearFace][OpenLeft][LoadFace][0x02][0x01][OpenFarLeft][LoadFace][0x04][0x01]
+[OpenFarLeft]Your Highness, it seems we've been found.[A]
+[OpenLeft]Yes, it seems that way.[A][NL]
+Good thing we can fly,[NL]
+I suppose.[A]
+[OpenFarLeft]Quite so. Shall we?[A][X]

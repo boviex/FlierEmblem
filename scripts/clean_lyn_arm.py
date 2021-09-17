@@ -1,0 +1,17 @@
+import os, sys
+
+def main(infile, outfile):
+	'''
+	find and replace within lyn exported events
+	'''
+	with open(infile, 'r') as f:
+		text = f.read()
+		text = text.replace('{','').replace('}','').replace('4-CURRENTOFFSET', '8-CURRENTOFFSET').replace('POIN gKeyState', 'WORD gKeyState').replace('POIN gPaletteBuffer', 'WORD gPaletteBuffer')
+
+	with open(outfile, 'w') as o:
+		o.write(text)
+
+
+if __name__ == '__main__':
+	argv = sys.argv
+	main(argv[1], argv[2])

@@ -1,0 +1,12 @@
+#include "cHacks.h"
+#include "soar.h"
+#include "hostable.h"
+
+extern const s16 hosTables[6][0xff][0xff] = {
+	HOS_TABLE(CAMERA_MIN_HEIGHT),
+	HOS_TABLE((CAMERA_MIN_HEIGHT+CAMERA_Z_STEP)),
+	HOS_TABLE((CAMERA_MIN_HEIGHT+(2*CAMERA_Z_STEP))),
+	HOS_TABLE((CAMERA_MIN_HEIGHT+(3*CAMERA_Z_STEP))),
+	HOS_TABLE((CAMERA_MIN_HEIGHT+(4*CAMERA_Z_STEP))),
+	HOS_TABLE((CAMERA_MIN_HEIGHT+(5*CAMERA_Z_STEP)))
+};

@@ -1,0 +1,82 @@
+#0x0094
+HP Bars[.][X]
+
+#0x008A
+ Take Wing[X]
+
+#0x008B
+Enter a new dimension[NL]
+of travel.[X]
+
+# 0x0904
+[OpenMidLeft][LoadFace][0x51][0x01][OpenMidRight][LoadFace][0x02][0x01][OpenMidRight][MoveRight][OpenRight]Father[ToggleMouthMove]...[.][ToggleMouthMove][A][OpenMidLeft]Eirika.[.][A][NL]
+Are you wearing the[.][NL]
+bracelet I gave you?[A][OpenRight]Yes, I have it right here.[A][OpenMidLeft]It's a promotion item.[NL]Use it as soon as possible.[A][CloseSpeechSlow]
+[OpenMidLeft]Seth.[.][A][OpenFarRight][LoadFace][0x04][0x01][OpenFarRight]Yes, Your Majesty?[A][OpenMidLeft]Take Eirika and head for Frelia.[A][NL]
+King Hayden is an honorable man.[NL]
+I trust he will keep you safe.[A][OpenFarRight]Understood.[.][A][NL]
+And what of Your Majesty?[.][A][OpenMidLeft]Me? I shall remain here.[A][NL]
+We have long held Grado among our[.][NL]
+dearest allies, yet now, they attack?[.][A][NL]
+I must know why.[A][CloseSpeechSlow][OpenMidLeft]Am I somehow responsible for this?[NL]
+Have I erred in my leadership?[A][NL]
+Renais is mine to guide[.][ToggleMouthMove]... [ToggleMouthMove]How[.][NL]
+could I have failed her so?[.][A][SendToBack][OpenRight][MoveRight][OpenRight]Father, you can't stay! You mustn't![A][NL]
+If you remain behind, then so shall I![A]
+[OpenMidLeft]Seth, use the bracelet on her![.][NL]
+Take her to safety![.][A][X]
+
+# 0x0910
+[OpenMidRight][LoadFace][0x30][0x01][OpenMidRight]You there! Renais dogs! Where[.][NL]
+do you think you're going?[A][OpenMidRight][ClearFace][OpenLeft][LoadFace][0x02][0x01][OpenFarLeft][LoadFace][0x04][0x01]
+[OpenFarLeft]Your Highness, it seems we've been found.[A]
+[OpenLeft]Yes, it seems that way.[A][NL]
+Good thing we can fly,[NL]
+I suppose.[A]
+[OpenFarLeft]Quite so. Shall we?[A][X]
+
+# 0x0929
+[OpenMidLeft][LoadFace][0x6A][0x01][OpenMidRight][LoadFace][0x2C][0x01][OpenMidLeft]Princess Tana! Grado's[NL]
+forces are approaching![.][A][OpenMidRight]What? So soon?[NL]
+Ah, we've had no time![A][OpenMidLeft]Milady, we lack the arms to defend this[.][NL]
+place. You must return to Castle Frelia.[A][OpenMidRight]I can't! Not yet. We haven't found[NL]
+Eirika and her companions yet.[A][NL]
+Eirika is my friend, and she needs[NL]
+my help. I won't abandon her.[.][A][CloseSpeechSlow]
+[OpenMidLeft][ClearFace]
+[OpenMidRight][ClearFace]
+[OpenMidLeft][LoadFace][0x2c][0x01]
+[OpenRight][LoadFace][0x04][0x01]
+[OpenFarRight][LoadFace][0x02][0x01]
+[OpenRight]That shall not be necessary,[NL]
+Princess Tana.[A]
+[OpenMidLeft]Eirika?!?[.][A][NL]
+Is that really you?[.][A][OpenFarRight]Tana, what are you doing,[.][NL]
+so far from Castle Frelia?[A][OpenMidLeft]I heard that Renais had fallen,[.][NL]
+and I was so worried[ToggleMouthMove]...[.][ToggleMouthMove][A][NL]
+[ToggleSmile]But I'm glad to see that[NL]
+you're safe[.][ToggleMouthMove]...[.][ToggleMouthMove][A][0x02][NL]
+[ToggleSmile]Wait! Where is Ephraim?[.][NL]
+Is he well?[.][A][OpenFarRight]I wish I knew.[A][OpenMidLeft]You haven't heard from him? Oh, I [NL]
+hope he's not been harmed[.][ToggleMouthMove]...[.][ToggleMouthMove][A][NL]
+Come, we must go to Castle Frelia.[NL]
+My lord father may know something.[A][OpenFarRight]Thank you, Tana.[A][X]
+
+# 0x08DB
+The continent of Magvel.[A][NL]
+For some 800 years, a quiet peace reigned in [.][NL]
+the absence of the terrible darkness.[.][A][NL]
+Blah, blah, Sacred Stones, blah. [NL]
+You know the rest.[.][A][NL]
+Grado suddenly attacks Renais,[NL]
+but there is one key difference...[A]
+[X]
+
+# 0x0160
+The Flight From Renais[X]
+
+# 0x0161
+Reunion[X]
+
+# 0x03F7
+Wing Brace[.][X]

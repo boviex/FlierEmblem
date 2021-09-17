@@ -1,0 +1,91 @@
+EventPointerTable(0xA, PointerList)
+
+PointerList:
+POIN TurnBasedEvents
+POIN CharacterBasedEvents
+POIN LocationBasedEvents
+POIN MiscBasedEvents
+POIN Dunno1 Dunno2 Dunno3 Tutorial
+POIN Traps1 Traps2
+POIN Units1 Units1  //This unit group determines the number and position of deployment slots when there is a prep screen
+POIN $0 $0 $0
+POIN $0 $0 $0
+POIN BeginningScene EndingScene
+
+TurnBasedEvents:
+END_MAIN
+
+CharacterBasedEvents:
+END_MAIN
+
+LocationBasedEvents:
+END_MAIN
+
+MiscBasedEvents:
+AFEV 0x0 GameOverEvent 0x2
+CauseGameOverIfLordDies
+END_MAIN
+
+Dunno1:
+END_MAIN
+
+Dunno2:
+END_MAIN
+
+Dunno3:
+END_MAIN
+
+Tutorial:
+END_MAIN
+
+Units1:
+UNIT Franz PegasusKnight 0x1 Level(1, Ally, 0) [5,0] 0b 0x0 0x1 0x8B4058 [0x1,0x14,0x6C,0x6C] NoAI
+UNIT Gilliam WyvernRider 0x0 Level(4, Ally, 0) [6,0] 0b 0x0 0x1 0x8B4060 [0x14,0x0,0x0,0x0] NoAI
+UNIT
+
+NewUnit:
+UNIT
+
+EnemyUnits1:
+UNIT
+
+EnemyUnits2:
+UNIT
+
+EnemyUnits3:
+UNIT
+
+Traps1:
+ENDTRAP
+ALIGN 4
+
+Traps2:
+ENDTRAP
+ALIGN 4
+
+BeginningScene:
+Text(0x26, 0x929) //tana: oh no where's eirika? oh nvm right here lmao
+LOAD1 0x1 Units1
+ENUN
+CALL EndingScene
+NoFade
+ENDA
+
+GameOverEvent:
+ENUT 0x65
+NoFade
+ENDA
+
+EndingScene:
+FADI 16
+ENUT 0xBA
+ENUT 0xCF
+ENUT 0xCE
+ENUT 0xB6
+ENUT 0xD7
+ENUT 0xD6
+ENUT 0xC7
+ENUT 0xC8
+ENUT 0xDD
+MNCH 0x38
+ENDA
