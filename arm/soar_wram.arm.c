@@ -6,12 +6,6 @@ void NewWMLoop(SoarProc* CurrentProc){
 	
 	UpdateSprites(CurrentProc);
 
-	if (CurrentProc->firstdraw){
-		CurrentProc->firstdraw = FALSE;
-    	Render(CurrentProc);
-		return;
-	};
-
 	int newx,  newy;
 
 	if (gKeyState.heldKeys & DPAD_LEFT){
@@ -44,7 +38,6 @@ void NewWMLoop(SoarProc* CurrentProc){
 		g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
 		g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
 	};
-
 
 	#ifndef __ALWAYS_MOVE__
 	if (gKeyState.heldKeys == 0){ //Only bother updating if a key is pressed!
@@ -86,6 +79,14 @@ void NewWMLoop(SoarProc* CurrentProc){
 	Render(CurrentProc); //draw and then flip
 };
 
+//LUTs
+extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
+
+extern const s16 cam_dy_Angles[16] = DY_TABLE(MOVEMENT_STEP);
+
+extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE*5)); // camera distance from focal point
+
+extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE*5)); 
 
 u16 getPointColour(int ptx, int pty){
 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
@@ -110,7 +111,8 @@ int getScrHeight(int ptx, int pty, int altitude, int zdist){
 }
 
 void UpdateSprites(SoarProc* CurrentProc){
-	int animClock = GetGameClock() & 0x3F;
+	// int animClock = GetGameClock() & 0x3F;
+	u8 animClock = *(u8*)(0x3000014) & 0x3F;
 	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca00); //player frames
 	else if (animClock < 0x20)	ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca10);
 	else if (animClock < 0x30)	ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca20);
@@ -235,27 +237,27 @@ void Render(SoarProc* CurrentProc){
 
 	
 	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE; zdist<MAX_Z_DISTANCE; zdist+=INC_ZSTEP){
+	for (int zdist = MIN_Z_DISTANCE+(altitude<<2); zdist<MAX_Z_DISTANCE; zdist+=INC_ZSTEP){
 	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
 
 		Point pleft = getPLeft(posX, posY, angle, zdist); //assume facing north and 90deg fov
 		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation.
-		int dx = ((pright.x - pleft.x)<<8)>>7; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
-		int dy = ((pright.y - pleft.y)<<8)>>7; //TODO optimise out the division.
+		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
+		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
 		int fogmask = 0;
-		if (zdist < (MAX_Z_DISTANCE-(MAX_Z_DISTANCE>>3))) fogmask = 0; //change fog dist from >>1 to >>2
+		if (zdist < (MAX_Z_DISTANCE*0.8)) fogmask = 0; //change fog dist from >>1 to >>2
 		// else if (zdist>(MAX_Z_DISTANCE-(MAX_Z_DISTANCE>>4))) fogmask = 0b011110011100111;
 		// else if (zdist>(MAX_Z_DISTANCE-(MAX_Z_DISTANCE>>3))) fogmask = 0b001110001100011;
 		// else fogmask = 0b000110000100001;
-		else fogmask = 0b001110001100011;
-		
+		else fogmask = 0b011110011100011;
+
 		for (int i=0; i<(MODE5_HEIGHT); i++){
 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
 			//set the focal point of the camera
 			u16 clr = getPointColour(offsetPoint.x, offsetPoint.y);
 			clr |= fogmask;
-			if ((zdist == (MIN_Z_DISTANCE*3.5)) && ((i < (MODE5_HEIGHT>>1)+4) && (i > (MODE5_HEIGHT>>1)-4))) {
+			if ((zdist == (MIN_Z_DISTANCE*4)) && ((i < (MODE5_HEIGHT>>1)+4) && (i > (MODE5_HEIGHT>>1)-4))) {
 				clr = 0;
 				if (i==(MODE5_HEIGHT>>1)){
 					CurrentProc->sFocusPtX = offsetPoint.x;

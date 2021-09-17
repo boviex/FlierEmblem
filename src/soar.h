@@ -19,7 +19,7 @@
 #define NUM_ALTITUDES 16
 #define MAP_DIMENSIONS 1024
 #define MAP_DIMENSIONS_LOG2 10
-#define INC_ZSTEP ((zdist>>6)+(zdist>>7)+2)
+#define INC_ZSTEP ((zdist>>6)+(zdist>>7)+(zdist>>8)+2)
 #define SCALING_FACTOR 4
 #define SKY_COLOUR 0x7f0f
 #define SEA_COLOUR 0x1840//0x1c84
@@ -132,7 +132,7 @@ struct SoarProc { //so we can store this info locally.
 	int sPlayerPosZ;
 	int sPlayerYaw;
 	u16* vid_page;
-	int firstdraw;
+	// int firstdraw;
   int sFocusPtX;
   int sFocusPtY;
   int location;

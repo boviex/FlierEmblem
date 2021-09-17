@@ -31,14 +31,7 @@ extern const ProcCode Proc_Soaring[] = { //expose it to lyn
   PROC_END
 }; 
 
-//LUTs
-extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
 
-extern const s16 cam_dy_Angles[16] = DY_TABLE(MOVEMENT_STEP);
-
-extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE*5)); // camera distance from focal point
-
-extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE*5)); 
 
 //
 
@@ -79,7 +72,8 @@ void SoarVBlankInterrupt()
 		SyncHiOAM();
 	}
 	m4aSoundMain();
-	int animClock = GetGameClock() & 0x3F;
+	// int animClock = GetGameClock() & 0x3F;
+	u8 animClock = *(u8*)(0x3000014) & 0x3F;
 	if (animClock < 0x20)	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
 };
@@ -91,7 +85,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
 	CurrentProc->sPlayerYaw = a_SE;
-	CurrentProc->firstdraw = TRUE;
+	// CurrentProc->firstdraw = TRUE;
 	CurrentProc->location = Frelia;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
@@ -210,13 +204,13 @@ void EndLoop(SoarProc* CurrentProc){
 		| DISPCNT_BG3_ON
 		| DISPCNT_OBJ_ON
 		;
-	SetColorEffectsParameters(3,0,0,0x10); //do these even do anything?
-	SetColorEffectsFirstTarget(0,0,0,0,0);
-	SetColorEffectBackdropFirstTarget(1);
-	gPaletteBuffer[0] = 0;
-	EnablePaletteSync();
+	// SetColorEffectsParameters(3,0,0,0x10); //do these even do anything?
+	// SetColorEffectsFirstTarget(0,0,0,0,0);
+	// SetColorEffectBackdropFirstTarget(1);
+	// gPaletteBuffer[0] = 0;
+	// EnablePaletteSync();
+
 	//actually ending the loop
-	// Sound_FadeSongOut(1);
 	BreakProcLoop(CurrentProc);
 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
 	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
