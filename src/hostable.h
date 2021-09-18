@@ -3,8 +3,11 @@
 
 //list of tables - one for each camera position
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+
 #define HOS_CELL(cam_z, z_dist, p_height) \
- (((p_height-cam_z)<<SCALING_FACTOR)/(z_dist>>1)) + HORIZON //prevent division by 0 by lsh and rsh
+  min(MODE5_WIDTH, max(0, (((p_height-cam_z)<<SCALING_FACTOR)/(z_dist>>1)) + HORIZON)) //prevent division by 0 by lsh and rsh
 
 #define HOS_ROW(cam_z, z_dist) {\
   HOS_CELL(cam_z, z_dist, 0x0),   \

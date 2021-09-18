@@ -26,82 +26,100 @@ SoarVBlankInterrupt:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 @ src/soar_voxel.c:61: 	*(u16*)(0x3007ff8) = 1;
-	movs	r2, #1	@ tmp124,
-	ldr	r3, .L9	@ tmp123,
+	movs	r2, #1	@ tmp126,
+	ldr	r3, .L10	@ tmp125,
 @ src/soar_voxel.c:60: {
 	push	{r4, lr}	@
 @ src/soar_voxel.c:61: 	*(u16*)(0x3007ff8) = 1;
-	strh	r2, [r3]	@ tmp124, MEM[(u16 *)50364408B]
+	strh	r2, [r3]	@ tmp126, MEM[(u16 *)50364408B]
 @ src/soar_voxel.c:62: 	IncrementGameClock();
 	bl	IncrementGameClock		@
 @ src/soar_voxel.c:63: 	m4aSoundVSync();
 	bl	m4aSoundVSync		@
 @ src/soar_voxel.c:64: 	ExecProc(*(int*)(0x2026A70));
-	ldr	r3, .L9+4	@ tmp126,
+	ldr	r3, .L10+4	@ tmp128,
 @ src/soar_voxel.c:64: 	ExecProc(*(int*)(0x2026A70));
 	ldr	r0, [r3]	@, MEM[(int *)33712752B]
-	ldr	r3, .L9+8	@ tmp127,
-	bl	.L11		@
+	ldr	r3, .L10+8	@ tmp129,
+	bl	.L12		@
 @ src/soar_voxel.c:65: 	SyncLoOAM();
-	ldr	r3, .L9+12	@ tmp128,
-	bl	.L11		@
+	ldr	r3, .L10+12	@ tmp130,
+	bl	.L12		@
 @ src/soar_voxel.c:66: 	if(gGameState.boolMainLoopEnded)
-	ldr	r3, .L9+16	@ tmp129,
+	ldr	r3, .L10+16	@ tmp131,
 @ src/soar_voxel.c:66: 	if(gGameState.boolMainLoopEnded)
 	ldrb	r2, [r3]	@ gGameState, gGameState
 	cmp	r2, #0	@ gGameState,
 	beq	.L2		@,
 @ src/soar_voxel.c:68: 		gGameState.boolMainLoopEnded = 0;
-	movs	r2, #0	@ tmp132,
-	strb	r2, [r3]	@ tmp132, gGameState.boolMainLoopEnded
+	movs	r2, #0	@ tmp134,
+	strb	r2, [r3]	@ tmp134, gGameState.boolMainLoopEnded
 @ src/soar_voxel.c:69: 		SyncLCDControl();
-	ldr	r3, .L9+20	@ tmp134,
-	bl	.L11		@
+	ldr	r3, .L10+20	@ tmp136,
+	bl	.L12		@
 @ src/soar_voxel.c:70: 		SyncBgAndPals();
-	ldr	r3, .L9+24	@ tmp135,
-	bl	.L11		@
+	ldr	r3, .L10+24	@ tmp137,
+	bl	.L12		@
 @ src/soar_voxel.c:71: 		SyncRegisteredTiles();
-	ldr	r3, .L9+28	@ tmp136,
-	bl	.L11		@
+	ldr	r3, .L10+28	@ tmp138,
+	bl	.L12		@
 @ src/soar_voxel.c:72: 		SyncHiOAM();
-	ldr	r3, .L9+32	@ tmp137,
-	bl	.L11		@
+	ldr	r3, .L10+32	@ tmp139,
+	bl	.L12		@
 .L2:
 @ src/soar_voxel.c:74: 	m4aSoundMain();
 	bl	m4aSoundMain		@
-@ src/soar_voxel.c:76: 	u8 animClock = *(u8*)(0x3000014) & 0x3F;
-	ldr	r3, .L9+36	@ tmp138,
+@ src/soar_voxel.c:76: 	int animClock = *(u8*)(0x3000014) & 0x3F;
+	ldr	r3, .L10+36	@ tmp140,
+	ldrb	r2, [r3]	@ _5, MEM[(u8 *)50331668B]
+	ldr	r3, .L10+40	@ tmp161,
 @ src/soar_voxel.c:77: 	if (animClock < 0x20)	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
-	ldrb	r2, [r3]	@ MEM[(u8 *)50331668B], MEM[(u8 *)50331668B]
-	ldr	r3, .L9+40	@ tmp152,
-	lsls	r2, r2, #26	@ tmp153, MEM[(u8 *)50331668B],
+	lsls	r1, r2, #26	@ tmp162, _5,
 	bmi	.L3		@,
 @ src/soar_voxel.c:77: 	if (animClock < 0x20)	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
-	ldr	r2, [r3]	@ _6, MEM[(volatile vu32 *)50344144B]
-	subs	r2, r2, #24	@ _7,
-.L8:
-@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
-	str	r2, [r3]	@ _10,
+	ldr	r1, [r3]	@ _6,
+	subs	r1, r1, #24	@ _7,
+	str	r1, [r3]	@ _7, MEM[(volatile vu32 *)50344144B]
+@ src/soar_voxel.c:81: 	if (animClock == 0) //resets once per 63 frames so close enough
+	movs	r3, #63	@ tmp149,
+	movs	r1, r2	@ tmp151, _5
+	ands	r1, r3	@ tmp151, tmp149
+	tst	r2, r3	@ _5, tmp149
+	beq	.L4		@,
 .L1:
-@ src/soar_voxel.c:79: };
+@ src/soar_voxel.c:87: };
 	@ sp needed	@
 	pop	{r4}
 	pop	{r0}
 	bx	r0
 .L3:
 @ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
-	ldr	r1, [r3]	@ _8, MEM[(volatile vu32 *)50344144B]
+	ldr	r1, [r3]	@ _8,
 @ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
-	ldr	r2, .L9+44	@ tmp149,
-	cmp	r1, r2	@ _8, tmp149
+	ldr	r2, .L10+44	@ tmp154,
+	cmp	r1, r2	@ _8, tmp154
 	bhi	.L1		@,
 @ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
 	ldr	r2, [r3]	@ _9, MEM[(volatile vu32 *)50344144B]
 	adds	r2, r2, #24	@ _10,
-	b	.L8		@
-.L10:
+	str	r2, [r3]	@ _10, MEM[(volatile vu32 *)50344144B]
+	b	.L1		@
+.L4:
+@ src/soar_voxel.c:83: 		FPS_CURRENT = FPS_COUNTER;
+	ldr	r3, .L10+48	@ tmp157,
+@ src/soar_voxel.c:83: 		FPS_CURRENT = FPS_COUNTER;
+	ldr	r2, .L10+52	@ tmp158,
+@ src/soar_voxel.c:83: 		FPS_CURRENT = FPS_COUNTER;
+	ldr	r0, [r3]	@ _11, MEM[(int *)33816568B]
+@ src/soar_voxel.c:83: 		FPS_CURRENT = FPS_COUNTER;
+	str	r0, [r2]	@ _11, MEM[(int *)33816572B]
+@ src/soar_voxel.c:84: 		FPS_COUNTER = 0;
+	str	r1, [r3]	@ tmp151, MEM[(int *)33816568B]
+@ src/soar_voxel.c:87: };
+	b	.L1		@
+.L11:
 	.align	2
-.L9:
+.L10:
 	.word	50364408
 	.word	33712752
 	.word	ExecProc
@@ -114,6 +132,8 @@ SoarVBlankInterrupt:
 	.word	50331668
 	.word	50344144
 	.word	40911
+	.word	33816568
+	.word	33816572
 	.size	SoarVBlankInterrupt, .-SoarVBlankInterrupt
 	.align	1
 	.global	MoveLord
@@ -126,52 +146,52 @@ MoveLord:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
-@ src/soar_voxel.c:190: 	GM_PutCharUnit(0, 1, -1, location); //ok so this does actually work but only for the actual location - we still need the map sprite and camera moved.
+@ src/soar_voxel.c:200: 	GM_PutCharUnit(0, 1, -1, location); //ok so this does actually work but only for the actual location - we still need the map sprite and camera moved.
 	movs	r2, #1	@ tmp133,
-@ src/soar_voxel.c:181: void MoveLord(SoarProc* CurrentProc){
+@ src/soar_voxel.c:191: void MoveLord(SoarProc* CurrentProc){
 	push	{r4, lr}	@
-@ src/soar_voxel.c:189: 	int location = CurrentProc->location;
-	ldr	r4, [r0, #72]	@ location, CurrentProc_11(D)->location
-@ src/soar_voxel.c:196: };
+@ src/soar_voxel.c:199: 	int location = CurrentProc->location;
+	ldr	r4, [r0, #76]	@ location, CurrentProc_11(D)->location
+@ src/soar_voxel.c:206: };
 	@ sp needed	@
-@ src/soar_voxel.c:190: 	GM_PutCharUnit(0, 1, -1, location); //ok so this does actually work but only for the actual location - we still need the map sprite and camera moved.
+@ src/soar_voxel.c:200: 	GM_PutCharUnit(0, 1, -1, location); //ok so this does actually work but only for the actual location - we still need the map sprite and camera moved.
 	movs	r3, r4	@, location
 	movs	r1, #1	@,
 	rsbs	r2, r2, #0	@, tmp133
 	movs	r0, #0	@,
 	bl	GM_PutCharUnit		@
-@ src/soar_voxel.c:191: 	RefreshWMSprite(0); //refreshes the 0th wm entity? 
+@ src/soar_voxel.c:201: 	RefreshWMSprite(0); //refreshes the 0th wm entity? 
 	movs	r0, #0	@,
 	bl	RefreshWMSprite		@
-@ src/soar_voxel.c:192: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
-	ldr	r2, .L13	@ tmp128,
-@ src/soar_voxel.c:192: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
+@ src/soar_voxel.c:202: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
+	ldr	r2, .L14	@ tmp128,
+@ src/soar_voxel.c:202: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
 	lsls	r4, r4, #5	@ _1, location,
-@ src/soar_voxel.c:192: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
+@ src/soar_voxel.c:202: 	cursorX = *(u16*)(0x82060b0 + (32*location) + 0x18);
 	ldrh	r2, [r4, r2]	@ cursorX, *_3
-@ src/soar_voxel.c:193: 	cursorY = *(u16*)(0x82060b0 + (32*location) + 0x1a);
-	ldr	r3, .L13+4	@ tmp127,
-@ src/soar_voxel.c:194: 	WM_CURSOR[0] = cursorX<<8;
-	ldr	r1, .L13+8	@ tmp130,
-@ src/soar_voxel.c:193: 	cursorY = *(u16*)(0x82060b0 + (32*location) + 0x1a);
+@ src/soar_voxel.c:203: 	cursorY = *(u16*)(0x82060b0 + (32*location) + 0x1a);
+	ldr	r3, .L14+4	@ tmp127,
+@ src/soar_voxel.c:204: 	WM_CURSOR[0] = cursorX<<8;
+	ldr	r1, .L14+8	@ tmp130,
+@ src/soar_voxel.c:203: 	cursorY = *(u16*)(0x82060b0 + (32*location) + 0x1a);
 	ldrh	r3, [r4, r3]	@ cursorY, *_6
-@ src/soar_voxel.c:194: 	WM_CURSOR[0] = cursorX<<8;
+@ src/soar_voxel.c:204: 	WM_CURSOR[0] = cursorX<<8;
 	lsls	r2, r2, #8	@ _8, cursorX,
-@ src/soar_voxel.c:194: 	WM_CURSOR[0] = cursorX<<8;
+@ src/soar_voxel.c:204: 	WM_CURSOR[0] = cursorX<<8;
 	str	r2, [r1]	@ _8, MEM[(volatile int *)50352776B]
-@ src/soar_voxel.c:195: 	WM_CURSOR[1] = cursorY<<8;
-	ldr	r2, .L13+12	@ tmp131,
-@ src/soar_voxel.c:195: 	WM_CURSOR[1] = cursorY<<8;
+@ src/soar_voxel.c:205: 	WM_CURSOR[1] = cursorY<<8;
+	ldr	r2, .L14+12	@ tmp131,
+@ src/soar_voxel.c:205: 	WM_CURSOR[1] = cursorY<<8;
 	lsls	r3, r3, #8	@ _9, cursorY,
-@ src/soar_voxel.c:195: 	WM_CURSOR[1] = cursorY<<8;
+@ src/soar_voxel.c:205: 	WM_CURSOR[1] = cursorY<<8;
 	str	r3, [r2]	@ _9, MEM[(volatile int *)50352780B]
-@ src/soar_voxel.c:196: };
+@ src/soar_voxel.c:206: };
 	pop	{r4}
 	pop	{r0}
 	bx	r0
-.L14:
+.L15:
 	.align	2
-.L13:
+.L14:
 	.word	136339656
 	.word	136339658
 	.word	50352776
@@ -198,15 +218,15 @@ vid_flip:
 	eors	r0, r3	@ _2, tmp119
 @ src/soar_voxel.c:43: 	    g_LCDIOBuffer ^= DCNT_PAGE;            // update control register
 	movs	r3, #16	@ tmp125,
-	ldr	r2, .L16	@ tmp120,
+	ldr	r2, .L17	@ tmp120,
 	ldrh	r1, [r2]	@ MEM[(volatile vu16 *)50344064B], MEM[(volatile vu16 *)50344064B]
 	eors	r3, r1	@ _4, MEM[(volatile vu16 *)50344064B]
 	strh	r3, [r2]	@ _4, MEM[(volatile vu16 *)50344064B]
 @ src/soar_voxel.c:46: }
 	bx	lr
-.L17:
+.L18:
 	.align	2
-.L16:
+.L17:
 	.word	50344064
 	.size	vid_flip, .-vid_flip
 	.align	1
@@ -222,28 +242,28 @@ StartSoaring:
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r4, lr}	@
 @ src/soar_voxel.c:49: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
-	ldr	r3, .L19	@ tmp117,
+	ldr	r3, .L20	@ tmp117,
 @ src/soar_voxel.c:53: };
 	@ sp needed	@
 @ src/soar_voxel.c:49: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
-	ldr	r0, .L19+4	@,
-	bl	.L11		@
+	ldr	r0, .L20+4	@,
+	bl	.L12		@
 @ src/soar_voxel.c:50: 	START_PROC_BLOCKING(Proc_Soaring, wmproc); //create new proc with parent
-	ldr	r3, .L19+8	@ tmp118,
+	ldr	r3, .L20+8	@ tmp118,
 @ src/soar_voxel.c:49: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
 	movs	r1, r0	@ wmproc, tmp121
 @ src/soar_voxel.c:50: 	START_PROC_BLOCKING(Proc_Soaring, wmproc); //create new proc with parent
 	movs	r0, r3	@ tmp118, tmp118
-	ldr	r3, .L19+12	@ tmp119,
-	bl	.L11		@
+	ldr	r3, .L20+12	@ tmp119,
+	bl	.L12		@
 @ src/soar_voxel.c:53: };
 	movs	r0, #23	@,
 	pop	{r4}
 	pop	{r1}
 	bx	r1
-.L20:
+.L21:
 	.align	2
-.L19:
+.L20:
 	.word	ProcFind
 	.word	144955208
 	.word	Proc_Soaring
@@ -278,41 +298,45 @@ LoadSprite:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r4, lr}	@
-@ src/soar_voxel.c:131: 	LZ77UnCompVram(&pkSprite, &tile_mem[5][0]); //first tile of the hi block 0x6014000
-	ldr	r1, .L23	@,
-@ src/soar_voxel.c:137: };
+@ src/soar_voxel.c:140: 	LZ77UnCompVram(&pkSprite, &tile_mem[5][0]); //first tile of the hi block 0x6014000
+	ldr	r1, .L24	@,
+@ src/soar_voxel.c:147: };
 	@ sp needed	@
-@ src/soar_voxel.c:131: 	LZ77UnCompVram(&pkSprite, &tile_mem[5][0]); //first tile of the hi block 0x6014000
-	ldr	r0, .L23+4	@ tmp114,
+@ src/soar_voxel.c:140: 	LZ77UnCompVram(&pkSprite, &tile_mem[5][0]); //first tile of the hi block 0x6014000
+	ldr	r0, .L24+4	@ tmp114,
 	bl	LZ77UnCompVram		@
-@ src/soar_voxel.c:132: 	LZ77UnCompVram(&locationSprites, &tile_mem[5][64]); //yeah 
-	ldr	r1, .L23+8	@,
-	ldr	r0, .L23+12	@ tmp116,
+@ src/soar_voxel.c:141: 	LZ77UnCompVram(&locationSprites, &tile_mem[5][64]); //yeah 
+	ldr	r1, .L24+8	@,
+	ldr	r0, .L24+12	@ tmp116,
 	bl	LZ77UnCompVram		@
-@ src/soar_voxel.c:133: 	LZ77UnCompVram(&miniCursorSprite, &tile_mem[5][96]);
-	ldr	r1, .L23+16	@,
-	ldr	r0, .L23+20	@ tmp118,
+@ src/soar_voxel.c:142: 	LZ77UnCompVram(&miniCursorSprite, &tile_mem[5][96]);
+	ldr	r1, .L24+16	@,
+	ldr	r0, .L24+20	@ tmp118,
 	bl	LZ77UnCompVram		@
-@ src/soar_voxel.c:134: 	LZ77UnCompVram(&minimapSprite, &tile_mem[5][97]);
-	ldr	r1, .L23+24	@,
-	ldr	r0, .L23+28	@ tmp120,
+@ src/soar_voxel.c:143: 	LZ77UnCompVram(&minimapSprite, &tile_mem[5][97]);
+	ldr	r1, .L24+24	@,
+	ldr	r0, .L24+28	@ tmp120,
 	bl	LZ77UnCompVram		@
-@ src/soar_voxel.c:135: 	LoadMapSpritePalettes(); //puts in palette 0xc
+@ src/soar_voxel.c:144: 	LZ77UnCompVram(&fpsSprite, &tile_mem[5][161]); //fps numbers
+	ldr	r1, .L24+32	@,
+	ldr	r0, .L24+36	@ tmp122,
+	bl	LZ77UnCompVram		@
+@ src/soar_voxel.c:145: 	LoadMapSpritePalettes(); //puts in palette 0xc
 	bl	LoadMapSpritePalettes		@
-@ src/soar_voxel.c:136: 	ApplyPalette(&minimapPal, 0x12);
-	movs	r1, #144	@ tmp124,
+@ src/soar_voxel.c:146: 	ApplyPalette(&minimapPal, 0x12);
+	movs	r1, #144	@ tmp126,
 	movs	r2, #32	@,
-	ldr	r0, .L23+32	@ tmp122,
-	ldr	r3, .L23+36	@ tmp123,
-	lsls	r1, r1, #2	@, tmp124,
-	bl	.L11		@
-@ src/soar_voxel.c:137: };
+	ldr	r0, .L24+40	@ tmp124,
+	ldr	r3, .L24+44	@ tmp125,
+	lsls	r1, r1, #2	@, tmp126,
+	bl	.L12		@
+@ src/soar_voxel.c:147: };
 	pop	{r4}
 	pop	{r0}
 	bx	r0
-.L24:
+.L25:
 	.align	2
-.L23:
+.L24:
 	.word	100745216
 	.word	pkSprite
 	.word	100747264
@@ -321,6 +345,8 @@ LoadSprite:
 	.word	miniCursorSprite
 	.word	100748320
 	.word	minimapSprite
+	.word	100750368
+	.word	fpsSprite
 	.word	minimapPal
 	.word	CopyToPaletteBuffer
 	.size	LoadSprite, .-LoadSprite
@@ -337,147 +363,149 @@ SetUpNewWMGraphics:
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r0, r1, r4, r5, r6, lr}	@
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	movs	r1, #240	@,
-@ src/soar_voxel.c:128: };
+@ src/soar_voxel.c:137: };
 	@ sp needed	@
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
-	ldr	r3, .L26	@ tmp123,
-@ src/soar_voxel.c:82: void SetUpNewWMGraphics(SoarProc* CurrentProc){
-	movs	r4, r0	@ CurrentProc, tmp182
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
+	ldr	r3, .L27	@ tmp123,
+@ src/soar_voxel.c:91: void SetUpNewWMGraphics(SoarProc* CurrentProc){
+	movs	r4, r0	@ CurrentProc, tmp183
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	ldr	r0, [r3]	@ _1, MEM[(volatile int *)50352776B]
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	lsls	r1, r1, #1	@,,
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	lsls	r0, r0, #10	@ tmp124, _1,
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	bl	__aeabi_idiv		@
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	movs	r1, #240	@,
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
-	asrs	r0, r0, #8	@ tmp129, tmp183,
-@ src/soar_voxel.c:84: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
+	asrs	r0, r0, #8	@ tmp129, tmp184,
+@ src/soar_voxel.c:93: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	str	r0, [r4, #44]	@ tmp129, CurrentProc_11(D)->sPlayerPosX
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
-	ldr	r3, .L26+4	@ tmp130,
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
+	ldr	r3, .L27+4	@ tmp130,
 	ldr	r0, [r3]	@ _5, MEM[(volatile int *)50352780B]
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	lsls	r1, r1, #1	@,,
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	lsls	r0, r0, #10	@ tmp131, _5,
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	bl	__aeabi_idiv		@
-@ src/soar_voxel.c:86: 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
+@ src/soar_voxel.c:95: 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
 	movs	r3, #112	@ tmp138,
-@ src/soar_voxel.c:98: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
-	movs	r2, #169	@ tmp187,
-@ src/soar_voxel.c:86: 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
+@ src/soar_voxel.c:107: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
+	movs	r2, #169	@ tmp188,
+@ src/soar_voxel.c:95: 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
 	str	r3, [r4, #52]	@ tmp138, CurrentProc_11(D)->sPlayerPosZ
-@ src/soar_voxel.c:87: 	CurrentProc->sPlayerYaw = a_SE;
+@ src/soar_voxel.c:96: 	CurrentProc->sPlayerYaw = a_SE;
 	subs	r3, r3, #106	@ tmp139,
 	str	r3, [r4, #56]	@ tmp139, CurrentProc_11(D)->sPlayerYaw
-@ src/soar_voxel.c:89: 	CurrentProc->location = Frelia;
+@ src/soar_voxel.c:97: 	CurrentProc->ShowMap = TRUE;
 	subs	r3, r3, #5	@ tmp140,
-	str	r3, [r4, #72]	@ tmp140, CurrentProc_11(D)->location
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
-	asrs	r0, r0, #8	@ tmp136, tmp184,
-@ src/soar_voxel.c:92: 	    CurrentProc->vid_page = (u16*)(0x600A000);
-	ldr	r3, .L26+8	@ tmp141,
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+	str	r3, [r4, #64]	@ tmp140, CurrentProc_11(D)->ShowMap
+@ src/soar_voxel.c:98: 	CurrentProc->location = Frelia;
+	str	r3, [r4, #76]	@ tmp140, CurrentProc_11(D)->location
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
+	asrs	r0, r0, #8	@ tmp136, tmp185,
+@ src/soar_voxel.c:101: 	    CurrentProc->vid_page = (u16*)(0x600A000);
+	ldr	r3, .L27+8	@ tmp142,
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	adds	r0, r0, #170	@ tmp137,
-@ src/soar_voxel.c:98: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
-	ldr	r1, .L26+12	@,
-	ldr	r5, .L26+16	@ tmp145,
-@ src/soar_voxel.c:85: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+@ src/soar_voxel.c:107: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
+	ldr	r1, .L27+12	@,
+	ldr	r5, .L27+16	@ tmp146,
+@ src/soar_voxel.c:94: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	str	r0, [r4, #48]	@ tmp137, CurrentProc_11(D)->sPlayerPosY
-@ src/soar_voxel.c:92: 	    CurrentProc->vid_page = (u16*)(0x600A000);
-	str	r3, [r4, #60]	@ tmp141, CurrentProc_11(D)->vid_page
-@ src/soar_voxel.c:98: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
-	ldr	r0, .L26+20	@ tmp144,
-	lsls	r2, r2, #2	@, tmp187,
-	bl	.L28		@
-@ src/soar_voxel.c:100: 	VBlankIntrWait();
-	ldr	r3, .L26+24	@ tmp146,
-	bl	.L11		@
-@ src/soar_voxel.c:102: 	g_LCDIOBuffer = DISPCNT_MODE_5 
-	ldr	r3, .L26+28	@ tmp147,
-	ldr	r2, .L26+32	@ tmp148,
-	strh	r2, [r3]	@ tmp148, MEM[(volatile vu16 *)50344064B]
-@ src/soar_voxel.c:110: 	REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
-	ldr	r3, .L26+36	@ tmp150,
-	ldr	r2, .L26+40	@ tmp151,
-@ src/soar_voxel.c:113: 	g_REG_BG2PA=0x00;	//rotate and stretch
-	movs	r4, #0	@ tmp154,
-@ src/soar_voxel.c:110: 	REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
-	strh	r2, [r3]	@ tmp151, MEM[(volatile vu16 *)67109380B]
-@ src/soar_voxel.c:114: 	g_REG_BG2PB=0xFF0C; //a bit bigger than the screen (-0xF4?)
-	movs	r2, #244	@ tmp157,
-@ src/soar_voxel.c:113: 	g_REG_BG2PA=0x00;	//rotate and stretch
-	ldr	r3, .L26+44	@ tmp153,
-	strh	r4, [r3]	@ tmp154, MEM[(volatile vu16 *)50344136B]
-@ src/soar_voxel.c:114: 	g_REG_BG2PB=0xFF0C; //a bit bigger than the screen (-0xF4?)
-	ldr	r3, .L26+48	@ tmp156,
-	rsbs	r2, r2, #0	@ tmp157, tmp157
-	strh	r2, [r3]	@ tmp157, MEM[(volatile vu16 *)50344138B]
-@ src/soar_voxel.c:115: 	g_REG_BG2PC=0x85; //
-	ldr	r3, .L26+52	@ tmp159,
-	adds	r2, r2, #122	@ tmp160,
-	adds	r2, r2, #255	@ tmp160,
-	strh	r2, [r3]	@ tmp160, MEM[(volatile vu16 *)50344140B]
-@ src/soar_voxel.c:116: 	g_REG_BG2PD=0x00;	//
-	ldr	r3, .L26+56	@ tmp162,
-@ src/soar_voxel.c:117: 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
-	ldr	r2, .L26+60	@ tmp166,
-@ src/soar_voxel.c:116: 	g_REG_BG2PD=0x00;	//
-	strh	r4, [r3]	@ tmp154, MEM[(volatile vu16 *)50344142B]
-@ src/soar_voxel.c:117: 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
-	ldr	r3, .L26+64	@ tmp165,
-	str	r2, [r3]	@ tmp166, MEM[(volatile vu32 *)50344144B]
-@ src/soar_voxel.c:118: 	g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
-	movs	r2, #192	@ tmp168,
-	ldr	r3, .L26+68	@ tmp167,
-	lsls	r2, r2, #1	@ tmp168, tmp168,
-	str	r2, [r3]	@ tmp168, MEM[(volatile vu32 *)50344148B]
-@ src/soar_voxel.c:120: 	Sound_FadeSongOut(10);
+@ src/soar_voxel.c:101: 	    CurrentProc->vid_page = (u16*)(0x600A000);
+	str	r3, [r4, #60]	@ tmp142, CurrentProc_11(D)->vid_page
+@ src/soar_voxel.c:107: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
+	ldr	r0, .L27+20	@ tmp145,
+	lsls	r2, r2, #2	@, tmp188,
+	bl	.L29		@
+@ src/soar_voxel.c:109: 	VBlankIntrWait();
+	ldr	r3, .L27+24	@ tmp147,
+	bl	.L12		@
+@ src/soar_voxel.c:111: 	g_LCDIOBuffer = DISPCNT_MODE_5 
+	ldr	r3, .L27+28	@ tmp148,
+	ldr	r2, .L27+32	@ tmp149,
+	strh	r2, [r3]	@ tmp149, MEM[(volatile vu16 *)50344064B]
+@ src/soar_voxel.c:119: 	REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
+	ldr	r3, .L27+36	@ tmp151,
+	ldr	r2, .L27+40	@ tmp152,
+@ src/soar_voxel.c:122: 	g_REG_BG2PA=0x00;	//rotate and stretch
+	movs	r4, #0	@ tmp155,
+@ src/soar_voxel.c:119: 	REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
+	strh	r2, [r3]	@ tmp152, MEM[(volatile vu16 *)67109380B]
+@ src/soar_voxel.c:123: 	g_REG_BG2PB=0xFF0C; //a bit bigger than the screen (-0xF4?)
+	movs	r2, #244	@ tmp158,
+@ src/soar_voxel.c:122: 	g_REG_BG2PA=0x00;	//rotate and stretch
+	ldr	r3, .L27+44	@ tmp154,
+	strh	r4, [r3]	@ tmp155, MEM[(volatile vu16 *)50344136B]
+@ src/soar_voxel.c:123: 	g_REG_BG2PB=0xFF0C; //a bit bigger than the screen (-0xF4?)
+	ldr	r3, .L27+48	@ tmp157,
+	rsbs	r2, r2, #0	@ tmp158, tmp158
+	strh	r2, [r3]	@ tmp158, MEM[(volatile vu16 *)50344138B]
+@ src/soar_voxel.c:124: 	g_REG_BG2PC=0x85; //
+	ldr	r3, .L27+52	@ tmp160,
+	adds	r2, r2, #122	@ tmp161,
+	adds	r2, r2, #255	@ tmp161,
+	strh	r2, [r3]	@ tmp161, MEM[(volatile vu16 *)50344140B]
+@ src/soar_voxel.c:125: 	g_REG_BG2PD=0x00;	//
+	ldr	r3, .L27+56	@ tmp163,
+@ src/soar_voxel.c:126: 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
+	ldr	r2, .L27+60	@ tmp167,
+@ src/soar_voxel.c:125: 	g_REG_BG2PD=0x00;	//
+	strh	r4, [r3]	@ tmp155, MEM[(volatile vu16 *)50344142B]
+@ src/soar_voxel.c:126: 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
+	ldr	r3, .L27+64	@ tmp166,
+	str	r2, [r3]	@ tmp167, MEM[(volatile vu32 *)50344144B]
+@ src/soar_voxel.c:127: 	g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
+	movs	r2, #192	@ tmp169,
+	ldr	r3, .L27+68	@ tmp168,
+	lsls	r2, r2, #1	@ tmp169, tmp169,
+	str	r2, [r3]	@ tmp169, MEM[(volatile vu32 *)50344148B]
+@ src/soar_voxel.c:129: 	Sound_FadeSongOut(10);
 	movs	r0, #10	@,
-	ldr	r3, .L26+72	@ tmp169,
-	bl	.L11		@
-@ src/soar_voxel.c:121: 	LoadSprite();
+	ldr	r3, .L27+72	@ tmp170,
+	bl	.L12		@
+@ src/soar_voxel.c:130: 	LoadSprite();
 	bl	LoadSprite		@
-@ src/soar_voxel.c:122: 	m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
-	ldr	r6, .L26+76	@ tmp170,
+@ src/soar_voxel.c:131: 	m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
+	ldr	r6, .L27+76	@ tmp171,
 	movs	r0, #78	@,
-	bl	.L29		@
-@ src/soar_voxel.c:123: 	m4aSongNumStart(0x58); //unused slot
+	bl	.L30		@
+@ src/soar_voxel.c:132: 	m4aSongNumStart(0x58); //unused slot
 	movs	r0, #88	@,
-	bl	.L29		@
-@ src/soar_voxel.c:124: 	gCurrentMusic = 0x58;
-	movs	r2, #88	@ tmp173,
-@ src/soar_voxel.c:125: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
-	movs	r1, #192	@ tmp190,
-@ src/soar_voxel.c:124: 	gCurrentMusic = 0x58;
-	ldr	r3, .L26+80	@ tmp172,
-@ src/soar_voxel.c:125: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
-	lsls	r1, r1, #19	@, tmp190,
-@ src/soar_voxel.c:124: 	gCurrentMusic = 0x58;
-	strh	r2, [r3]	@ tmp173, MEM[(volatile u16 *)33705568B]
-@ src/soar_voxel.c:125: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+	bl	.L30		@
+@ src/soar_voxel.c:133: 	gCurrentMusic = 0x58;
+	movs	r2, #88	@ tmp174,
+@ src/soar_voxel.c:134: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+	movs	r1, #192	@ tmp191,
+@ src/soar_voxel.c:133: 	gCurrentMusic = 0x58;
+	ldr	r3, .L27+80	@ tmp173,
+@ src/soar_voxel.c:134: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+	lsls	r1, r1, #19	@, tmp191,
+@ src/soar_voxel.c:133: 	gCurrentMusic = 0x58;
+	strh	r2, [r3]	@ tmp174, MEM[(volatile u16 *)33705568B]
+@ src/soar_voxel.c:134: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 	add	r0, sp, #4	@,,
-	ldr	r2, .L26+84	@,
-	str	r4, [sp, #4]	@ tmp154, tmp
-	bl	.L28		@
-@ src/soar_voxel.c:127: 	SetInterrupt_LCDVBlank(SoarVBlankInterrupt);
-	ldr	r0, .L26+88	@ tmp180,
-	ldr	r3, .L26+92	@ tmp181,
-	bl	.L11		@
-@ src/soar_voxel.c:128: };
+	ldr	r2, .L27+84	@,
+	str	r4, [sp, #4]	@ tmp155, tmp
+	bl	.L29		@
+@ src/soar_voxel.c:136: 	SetInterrupt_LCDVBlank(SoarVBlankInterrupt);
+	ldr	r0, .L27+88	@ tmp181,
+	ldr	r3, .L27+92	@ tmp182,
+	bl	.L12		@
+@ src/soar_voxel.c:137: };
 	pop	{r0, r1, r4, r5, r6}
 	pop	{r0}
 	bx	r0
-.L27:
+.L28:
 	.align	2
-.L26:
+.L27:
 	.word	50352776
 	.word	50352780
 	.word	100704256
@@ -515,61 +543,61 @@ EndLoop:
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 0, uses_anonymous_args = 0
 	push	{r0, r1, r4, lr}	@
-@ src/soar_voxel.c:199:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+@ src/soar_voxel.c:209:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 	movs	r3, #0	@ tmp115,
-@ src/soar_voxel.c:222: };
+@ src/soar_voxel.c:232: };
 	@ sp needed	@
-@ src/soar_voxel.c:199:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+@ src/soar_voxel.c:209:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 	movs	r1, #192	@ tmp134,
-@ src/soar_voxel.c:198: void EndLoop(SoarProc* CurrentProc){
+@ src/soar_voxel.c:208: void EndLoop(SoarProc* CurrentProc){
 	movs	r4, r0	@ CurrentProc, tmp132
-@ src/soar_voxel.c:199:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
+@ src/soar_voxel.c:209:   	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 	lsls	r1, r1, #19	@, tmp134,
 	str	r3, [sp, #4]	@ tmp115, tmp
 	add	r0, sp, #4	@,,
-	ldr	r2, .L31	@,
-	ldr	r3, .L31+4	@ tmp119,
-	bl	.L11		@
-@ src/soar_voxel.c:200: 	g_LCDIOBuffer = DISPCNT_MODE_0
+	ldr	r2, .L32	@,
+	ldr	r3, .L32+4	@ tmp119,
+	bl	.L12		@
+@ src/soar_voxel.c:210: 	g_LCDIOBuffer = DISPCNT_MODE_0
 	movs	r2, #248	@ tmp121,
-	ldr	r3, .L31+8	@ tmp120,
+	ldr	r3, .L32+8	@ tmp120,
 	lsls	r2, r2, #5	@ tmp121, tmp121,
 	strh	r2, [r3]	@ tmp121, MEM[(volatile vu16 *)50344064B]
-@ src/soar_voxel.c:214: 	BreakProcLoop(CurrentProc);
+@ src/soar_voxel.c:224: 	BreakProcLoop(CurrentProc);
 	movs	r0, r4	@, CurrentProc
-	ldr	r3, .L31+12	@ tmp123,
-	bl	.L11		@
-@ src/soar_voxel.c:215: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
-	ldr	r3, .L31+16	@ tmp125,
-	ldr	r0, .L31+20	@,
-	bl	.L11		@
+	ldr	r3, .L32+12	@ tmp123,
+	bl	.L12		@
+@ src/soar_voxel.c:225: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
+	ldr	r3, .L32+16	@ tmp125,
+	ldr	r0, .L32+20	@,
+	bl	.L12		@
 	movs	r4, r0	@ wmproc, tmp133
-@ src/soar_voxel.c:216: 	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
+@ src/soar_voxel.c:226: 	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
 	movs	r1, #23	@,
-	ldr	r3, .L31+24	@ tmp126,
-	bl	.L11		@
-@ src/soar_voxel.c:217: 	LoadObjUIGfx();
+	ldr	r3, .L32+24	@ tmp126,
+	bl	.L12		@
+@ src/soar_voxel.c:227: 	LoadObjUIGfx();
 	bl	LoadObjUIGfx		@
-@ src/soar_voxel.c:218: 	RefreshWMProc(wmproc);
+@ src/soar_voxel.c:228: 	RefreshWMProc(wmproc);
 	movs	r0, r4	@, wmproc
 	bl	RefreshWMProc		@
-@ src/soar_voxel.c:220: 	REG_WAITCNT = 0x45b7; //restore this
-	ldr	r2, .L31+28	@ tmp128,
-	ldr	r3, .L31+32	@ tmp127,
-@ src/soar_voxel.c:221: 	SetInterrupt_LCDVBlank(OnVBlankMain);
-	ldr	r0, .L31+36	@ tmp130,
-@ src/soar_voxel.c:220: 	REG_WAITCNT = 0x45b7; //restore this
+@ src/soar_voxel.c:230: 	REG_WAITCNT = 0x45b7; //restore this
+	ldr	r2, .L32+28	@ tmp128,
+	ldr	r3, .L32+32	@ tmp127,
+@ src/soar_voxel.c:231: 	SetInterrupt_LCDVBlank(OnVBlankMain);
+	ldr	r0, .L32+36	@ tmp130,
+@ src/soar_voxel.c:230: 	REG_WAITCNT = 0x45b7; //restore this
 	strh	r2, [r3]	@ tmp128, MEM[(volatile vu16 *)67109380B]
-@ src/soar_voxel.c:221: 	SetInterrupt_LCDVBlank(OnVBlankMain);
-	ldr	r3, .L31+40	@ tmp131,
-	bl	.L11		@
-@ src/soar_voxel.c:222: };
+@ src/soar_voxel.c:231: 	SetInterrupt_LCDVBlank(OnVBlankMain);
+	ldr	r3, .L32+40	@ tmp131,
+	bl	.L12		@
+@ src/soar_voxel.c:232: };
 	pop	{r0, r1, r4}
 	pop	{r0}
 	bx	r0
-.L32:
+.L33:
 	.align	2
-.L31:
+.L32:
 	.word	16787456
 	.word	CpuFastSet
 	.word	50344064
@@ -582,6 +610,98 @@ EndLoop:
 	.word	OnVBlankMain
 	.word	SetInterrupt_LCDVBlank
 	.size	EndLoop, .-EndLoop
+	.align	1
+	.global	BumpScreen
+	.syntax unified
+	.code	16
+	.thumb_func
+	.fpu softvfp
+	.type	BumpScreen, %function
+BumpScreen:
+	@ Function supports interworking.
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 0, uses_anonymous_args = 0
+	@ link register save eliminated.
+@ src/soar_voxel.c:235: 	switch (direction){
+	cmp	r0, #2	@ direction,
+	beq	.L35		@,
+	cmp	r0, #3	@ direction,
+	beq	.L36		@,
+.L34:
+@ src/soar_voxel.c:259: };
+	@ sp needed	@
+	bx	lr
+.L35:
+@ src/soar_voxel.c:243: 			g_REG_BG2Y=0x180;	//offset horizontal
+	movs	r2, #192	@ tmp115,
+	ldr	r3, .L39	@ tmp114,
+	lsls	r2, r2, #1	@ tmp115, tmp115,
+	str	r2, [r3]	@ tmp115, MEM[(volatile vu32 *)50344148B]
+@ src/soar_voxel.c:244: 			g_REG_BG2X=0x9280;
+	ldr	r3, .L39+4	@ tmp116,
+	ldr	r2, .L39+8	@ tmp117,
+	str	r2, [r3]	@ tmp117, MEM[(volatile vu32 *)50344144B]
+@ src/soar_voxel.c:245: 			g_REG_BG2PA=0x000E; 
+	movs	r2, #14	@ tmp119,
+	ldr	r3, .L39+12	@ tmp118,
+	strh	r2, [r3]	@ tmp119, MEM[(volatile vu16 *)50344136B]
+@ src/soar_voxel.c:246: 			g_REG_BG2PB=0xFF1C;
+	ldr	r3, .L39+16	@ tmp121,
+	subs	r2, r2, #242	@ tmp122,
+	strh	r2, [r3]	@ tmp122, MEM[(volatile vu16 *)50344138B]
+@ src/soar_voxel.c:247: 			g_REG_BG2PC=0x0080;
+	ldr	r3, .L39+20	@ tmp124,
+	adds	r2, r2, #101	@ tmp125,
+	adds	r2, r2, #255	@ tmp125,
+	strh	r2, [r3]	@ tmp125, MEM[(volatile vu16 *)50344140B]
+@ src/soar_voxel.c:248: 			g_REG_BG2PD=0x0008;
+	ldr	r3, .L39+24	@ tmp127,
+	subs	r2, r2, #120	@ tmp128,
+.L38:
+@ src/soar_voxel.c:256: 			g_REG_BG2PD=0xFFF8;
+	strh	r2, [r3]	@ tmp144,
+@ src/soar_voxel.c:259: };
+	b	.L34		@
+.L36:
+@ src/soar_voxel.c:251: 			g_REG_BG2Y=0x0500;	//offset horizontal
+	movs	r2, #160	@ tmp131,
+	ldr	r3, .L39	@ tmp130,
+	lsls	r2, r2, #3	@ tmp131, tmp131,
+	str	r2, [r3]	@ tmp131, MEM[(volatile vu32 *)50344148B]
+@ src/soar_voxel.c:252: 			g_REG_BG2X=0x9c40;
+	ldr	r3, .L39+4	@ tmp132,
+	ldr	r2, .L39+28	@ tmp133,
+	str	r2, [r3]	@ tmp133, MEM[(volatile vu32 *)50344144B]
+@ src/soar_voxel.c:253: 			g_REG_BG2PA=0xFFF2; 
+	movs	r2, #14	@ tmp135,
+	ldr	r3, .L39+12	@ tmp134,
+	rsbs	r2, r2, #0	@ tmp135, tmp135
+	strh	r2, [r3]	@ tmp135, MEM[(volatile vu16 *)50344136B]
+@ src/soar_voxel.c:254: 			g_REG_BG2PB=0xFF1C;
+	ldr	r3, .L39+16	@ tmp137,
+	subs	r2, r2, #214	@ tmp138,
+	strh	r2, [r3]	@ tmp138, MEM[(volatile vu16 *)50344138B]
+@ src/soar_voxel.c:255: 			g_REG_BG2PC=0x0080;
+	ldr	r3, .L39+20	@ tmp140,
+	adds	r2, r2, #101	@ tmp141,
+	adds	r2, r2, #255	@ tmp141,
+	strh	r2, [r3]	@ tmp141, MEM[(volatile vu16 *)50344140B]
+@ src/soar_voxel.c:256: 			g_REG_BG2PD=0xFFF8;
+	ldr	r3, .L39+24	@ tmp143,
+	subs	r2, r2, #136	@ tmp144,
+	b	.L38		@
+.L40:
+	.align	2
+.L39:
+	.word	50344148
+	.word	50344144
+	.word	37504
+	.word	50344136
+	.word	50344138
+	.word	50344140
+	.word	50344142
+	.word	40000
+	.size	BumpScreen, .-BumpScreen
 	.global	translatedLocations
 	.global	WorldMapNodes
 	.global	gObj_64x64
@@ -589,7 +709,7 @@ EndLoop:
 	.global	PkOamData
 	.global	Proc_Soaring
 	.section	.rodata.str1.1,"aMS",%progbits,1
-.LC29:
+.LC30:
 	.ascii	"NewWorldMap\000"
 	.section	.rodata
 	.align	2
@@ -646,7 +766,7 @@ Proc_Soaring:
 @ sArg:
 	.short	0
 @ lArg:
-	.word	.LC29
+	.word	.LC30
 @ type:
 	.short	2
 @ sArg:
@@ -753,9 +873,9 @@ Proc_Soaring:
 	.text
 	.code 16
 	.align	1
-.L11:
+.L12:
 	bx	r3
-.L28:
-	bx	r5
 .L29:
+	bx	r5
+.L30:
 	bx	r6

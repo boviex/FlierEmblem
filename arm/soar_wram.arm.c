@@ -11,8 +11,7 @@ void NewWMLoop(SoarProc* CurrentProc){
 	if (gKeyState.heldKeys & DPAD_LEFT){
 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 		newy = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
-		if (CurrentProc->sPlayerYaw==a_N) CurrentProc->sPlayerYaw = a_NNW; //rotate
-		else CurrentProc->sPlayerYaw--;
+		CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw - 1)&0xF; //16 angles so skip the conditional
 		newx -= (cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
 		newy -= (cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
 		CurrentProc->sPlayerPosX = newx;
@@ -22,8 +21,7 @@ void NewWMLoop(SoarProc* CurrentProc){
 	else if (gKeyState.heldKeys & DPAD_RIGHT){
 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 		newy = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
-		if (CurrentProc->sPlayerYaw==a_NNW) CurrentProc->sPlayerYaw = a_N; //rotate
-		else CurrentProc->sPlayerYaw++;
+		CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw + 1)&0xF; //16 angles so skip the conditional
 		newx -= (cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
 		newy -= (cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
 		CurrentProc->sPlayerPosX = newx;
@@ -46,6 +44,8 @@ void NewWMLoop(SoarProc* CurrentProc){
 	#else
 	CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw]; 
 	CurrentProc->sPlayerPosY += cam_dy_Angles[CurrentProc->sPlayerYaw];
+	CurrentProc->sFocusPtX = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // set focal point
+	CurrentProc->sFocusPtY = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // set focal point
 	#endif
 
 	if (gKeyState.heldKeys & A_BUTTON){
@@ -63,6 +63,10 @@ void NewWMLoop(SoarProc* CurrentProc){
 		return;
 	};
 
+	if (gKeyState.pressedKeys & SELECT_BUTTON){
+		CurrentProc->ShowMap ^= 1;
+	};
+
 	if (gKeyState.heldKeys & DPAD_UP){ //turbo
 		CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw];
 		CurrentProc->sPlayerPosY += cam_dy_Angles[CurrentProc->sPlayerYaw];
@@ -72,11 +76,14 @@ void NewWMLoop(SoarProc* CurrentProc){
 		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
 	};
 
-	Point playerpos = {CurrentProc->sFocusPtX, CurrentProc->sFocusPtY};
-	
-	if (getPtHeight(playerpos.x, playerpos.y)>(CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP))) CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
+	//set camera
+	int player_terrain_ht = getPtHeight(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY);
+	int camera_terrain_ht = getPtHeight(CurrentProc->sPlayerPosX, CurrentProc->sPlayerPosY);
+	int camera_ht = CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP);
+	if ((player_terrain_ht > camera_ht) || (camera_terrain_ht > camera_ht)) CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
 
 	Render(CurrentProc); //draw and then flip
+	FPS_COUNTER += 1;
 };
 
 //LUTs
@@ -84,9 +91,9 @@ extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
 
 extern const s16 cam_dy_Angles[16] = DY_TABLE(MOVEMENT_STEP);
 
-extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE*5)); // camera distance from focal point
+extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); // camera distance from focal point
 
-extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE*5)); 
+extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); 
 
 u16 getPointColour(int ptx, int pty){
 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
@@ -105,20 +112,27 @@ int getScrHeight(int ptx, int pty, int altitude, int zdist){
 		// height += HORIZON;
 	 // return height;
 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	if (height<0) return 0;
-	if (height>MODE5_WIDTH) return MODE5_WIDTH;
+	// if (height<0) return 0;
+	// if (height>MODE5_WIDTH) return MODE5_WIDTH;
 	return height;
 }
 
 void UpdateSprites(SoarProc* CurrentProc){
 	// int animClock = GetGameClock() & 0x3F;
 	u8 animClock = *(u8*)(0x3000014) & 0x3F;
-	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca00); //player frames
-	else if (animClock < 0x20)	ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca10);
-	else if (animClock < 0x30)	ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca20);
-	else ObjInsertSafe(8, 0x68, 0x60, &gObj_32x32, 0xca30);
+	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca00); //player frames
+	else if (animClock < 0x20)	ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca10);
+	else if (animClock < 0x30)	ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca20);
+	else ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca30);
 
-	ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
+	if (CurrentProc->ShowMap)
+	{
+		ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
+	};
+
+	#ifdef __FPSCOUNT__
+	ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
+	#endif
 
 	//check if player is in a zone
 	int posX = CurrentProc->sFocusPtX;
@@ -126,10 +140,10 @@ void UpdateSprites(SoarProc* CurrentProc){
 
 	u8 loc = 0;
 
-	if ((posY > 170) && (posY < 854) && (posX > 0) && (posX < 1024)) {
-		ObjInsertSafe(8, (176 + (posX>>4)), (posY-170)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
+	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
+		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
 		posX >>= 6;
-		posY = (posY-170)>>6;
+		posY = (posY-MAP_YOFS)>>6;
 		loc = WorldMapNodes[posY][posX];
 	};
 	CurrentProc->location = translatedLocations[loc];
@@ -235,9 +249,9 @@ void Render(SoarProc* CurrentProc){
 	LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
 
-	
+	int fogmask = 0b011110011100011;
 	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE+(altitude<<2); zdist<MAX_Z_DISTANCE; zdist+=INC_ZSTEP){
+	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
 	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
 
@@ -245,35 +259,30 @@ void Render(SoarProc* CurrentProc){
 		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation.
 		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
 		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
-		int fogmask = 0;
-		if (zdist < (MAX_Z_DISTANCE*0.8)) fogmask = 0; //change fog dist from >>1 to >>2
-		// else if (zdist>(MAX_Z_DISTANCE-(MAX_Z_DISTANCE>>4))) fogmask = 0b011110011100111;
-		// else if (zdist>(MAX_Z_DISTANCE-(MAX_Z_DISTANCE>>3))) fogmask = 0b001110001100011;
-		// else fogmask = 0b000110000100001;
-		else fogmask = 0b011110011100011;
 
-		for (int i=0; i<(MODE5_HEIGHT); i++){
+		for (int i=0; i<(MODE5_HEIGHT); i++)
+		{
 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
-			//set the focal point of the camera
-			u16 clr = getPointColour(offsetPoint.x, offsetPoint.y);
-			clr |= fogmask;
-			if ((zdist == (MIN_Z_DISTANCE*4)) && ((i < (MODE5_HEIGHT>>1)+4) && (i > (MODE5_HEIGHT>>1)-4))) {
-				clr = 0;
-				if (i==(MODE5_HEIGHT>>1)){
-					CurrentProc->sFocusPtX = offsetPoint.x;
-					CurrentProc->sFocusPtY = offsetPoint.y;
+			
+			// if (yBuffer[i]<(getPtHeight(offsetPoint.x, offsetPoint.y)))
+			// {
+				int height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
+				if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
+					//only fetch the colour if we're actually drawing!
+					u16 clr = 0; //default to shadow
+					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
+					{
+						clr = getPointColour(offsetPoint.x, offsetPoint.y); //if not in shadow
+					    if (zdist > (FOG_DISTANCE+32)) clr |= fogmask; //if in fog
+					}
+				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
+				    yBuffer[i] = height_on_screen;
+				}
+				//cel shading bit
+				else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
+					DrawVerticalLine(i, yBuffer[i]-1, 1, 0x0000, CurrentProc->vid_page); //draw a black border if not
 				};
-			};
-
-			int height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
-			if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
-			    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
-			    yBuffer[i] = height_on_screen;
-			}
-			//cel shading bit
-			else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
-				DrawVerticalLine(i, yBuffer[i]-1, 1, 0x0000, CurrentProc->vid_page); //draw a black border if not
-			};
+			// };
 		};
 	};
 
@@ -281,37 +290,11 @@ void Render(SoarProc* CurrentProc){
 };
 
 void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page){
-	if ((ylen<0)||(ystart>MODE5_WIDTH)) return; //don't bother drawing negatives
-	if ((ystart + ylen) > MODE5_WIDTH) ylen = MODE5_WIDTH - ystart; //never draw higher than screen
+	// if ((ylen<0)||(ystart>MODE5_WIDTH)) return; //don't bother drawing negatives
+	// if ((ystart + ylen) > MODE5_WIDTH) ylen = MODE5_WIDTH - ystart; //never draw higher than screen
 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
 	u16* base = vid_page + (offset);
 	CpuFill16(color, base, (ylen<<1));
 }
 
-void BumpScreen(int direction){
-	switch (direction){
-		case bump_up:
-			// REG_BG2X=0x9e40+0x180;	//offset horizontal
-			break;
-		case bump_down:
-			// REG_BG2X=0x9e40-0x180;	//offset horizontal
-			break;
-		case bump_left:
-			g_REG_BG2Y=0x180;	//offset horizontal
-			g_REG_BG2X=0x9280;
-			g_REG_BG2PA=0x000E; 
-			g_REG_BG2PB=0xFF1C;
-			g_REG_BG2PC=0x0080;
-			g_REG_BG2PD=0x0008;
-			break;
-		case bump_right:
-			g_REG_BG2Y=0x0500;	//offset horizontal
-			g_REG_BG2X=0x9c40;
-			g_REG_BG2PA=0xFFF2; 
-			g_REG_BG2PB=0xFF1C;
-			g_REG_BG2PC=0x0080;
-			g_REG_BG2PD=0xFFF8;
-			break;
-	};
-};
 

@@ -141,6 +141,9 @@ locationSprites:
 #incbin "graphics/sprites/locations.img.bin"
 ALIGN 4
 
+fpsSprite:
+#incbin "graphics/sprites/fps.img.bin"
+
 //Text
 #include "Text/InstallTextData.text.event"
 

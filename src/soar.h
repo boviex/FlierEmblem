@@ -3,6 +3,7 @@
 
 #define __PAGEFLIP__ //remove to show draw
 #define __ALWAYS_MOVE__
+#define __FPSCOUNT__ //remove to hide fps counter
 
 #define HORIZON 110//130
 #define m7_screenbase 0x17
@@ -10,15 +11,20 @@
 #define CHARBLOCK(num) VRAM+(num * 0x4000)
 #define SCRBLOCK(num) VRAM+(num*0x800)
 
+#define FPS_COUNTER *(int*)(0x203fff8)
+#define FPS_CURRENT *(int*)(0x203fffc)
+
 #define MODE5_HEIGHT 128
 #define MODE5_WIDTH 160
 
-#define MIN_Z_DISTANCE 8
+#define MIN_Z_DISTANCE 24
 #define MAX_Z_DISTANCE 512
-#define MAX_Z_DISTANCE_LOG2 9
+#define SHADOW_DISTANCE MIN_Z_DISTANCE+16
+#define FOG_DISTANCE (MAX_Z_DISTANCE/2)*0.8
 #define NUM_ALTITUDES 16
 #define MAP_DIMENSIONS 1024
 #define MAP_DIMENSIONS_LOG2 10
+#define MAP_YOFS 170
 #define INC_ZSTEP ((zdist>>6)+(zdist>>7)+(zdist>>8)+2)
 #define SCALING_FACTOR 4
 #define SKY_COLOUR 0x7f0f
@@ -57,6 +63,7 @@ extern const void* pkPal;
 extern const void* minimapSprite;
 extern const void* minimapPal;
 extern const void* miniCursorSprite;
+extern const void* fpsSprite;
 extern const int* SkyBG;   
 extern const void* SpawnLordEvent;
 extern const s16 pleftmatrix[0x10][MAX_Z_DISTANCE];
@@ -132,7 +139,7 @@ struct SoarProc { //so we can store this info locally.
 	int sPlayerPosZ;
 	int sPlayerYaw;
 	u16* vid_page;
-	// int firstdraw;
+	int ShowMap;
   int sFocusPtX;
   int sFocusPtY;
   int location;
@@ -189,4 +196,5 @@ void LoadSprite();
 void EndLoop(SoarProc* CurrentProc);
 void MoveLord(SoarProc* CurrentProc);
 void OnVBlankMain();
+void BumpScreen(int direction);
 #endif

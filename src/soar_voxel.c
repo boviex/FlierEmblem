@@ -73,19 +73,28 @@ void SoarVBlankInterrupt()
 	}
 	m4aSoundMain();
 	// int animClock = GetGameClock() & 0x3F;
-	u8 animClock = *(u8*)(0x3000014) & 0x3F;
+	int animClock = *(u8*)(0x3000014) & 0x3F;
 	if (animClock < 0x20)	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+
+	#ifdef __FPSCOUNT__
+	if (animClock == 0) //resets once per 63 frames so close enough
+	{
+		FPS_CURRENT = FPS_COUNTER;
+		FPS_COUNTER = 0;
+	}
+	#endif
 };
+
 
 
 void SetUpNewWMGraphics(SoarProc* CurrentProc){
 
-	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*1024/480)>>8; //x coord mapped to 1024 map size
-	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*1024/480)>>8)+ 170;
+	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
+	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
 	CurrentProc->sPlayerYaw = a_SE;
-	// CurrentProc->firstdraw = TRUE;
+	CurrentProc->ShowMap = TRUE;
 	CurrentProc->location = Frelia;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
@@ -132,6 +141,7 @@ void LoadSprite(){
 	LZ77UnCompVram(&locationSprites, &tile_mem[5][64]); //yeah 
 	LZ77UnCompVram(&miniCursorSprite, &tile_mem[5][96]);
 	LZ77UnCompVram(&minimapSprite, &tile_mem[5][97]);
+	LZ77UnCompVram(&fpsSprite, &tile_mem[5][161]); //fps numbers
 	LoadMapSpritePalettes(); //puts in palette 0xc
 	ApplyPalette(&minimapPal, 0x12);
 };
@@ -220,3 +230,31 @@ void EndLoop(SoarProc* CurrentProc){
 	REG_WAITCNT = 0x45b7; //restore this
 	SetInterrupt_LCDVBlank(OnVBlankMain);
 };
+
+void BumpScreen(int direction){
+	switch (direction){
+		case bump_up:
+			// REG_BG2X=0x9e40+0x180;	//offset horizontal
+			break;
+		case bump_down:
+			// REG_BG2X=0x9e40-0x180;	//offset horizontal
+			break;
+		case bump_left:
+			g_REG_BG2Y=0x180;	//offset horizontal
+			g_REG_BG2X=0x9280;
+			g_REG_BG2PA=0x000E; 
+			g_REG_BG2PB=0xFF1C;
+			g_REG_BG2PC=0x0080;
+			g_REG_BG2PD=0x0008;
+			break;
+		case bump_right:
+			g_REG_BG2Y=0x0500;	//offset horizontal
+			g_REG_BG2X=0x9c40;
+			g_REG_BG2PA=0xFFF2; 
+			g_REG_BG2PB=0xFF1C;
+			g_REG_BG2PC=0x0080;
+			g_REG_BG2PD=0xFFF8;
+			break;
+	};
+};
+
