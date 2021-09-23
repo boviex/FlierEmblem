@@ -802,330 +802,335 @@ getPLeft:
 	.type	Render, %function
 Render:
 	@ Function supports interworking.
-	@ args = 0, pretend = 0, frame = 184
+	@ args = 0, pretend = 0, frame = 192
 	@ frame_needed = 0, uses_anonymous_args = 0
-	mov	r3, r0	@ tmp352, CurrentProc
-	mov	ip, r3	@ CurrentProc, tmp352
+	mov	r3, r0	@ tmp354, CurrentProc
 	push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}	@
-	sub	sp, sp, #188	@,,
+	mov	r7, r3	@ CurrentProc, tmp354
+	sub	sp, sp, #196	@,,
 @ arm/soar_wram.arm.c:235: void Render(SoarProc* CurrentProc){
-	str	r3, [sp, #12]	@ CurrentProc, %sfp
+	str	r3, [sp, #52]	@ CurrentProc, %sfp
 @ arm/soar_wram.arm.c:238: 	int angle = CurrentProc->sPlayerYaw;
 	ldr	r4, [r3, #56]	@ angle, CurrentProc_43(D)->sPlayerYaw
 @ arm/soar_wram.arm.c:236: 	int posX = CurrentProc->sPlayerPosX;
 	ldr	r3, [r3, #44]	@ posX, CurrentProc_43(D)->sPlayerPosX
-	str	r3, [sp, #16]	@ posX, %sfp
+	str	r3, [sp, #20]	@ posX, %sfp
 @ arm/soar_wram.arm.c:240: 	int altitude = (CurrentProc->sPlayerPosZ);
-	ldr	r3, [ip, #52]	@ altitude, CurrentProc_43(D)->sPlayerPosZ
+	ldr	r3, [r7, #52]	@ altitude, CurrentProc_43(D)->sPlayerPosZ
 @ arm/soar_wram.arm.c:246: 	altitude /= CAMERA_Z_STEP;
-	ldr	r2, .L119	@ tmp220,
+	ldr	r2, .L118	@ tmp223,
 @ arm/soar_wram.arm.c:245: 	altitude -= CAMERA_MIN_HEIGHT;
 	sub	r3, r3, #64	@ altitude, altitude,
 @ arm/soar_wram.arm.c:246: 	altitude /= CAMERA_Z_STEP;
-	smull	r1, r2, r3, r2	@ tmp354, tmp219, altitude, tmp219
-	asr	r3, r3, #31	@ tmp222, altitude,
-	rsb	r6, r3, r2, asr #3	@ altitude, tmp222, tmp219,
+	smull	r1, r2, r3, r2	@ tmp356, tmp222, altitude, tmp222
+	asr	r3, r3, #31	@ tmp225, altitude,
+	rsb	r6, r3, r2, asr #3	@ altitude, tmp225, tmp222,
 @ arm/soar_wram.arm.c:237: 	int posY = CurrentProc->sPlayerPosY;
-	ldr	r3, [ip, #48]	@ posY, CurrentProc_43(D)->sPlayerPosY
+	ldr	r3, [r7, #48]	@ posY, CurrentProc_43(D)->sPlayerPosY
 @ arm/soar_wram.arm.c:249: 	LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
-	ldr	r1, [ip, #60]	@, CurrentProc_43(D)->vid_page
-	ldr	r0, .L119+4	@,
+	ldr	r1, [r7, #60]	@, CurrentProc_43(D)->vid_page
+	ldr	r0, .L118+4	@,
 @ arm/soar_wram.arm.c:237: 	int posY = CurrentProc->sPlayerPosY;
-	str	r3, [sp, #20]	@ posY, %sfp
+	str	r3, [sp, #24]	@ posY, %sfp
 @ arm/soar_wram.arm.c:249: 	LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	bl	LZ77UnCompVram		@
 @ arm/soar_wram.arm.c:250: 	CpuFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
-	mov	r3, #0	@ tmp226,
-	ldr	r2, .L119+8	@,
-	strh	r3, [sp, #50]	@ movhi	@ tmp226, tmp
-	add	r1, sp, #56	@ tmp376,,
-	ldr	r3, .L119+12	@ tmp377,
-	add	r0, sp, #50	@,,
+	mov	r3, #0	@ tmp229,
+	ldr	r2, .L118+8	@,
+	strh	r3, [sp, #58]	@ movhi	@ tmp229, tmp
+	add	r1, sp, #64	@ tmp376,,
+	ldr	r3, .L118+12	@ tmp233,
+	add	r0, sp, #58	@,,
 	mov	lr, pc
-	bx	r3		@ tmp377
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	lsl	r3, r6, #3	@ tmp231, altitude,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	add	r2, r3, #24	@ zdist, tmp231,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	lsl	r3, r6, #4	@ tmp232, altitude,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	add	r3, r3, #512	@ tmp233, tmp232,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	cmp	r2, r3, asr #1	@ zdist, tmp233,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	asr	r3, r3, #1	@ _150, tmp233,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	str	r2, [sp, #8]	@ zdist, %sfp
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	str	r3, [sp, #24]	@ _150, %sfp
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	bge	.L115		@,
-	add	r5, r4, #4	@ tmp218, angle,
+	bx	r3		@ tmp233
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	lsl	r3, r6, #1	@ tmp234, altitude,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	add	r2, r3, #24	@ zdist, tmp234,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	lsl	r3, r6, #4	@ tmp235, altitude,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	add	r3, r3, #512	@ tmp236, tmp235,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	cmp	r2, r3, asr #1	@ zdist, tmp236,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	asr	r3, r3, #1	@ _160, tmp236,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	str	r2, [sp, #12]	@ zdist, %sfp
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	str	r3, [sp, #28]	@ _160, %sfp
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	bge	.L93		@,
+	add	r5, r4, #4	@ tmp221, angle,
 @ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	rsb	r6, r6, r6, lsl #8	@ tmp279, altitude, altitude,
-	and	r5, r5, #15	@ tangent, tmp218,
-	rsb	r3, r6, r6, lsl #8	@ tmp281, tmp279, tmp279,
-	str	r3, [sp, #28]	@ tmp281, %sfp
+	rsb	r6, r6, r6, lsl #8	@ tmp345, altitude, altitude,
+	and	r5, r5, #15	@ tangent, tmp221,
+	rsb	r3, r6, r6, lsl #8	@ tmp347, tmp345, tmp345,
+	str	r3, [sp, #48]	@ tmp347, %sfp
 @ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	rsb	r3, r5, #0	@ tmp235, tangent
-	and	r3, r3, #15	@ _192, tmp235,
-	lsl	r3, r3, #9	@ tmp339, _192,
-	str	r3, [sp, #32]	@ tmp339, %sfp
-	rsb	r3, r4, #0	@ tmp236, angle
-	and	r3, r3, #15	@ _196, tmp236,
-	lsl	r3, r3, #9	@ tmp340, _196,
-	lsl	r2, r5, #9	@ tmp344, tangent,
-	str	r3, [sp, #36]	@ tmp340, %sfp
-	ldr	r3, [sp, #12]	@ CurrentProc, %sfp
-	str	r2, [sp, #44]	@ tmp344, %sfp
-	lsl	r2, r4, #9	@ tmp343, angle,
-	str	r2, [sp, #40]	@ tmp343, %sfp
-	ldr	lr, [r3, #60]	@ pretmp_222, CurrentProc_43(D)->vid_page
+	rsb	r3, r5, #0	@ tmp237, tangent
+	and	r3, r3, #15	@ _180, tmp237,
+	lsl	r3, r3, #9	@ tmp335, _180,
+	str	r3, [sp, #32]	@ tmp335, %sfp
+	rsb	r3, r4, #0	@ tmp238, angle
+	and	r3, r3, #15	@ _184, tmp238,
+	lsl	r3, r3, #9	@ tmp336, _184,
+	lsl	r2, r5, #9	@ tmp338, tangent,
+	str	r3, [sp, #36]	@ tmp336, %sfp
+@ arm/soar_wram.arm.c:289: 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
+	ldr	r3, [r7, #60]	@ prephitmp_216, CurrentProc_43(D)->vid_page
+	str	r2, [sp, #44]	@ tmp338, %sfp
+	lsl	r2, r4, #9	@ tmp337, angle,
+	str	r2, [sp, #40]	@ tmp337, %sfp
+	str	r3, [sp, #16]	@ prephitmp_216, %sfp
+	add	r10, sp, #191	@ _149,,
 .L102:
 @ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	mov	r7, #0	@ ivtmp.49,
+	mov	ip, #0	@ ivtmp.56,
 @ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	r1, [sp, #8]	@ zdist, %sfp
-	ldr	r3, [sp, #40]	@ tmp343, %sfp
-	ldr	r0, .L119+16	@ tmp392,
-	add	r3, r3, r1	@ tmp239, tmp343, zdist
-	lsl	r3, r3, #1	@ tmp240, tmp239,
-	ldrsh	r2, [r0, r3]	@ _75, pleftmatrix[angle_46][zdist_149]
+	ldr	lr, [sp, #12]	@ zdist, %sfp
+	ldr	r3, [sp, #40]	@ tmp337, %sfp
+	ldr	r0, [sp, #44]	@ tmp338, %sfp
+	ldr	r4, .L118+16	@ tmp390,
+	add	r3, r3, lr	@ tmp241, tmp337, zdist
+	add	r0, r0, lr	@ tmp252, tmp338, zdist
+	lsl	r3, r3, #1	@ tmp242, tmp241,
+	lsl	r0, r0, #1	@ tmp253, tmp252,
+	ldrsh	r1, [r4, r3]	@ _75, pleftmatrix[angle_46][zdist_159]
+	ldrsh	r8, [r4, r0]	@ pleftmatrix[tangent_47][zdist_159], pleftmatrix[tangent_47][zdist_159]
 @ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	r3, [sp, #36]	@ tmp340, %sfp
-	add	r3, r3, r1	@ tmp244, tmp340, zdist
-	lsl	r3, r3, #1	@ tmp245, tmp244,
-	ldrsh	r10, [r0, r3]	@ _82, pleftmatrix[_196][zdist_149]
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	r3, [sp, #44]	@ tmp344, %sfp
-	add	r3, r3, r1	@ tmp249, tmp344, zdist
-	lsl	r3, r3, #1	@ tmp250, tmp249,
-	ldrsh	r3, [r0, r3]	@ pleftmatrix[tangent_47][zdist_149], pleftmatrix[tangent_47][zdist_149]
+	ldr	r0, [sp, #20]	@ posX, %sfp
 @ arm/soar_wram.arm.c:260: 		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
-	sub	r3, r3, r2	@ tmp253, pleftmatrix[tangent_47][zdist_149], _75
+	sub	r8, r8, r1	@ tmp256, pleftmatrix[tangent_47][zdist_159], _75
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	add	r1, r0, r1	@ _76, posX, _75
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	ldr	r3, [sp, #36]	@ tmp336, %sfp
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	str	r1, [sp]	@ _76, %sfp
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	ldr	r1, [sp, #32]	@ tmp335, %sfp
+	add	r3, r3, lr	@ tmp246, tmp336, zdist
+	add	r1, r1, lr	@ tmp259, tmp335, zdist
+	lsl	r1, r1, #1	@ tmp260, tmp259,
+	lsl	r3, r3, #1	@ tmp247, tmp246,
+	ldrsh	r3, [r4, r3]	@ _82, pleftmatrix[_184][zdist_159]
+	ldrsh	r7, [r4, r1]	@ pleftmatrix[_180][zdist_159], pleftmatrix[_180][zdist_159]
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	ldr	r1, [sp, #24]	@ posY, %sfp
+@ arm/soar_wram.arm.c:261: 		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
+	sub	r7, r7, r3	@ tmp263, pleftmatrix[_180][zdist_159], _82
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	add	r3, r1, r3	@ _83, posY, _82
+@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
+	asr	fp, lr, #1	@ _95, zdist,
+@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	str	r3, [sp, #4]	@ _83, %sfp
+@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
+	ldr	r3, [sp, #48]	@ tmp347, %sfp
+	rsb	fp, fp, fp, lsl #8	@ tmp343, _95, _95,
+	add	fp, fp, r3	@ tmp348, tmp343, tmp347
+@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
+	mov	lr, ip	@ ivtmp.55, ivtmp.56
+	mov	r4, ip	@ ivtmp.54, ivtmp.56
+	str	fp, [sp, #8]	@ tmp348, %sfp
+	add	r2, sp, #63	@ tmp387,,
 @ arm/soar_wram.arm.c:260: 		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
-	lsl	r3, r3, #1	@ _213, tmp253,
-	str	r3, [sp, #4]	@ _213, %sfp
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	r3, [sp, #32]	@ tmp339, %sfp
-	add	r3, r3, r1	@ tmp256, tmp339, zdist
-	lsl	r3, r3, #1	@ tmp257, tmp256,
-	ldrsh	r9, [r0, r3]	@ pleftmatrix[_192][zdist_149], pleftmatrix[_192][zdist_149]
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	r3, [sp, #20]	@ posY, %sfp
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	ldr	ip, [sp, #16]	@ posX, %sfp
+	lsl	r8, r8, #1	@ _143, tmp256,
 @ arm/soar_wram.arm.c:261: 		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
-	sub	r9, r9, r10	@ tmp260, pleftmatrix[_192][zdist_149], _82
-@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	asr	r8, r1, #1	@ _95, zdist,
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	add	r10, r3, r10	@ _83, posY, _82
-@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	ldr	r3, [sp, #28]	@ tmp281, %sfp
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	add	r2, ip, r2	@ _76, posX, _75
-@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	rsb	r8, r8, r8, lsl #8	@ tmp276, _95, _95,
-@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	mov	fp, r7	@ ivtmp.48, ivtmp.49
-@ arm/soar_wram.arm.c:263: 		for (int i=0; i<(MODE5_HEIGHT); i++)
-	mov	r4, r7	@ i, ivtmp.49
-@ arm/soar_wram.arm.c:164: 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
-	str	r2, [sp]	@ _76, %sfp
-	add	r6, sp, #56	@ tmp389,,
-@ arm/soar_wram.arm.c:261: 		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
-	lsl	r9, r9, #1	@ _210, tmp260,
-@ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	add	r8, r8, r3	@ tmp282, tmp276, tmp281
+	lsl	r7, r7, #1	@ _146, tmp263,
 	b	.L101		@
-.L118:
+.L117:
 @ arm/soar_wram.arm.c:273: 					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
-	ldr	r1, [sp, #8]	@ zdist, %sfp
-	cmp	r1, #40	@ zdist,
-	beq	.L116		@,
+	ldr	fp, [sp, #12]	@ zdist, %sfp
+	cmp	fp, #40	@ zdist,
+	beq	.L115		@,
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	cmp	ip, #0	@ _86,
+	cmp	r9, #0	@ _86,
 	bne	.L108		@,
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	orrs	r1, r2, r3	@ tmp356, _8, _11
+	orrs	r6, r5, r0	@ tmp358, _8, _11
 	bmi	.L108		@,
 .L104:
 @ arm/soar_wram.arm.c:100: 	return colourMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
-	add	r3, r2, r3, lsl #10	@ tmp290, _8, _11,
-	ldr	r2, .L119+20	@ tmp412,
-	lsl	r3, r3, #1	@ tmp291, tmp290,
-	ldrh	r3, [r2, r3]	@ clr, colourMap[_102]
-.L99:
-@ arm/soar_wram.arm.c:276: 					    if (zdist > (FOG_DISTANCE+32)) clr |= fogmask; //if in fog
-	ldr	r2, [sp, #8]	@ zdist, %sfp
-	cmp	r2, #236	@ zdist,
-@ arm/soar_wram.arm.c:276: 					    if (zdist > (FOG_DISTANCE+32)) clr |= fogmask; //if in fog
-	orrgt	r3, r3, #15552	@ clr, clr,
-	orrgt	r3, r3, #35	@ clr, clr,
-.L98:
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	strh	r3, [sp, #52]	@ movhi	@ clr, tmp
-@ arm/soar_wram.arm.c:278: 				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
-	sub	r2, r5, r0	@ tmp297, _96, _13
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	ldr	r3, .L119+24	@ tmp414,
-	ror	r2, r2, #31	@ tmp301, tmp297,
-@ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	r1, r4, r4, lsl #2	@ tmp308, i, i,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	and	r2, r3, r2, asr #1	@ tmp303, tmp414, tmp301,
-@ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	r1, r0, r1, lsl #5	@ offset, _13, tmp308,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	ldr	r3, .L119+12	@ tmp415,
-	add	r1, lr, r1, lsl #1	@, pretmp_222, offset,
-	orr	r2, r2, #16777216	@, tmp303,
-	add	r0, sp, #52	@,,
-	mov	lr, pc
-	bx	r3		@ tmp415
-	ldr	r3, [sp, #12]	@ CurrentProc, %sfp
-@ arm/soar_wram.arm.c:279: 				    yBuffer[i] = height_on_screen;
-	strb	r5, [r6]	@ _96, MEM[(unsigned char *)_201]
-	ldr	lr, [r3, #60]	@ pretmp_222, CurrentProc_43(D)->vid_page
+	add	r0, r5, r0, lsl #10	@ tmp296, _8, _11,
+	ldr	r5, .L118+20	@ tmp411,
+	lsl	r0, r0, #1	@ tmp297, tmp296,
+	ldrh	r0, [r5, r0]	@ clr, colourMap[_102]
 .L100:
-@ arm/soar_wram.arm.c:263: 		for (int i=0; i<(MODE5_HEIGHT); i++)
-	ldr	r3, [sp, #4]	@ _213, %sfp
-@ arm/soar_wram.arm.c:263: 		for (int i=0; i<(MODE5_HEIGHT); i++)
-	add	r4, r4, #1	@ i, i,
-@ arm/soar_wram.arm.c:263: 		for (int i=0; i<(MODE5_HEIGHT); i++)
-	cmp	r4, #128	@ i,
-	add	fp, fp, r3	@ ivtmp.48, ivtmp.48, _213
-	add	r7, r7, r9	@ ivtmp.49, ivtmp.49, _210
-	add	r6, r6, #1	@ ivtmp.51, ivtmp.51,
-	beq	.L117		@,
-.L101:
-@ arm/soar_wram.arm.c:265: 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
-	ldr	r3, [sp]	@ _76, %sfp
-	add	r2, r3, fp, asr #8	@ _8, _76, ivtmp.48,
-@ arm/soar_wram.arm.c:265: 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
-	add	r3, r10, r7, asr #8	@ _11, _83, ivtmp.49,
-@ arm/soar_wram.arm.c:104: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
-	cmp	r3, #1024	@ _11,
-	cmplt	r2, #1024	@, _8,
-	movge	ip, #1	@ _86,
-	movlt	ip, #0	@ _86,
-	movge	r1, #0	@ _207,
-	bge	.L94		@,
-@ arm/soar_wram.arm.c:104: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
-	orrs	r1, r2, r3	@ tmp355, _8, _11
-	movmi	r1, ip	@ _207, _86
-@ arm/soar_wram.arm.c:105: 	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
-	ldrpl	r1, .L119+28	@ tmp409,
-	addpl	r1, r1, r2	@ tmp271, tmp409, _8
-@ arm/soar_wram.arm.c:109: 	int height = getPtHeight(ptx, pty);
-	ldrbpl	r1, [r1, r3, lsl #10]	@ zero_extendqisi2	@ _207, heightMap[_91]
+@ arm/soar_wram.arm.c:276: 					    if (zdist > (FOG_DISTANCE+32)) clr |= fogmask; //if in fog
+	ldr	r5, [sp, #12]	@ zdist, %sfp
+	cmp	r5, #236	@ zdist,
+@ arm/soar_wram.arm.c:276: 					    if (zdist > (FOG_DISTANCE+32)) clr |= fogmask; //if in fog
+	orrgt	r0, r0, #15552	@ clr, clr,
+	orrgt	r0, r0, #35	@ clr, clr,
+.L99:
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	mov	r5, #67108864	@ tmp303,
+	strh	r0, [sp, #60]	@ movhi	@ clr, tmp
+@ arm/soar_wram.arm.c:278: 				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
+	sub	r0, r1, r3	@ tmp307, _96, _12
+@ arm/soar_wram.arm.c:296: 	u16* base = vid_page + (offset);
+	ldr	r6, [sp, #16]	@ prephitmp_216, %sfp
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	ror	r0, r0, #31	@ tmp311, tmp307,
+@ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
+	add	r3, r4, r3	@ offset, ivtmp.54, _12
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	asr	r0, r0, #1	@ tmp312, tmp311,
+@ arm/soar_wram.arm.c:296: 	u16* base = vid_page + (offset);
+	add	r3, r6, r3, lsl #1	@ base.7_113, prephitmp_216, offset,
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	orr	r0, r0, #-2130706432	@ _117, tmp312,
+	add	r6, sp, #60	@ tmp.6_112,,
+	str	r6, [r5, #176]	@ tmp.6_112, MEM[(volatile vu32 *)67109040B]
+	str	r3, [r5, #180]	@ base.7_113, MEM[(volatile vu32 *)67109044B]
+	str	r0, [r5, #184]	@ _117, MEM[(volatile vu32 *)67109048B]
+	ldr	r3, [r5, #184]	@ vol.8_118, MEM[(volatile vu32 *)67109048B]
+@ arm/soar_wram.arm.c:279: 				    yBuffer[i] = height_on_screen;
+	strb	r1, [r2]	@ _96, MEM[(unsigned char *)_152]
 .L94:
+@ arm/soar_wram.arm.c:263: 		for (int i=0; i<(MODE5_HEIGHT); i++)
+	cmp	r2, r10	@ ivtmp.52, _149
+	add	r4, r4, #160	@ ivtmp.54, ivtmp.54,
+	add	lr, lr, r8	@ ivtmp.55, ivtmp.55, _143
+	add	ip, ip, r7	@ ivtmp.56, ivtmp.56, _146
+	beq	.L116		@,
+.L101:
+	mov	r6, r2	@ ivtmp.52, ivtmp.52
+@ arm/soar_wram.arm.c:267: 			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
+	ldrb	r3, [r2, #1]!	@ zero_extendqisi2	@ _12, MEM[(unsigned char *)_152]
+@ arm/soar_wram.arm.c:267: 			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
+	cmp	r3, #159	@ _12,
+	bhi	.L94		@,
+@ arm/soar_wram.arm.c:265: 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
+	ldr	r1, [sp]	@ _76, %sfp
+	add	r5, r1, lr, asr #8	@ _8, _76, ivtmp.55,
+@ arm/soar_wram.arm.c:265: 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
+	ldr	r1, [sp, #4]	@ _83, %sfp
+	add	r0, r1, ip, asr #8	@ _11, _83, ivtmp.56,
+@ arm/soar_wram.arm.c:104: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
+	cmp	r0, #1024	@ _11,
+	cmplt	r5, #1024	@, _8,
+	movge	r9, #1	@ _86,
+	movlt	r9, #0	@ _86,
+	movge	r1, #0	@ _202,
+	bge	.L95		@,
+@ arm/soar_wram.arm.c:104: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
+	orrs	r1, r5, r0	@ tmp357, _8, _11
+	movmi	r1, r9	@ _202, _86
+@ arm/soar_wram.arm.c:105: 	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+	ldrpl	r1, .L118+24	@ tmp274,
+	addpl	r1, r1, r5	@ tmp276, tmp274, _8
+@ arm/soar_wram.arm.c:109: 	int height = getPtHeight(ptx, pty);
+	ldrbpl	r1, [r1, r0, lsl #10]	@ zero_extendqisi2	@ _202, heightMap[_91]
+.L95:
 @ arm/soar_wram.arm.c:114: 	height = (int)(hosTables[altitude][zdist>>1][height]);
-	ldr	r0, .L119+32	@ tmp410,
-	add	r1, r8, r1	@ tmp283, tmp282, _207
-	lsl	r1, r1, #1	@ tmp284, tmp283,
-	ldrsh	r5, [r0, r1]	@ _96, hosTables[altitude_50][_95][prephitmp_208]
+	ldr	fp, [sp, #8]	@ tmp348, %sfp
+	add	r1, fp, r1	@ tmp288, tmp348, _202
+	ldr	fp, .L118+28	@ tmp408,
+	lsl	r1, r1, #1	@ tmp289, tmp288,
+	ldrsh	r1, [fp, r1]	@ _96, hosTables[altitude_50][_95][prephitmp_203]
 @ arm/soar_wram.arm.c:270: 				if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
-	ldrb	r0, [r6]	@ zero_extendqisi2	@ _13, MEM[(unsigned char *)_201]
-@ arm/soar_wram.arm.c:270: 				if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
-	cmp	r0, r5	@ _13, _96
-	blt	.L118		@,
+	cmp	r3, r1	@ _12, _96
+	blt	.L117		@,
 @ arm/soar_wram.arm.c:282: 				else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
-	sub	r5, r0, r5	@ tmp316, _13, _96
+	sub	r1, r3, r1	@ tmp316, _12, _96
 @ arm/soar_wram.arm.c:282: 				else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
-	cmp	r5, #6	@ tmp316,
-	ble	.L100		@,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	mov	r3, #0	@ tmp318,
+	cmp	r1, #6	@ tmp316,
+	ble	.L94		@,
+@ arm/soar_wram.arm.c:296: 	u16* base = vid_page + (offset);
+	ldr	r1, [sp, #16]	@ prephitmp_216, %sfp
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	mov	r0, #0	@ tmp318,
 @ arm/soar_wram.arm.c:283: 					DrawVerticalLine(i, yBuffer[i]-1, 1, 0x0000, CurrentProc->vid_page); //draw a black border if not
-	sub	r1, r0, #1	@ tmp320, _13,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	strh	r3, [sp, #54]	@ movhi	@ tmp318, tmp
+	sub	r3, r3, #1	@ tmp320, _12,
 @ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	r3, r4, r4, lsl #2	@ tmp323, i, i,
-@ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	r1, r1, r3, lsl #5	@ offset, tmp320, tmp323,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	add	r1, lr, r1, lsl #1	@, pretmp_222, offset,
-	ldr	r3, .L119+12	@ tmp417,
-	ldr	r2, .L119+36	@,
-	add	r0, sp, #54	@,,
-	mov	lr, pc
-	bx	r3		@ tmp417
-	ldr	r3, [sp, #12]	@ CurrentProc, %sfp
-	ldr	lr, [r3, #60]	@ pretmp_222, CurrentProc_43(D)->vid_page
-@ arm/soar_wram.arm.c:298: }
-	b	.L100		@
-.L116:
+	add	r3, r3, r4	@ offset, tmp320, ivtmp.54
+@ arm/soar_wram.arm.c:296: 	u16* base = vid_page + (offset);
+	add	r3, r1, r3, lsl #1	@ base.7_127, prephitmp_216, offset,
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	mov	r1, #67108864	@ tmp319,
+	strh	r0, [sp, #62]	@ movhi	@ tmp318, tmp
+	ldr	r0, .L118+32	@ tmp325,
+	add	r5, sp, #62	@ tmp.6_126,,
+	str	r5, [r1, #176]	@ tmp.6_126, MEM[(volatile vu32 *)67109040B]
+	str	r3, [r1, #180]	@ base.7_127, MEM[(volatile vu32 *)67109044B]
+	str	r0, [r1, #184]	@ tmp325, MEM[(volatile vu32 *)67109048B]
+	ldr	r3, [r1, #184]	@ vol.8_128, MEM[(volatile vu32 *)67109048B]
+@ arm/soar_wram.arm.c:302: }
+	b	.L94		@
+.L115:
 @ arm/soar_wram.arm.c:273: 					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
-	sub	r1, r4, #61	@ tmp286, i,
-	cmp	r1, #6	@ tmp286,
-	bhi	.L97		@,
+	sub	r6, r6, #60	@ tmp291, ivtmp.52,
+	add	fp, sp, #64	@ tmp410,,
+	sub	r6, r6, fp	@ tmp292, tmp291, tmp410
+	cmp	r6, #6	@ tmp292,
+	bhi	.L98		@,
 @ arm/soar_wram.arm.c:272: 					u16 clr = 0; //default to shadow
-	mov	r3, #0	@ clr,
-	b	.L98		@
+	mov	r0, #0	@ clr,
+	b	.L99		@
 .L108:
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	mov	r3, #6208	@ clr,
-	b	.L99		@
-.L117:
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	ldr	r2, [sp, #8]	@ zdist, %sfp
-	asr	r3, r2, #7	@ tmp331, zdist,
-	add	r3, r3, r2, asr #6	@ tmp332, tmp331, zdist,
-	add	r3, r3, r2, asr #8	@ tmp334, tmp332, zdist,
-	add	r3, r3, #2	@ _29, tmp334,
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	mov	r0, #6208	@ clr,
+	b	.L100		@
+.L116:
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	ldr	r2, [sp, #12]	@ zdist, %sfp
+	asr	r3, r2, #7	@ tmp328, zdist,
+	add	r3, r3, r2, asr #6	@ tmp329, tmp328, zdist,
+	add	r3, r3, r2, asr #8	@ tmp331, tmp329, zdist,
+	add	r3, r3, #2	@ _29, tmp331,
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
 	add	r3, r2, r3	@ zdist, zdist, _29
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	ldr	r2, [sp, #24]	@ _150, %sfp
-	cmp	r3, r2	@ zdist, _150
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
-	str	r3, [sp, #8]	@ zdist, %sfp
-@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	ldr	r2, [sp, #28]	@ _160, %sfp
+	cmp	r3, r2	@ zdist, _160
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	str	r3, [sp, #12]	@ zdist, %sfp
+@ arm/soar_wram.arm.c:254: 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
 	blt	.L102		@,
 .L103:
 @ arm/soar_wram.arm.c:289: 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
-	mov	r0, lr	@, pretmp_222
+	ldr	r0, [sp, #16]	@, %sfp
 	bl	vid_flip		@
 @ arm/soar_wram.arm.c:289: 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
-	ldr	r3, [sp, #12]	@ CurrentProc, %sfp
-	str	r0, [r3, #60]	@ tmp353, CurrentProc_43(D)->vid_page
+	ldr	r3, [sp, #52]	@ CurrentProc, %sfp
+	str	r0, [r3, #60]	@ tmp355, CurrentProc_43(D)->vid_page
 @ arm/soar_wram.arm.c:290: };
-	add	sp, sp, #188	@,,
+	add	sp, sp, #196	@,,
 	@ sp needed	@
 	pop	{r4, r5, r6, r7, r8, r9, r10, fp, lr}	@
 	bx	lr	@
-.L115:
-	ldr	r3, [sp, #12]	@ CurrentProc, %sfp
-	ldr	lr, [r3, #60]	@ pretmp_222, CurrentProc_43(D)->vid_page
+.L93:
+@ arm/soar_wram.arm.c:289: 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
+	ldr	r3, [sp, #52]	@ CurrentProc, %sfp
+	ldr	r3, [r3, #60]	@ prephitmp_216, CurrentProc_43(D)->vid_page
+	str	r3, [sp, #16]	@ prephitmp_216, %sfp
 	b	.L103		@
-.L97:
+.L98:
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	cmp	ip, #0	@ _86,
+	cmp	r9, #0	@ _86,
 	bne	.L110		@,
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	orrs	r1, r2, r3	@ tmp357, _8, _11
+	orrs	r6, r5, r0	@ tmp359, _8, _11
 	bpl	.L104		@,
 .L110:
 @ arm/soar_wram.arm.c:99: 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	mov	r3, #6208	@ clr,
-	b	.L98		@
-.L120:
-	.align	2
+	mov	r0, #6208	@ clr,
+	b	.L99		@
 .L119:
+	.align	2
+.L118:
 	.word	715827883
 	.word	SkyBG
 	.word	16777280
 	.word	CpuSet
 	.word	pleftmatrix
 	.word	colourMap
-	.word	2097151
 	.word	heightMap
 	.word	hosTables
-	.word	16777217
+	.word	-2130706431
 	.size	Render, .-Render
 	.align	2
 	.global	DrawVerticalLine
@@ -1137,34 +1142,35 @@ DrawVerticalLine:
 	@ Function supports interworking.
 	@ args = 4, pretend = 0, frame = 8
 	@ frame_needed = 0, uses_anonymous_args = 0
-	mov	ip, r0	@ tmp147, xcoord
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	mov	ip, #67108864	@ tmp132,
+@ arm/soar_wram.arm.c:292: void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page){
 	push	{r4, lr}	@
 	sub	sp, sp, #8	@,,
 @ arm/soar_wram.arm.c:292: void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page){
 	ldr	lr, [sp, #16]	@ vid_page, vid_page
 @ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	ip, ip, ip, lsl #2	@ tmp140, tmp147, tmp147,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	bic	r2, r2, #-16777216	@ tmp135, tmp149,
+	add	r0, r0, r0, lsl #2	@ tmp135, tmp147, tmp147,
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	lsl	r2, r2, #1	@ tmp140, tmp149,
 @ arm/soar_wram.arm.c:295: 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
-	add	r1, r1, ip, lsl #5	@ offset, tmp148, tmp140,
-@ arm/soar_wram.arm.c:297: 	CpuFill16(color, base, (ylen<<1));
-	bic	r2, r2, #14680064	@ tmp135, tmp135,
-	ldr	r4, .L123	@ tmp146,
-	add	r0, sp, #6	@,,
-	add	r1, lr, r1, lsl #1	@, vid_page, offset,
-	orr	r2, r2, #16777216	@, tmp135,
+	add	r1, r1, r0, lsl #5	@ offset, tmp148, tmp135,
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	asr	r2, r2, #1	@ tmp144, tmp140,
+	add	r4, sp, #6	@ tmp.6_4,,
+@ arm/soar_wram.arm.c:296: 	u16* base = vid_page + (offset);
+	add	lr, lr, r1, lsl #1	@ base.7_6, vid_page, offset,
+@ arm/soar_wram.arm.c:298: 	DmaFill16(0, color, base, (ylen<<1));
+	orr	r2, r2, #-2130706432	@ _10, tmp144,
 	strh	r3, [sp, #6]	@ movhi	@ color, tmp
-	mov	lr, pc
-	bx	r4		@ tmp146
-@ arm/soar_wram.arm.c:298: }
+	str	r4, [ip, #176]	@ tmp.6_4, MEM[(volatile vu32 *)67109040B]
+	str	lr, [ip, #180]	@ base.7_6, MEM[(volatile vu32 *)67109044B]
+	str	r2, [ip, #184]	@ _10, MEM[(volatile vu32 *)67109048B]
+	ldr	r3, [ip, #184]	@ vol.8_24, MEM[(volatile vu32 *)67109048B]
+@ arm/soar_wram.arm.c:302: }
 	add	sp, sp, #8	@,,
 	@ sp needed	@
 	pop	{r4, lr}	@
 	bx	lr	@
-.L124:
-	.align	2
-.L123:
-	.word	CpuSet
 	.size	DrawVerticalLine, .-DrawVerticalLine
 	.ident	"GCC: (devkitARM release 56) 11.1.0"

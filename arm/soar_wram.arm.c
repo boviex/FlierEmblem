@@ -251,7 +251,7 @@ void Render(SoarProc* CurrentProc){
 
 	int fogmask = 0b011110011100011;
 	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE+(altitude<<3); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
+	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1); zdist+=INC_ZSTEP){
 	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
 
@@ -264,8 +264,8 @@ void Render(SoarProc* CurrentProc){
 		{
 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
 			
-			// if (yBuffer[i]<(getPtHeight(offsetPoint.x, offsetPoint.y)))
-			// {
+			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
+			{
 				int height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
 				if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
 					//only fetch the colour if we're actually drawing!
@@ -282,7 +282,7 @@ void Render(SoarProc* CurrentProc){
 				else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
 					DrawVerticalLine(i, yBuffer[i]-1, 1, 0x0000, CurrentProc->vid_page); //draw a black border if not
 				};
-			// };
+			};
 		};
 	};
 
@@ -294,7 +294,11 @@ void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page
 	// if ((ystart + ylen) > MODE5_WIDTH) ylen = MODE5_WIDTH - ystart; //never draw higher than screen
 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
 	u16* base = vid_page + (offset);
-	CpuFill16(color, base, (ylen<<1));
+	// CpuFill16(color, base, (ylen<<1));
+	DmaFill16(0, color, base, (ylen<<1));
+	// asm("mov r0, %[color]" : : [color] "r" (color) : );
+	// asm("mov r12, %[base]" : : [base] "r" (base) : );
+	// asm("stmia r12, {r0}");
 }
 
 

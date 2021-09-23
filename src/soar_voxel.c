@@ -116,7 +116,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 		| DISPCNT_OBJ_1D_MAP
 		;
 
-	REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
+	// REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
 	
 		//turn it sideways so it's easier to draw on
 	g_REG_BG2PA=0x00;	//rotate and stretch
@@ -227,7 +227,7 @@ void EndLoop(SoarProc* CurrentProc){
 	LoadObjUIGfx();
 	RefreshWMProc(wmproc);
 	//8099e68 called after exiting manage items
-	REG_WAITCNT = 0x45b7; //restore this
+	// REG_WAITCNT = 0x45b7; //restore this
 	SetInterrupt_LCDVBlank(OnVBlankMain);
 };
 
