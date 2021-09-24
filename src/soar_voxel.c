@@ -74,8 +74,10 @@ void SoarVBlankInterrupt()
 	m4aSoundMain();
 	// int animClock = GetGameClock() & 0x3F;
 	int animClock = *(u8*)(0x3000014) & 0x3F;
-	if (animClock < 0x20)	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
+	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+
+	if (animClock == 0x20) m4aSongNumStart(0xa6);
 
 	#ifdef __FPSCOUNT__
 	if (animClock == 0) //resets once per 63 frames so close enough
@@ -93,6 +95,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
+	CurrentProc->sPlayerStepZ = 1;
 	CurrentProc->sPlayerYaw = a_SE;
 	CurrentProc->ShowMap = TRUE;
 	CurrentProc->location = Frelia;
@@ -255,6 +258,13 @@ void BumpScreen(int direction){
 			g_REG_BG2PC=0x0080;
 			g_REG_BG2PD=0xFFF8;
 			break;
+		default: //no bump
+			g_REG_BG2PA=0x00;	//rotate and stretch	
+			g_REG_BG2PB=0xFF0C; //a bit bigger than the screen (-0xF4?)
+			g_REG_BG2PC=0x85; //
+			g_REG_BG2PD=0x00;	//
+			g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
+			g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
 	};
 };
 

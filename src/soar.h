@@ -137,6 +137,7 @@ struct SoarProc { //so we can store this info locally.
 	int sPlayerPosX;
 	int sPlayerPosY;
 	int sPlayerPosZ;
+  int sPlayerStepZ;
 	int sPlayerYaw;
 	u16* vid_page;
 	int ShowMap;
@@ -184,14 +185,14 @@ enum BumpDirs{
 
 void NewWMLoop(SoarProc* CurrentProc);
 
-void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
-int getScrHeight(int ptx, int pty, int altitude, int zdist);
-u8 getPtHeight(int ptx, int pty);
-u16 getPointColour(int ptx, int pty);
-Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
-void Render(SoarProc* CurrentProc);
+static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
+static inline int getScrHeight(int ptx, int pty, int altitude, int zdist);
+static inline int getPtHeight(int ptx, int pty);
+static inline u16 getPointColour(int ptx, int pty);
+static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
+static inline void Render(SoarProc* CurrentProc);
+static inline void UpdateSprites(SoarProc* CurrentProc);
 void NewFadeOut(int time);
-void UpdateSprites(SoarProc* CurrentProc);
 void LoadSprite();
 void EndLoop(SoarProc* CurrentProc);
 void MoveLord(SoarProc* CurrentProc);

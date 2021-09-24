@@ -62,7 +62,7 @@ ALIGN 4
 ALIGN 4
 
 SkyBG:
-#incbin "graphics/sky.img.bin"
+#incbin "graphics/sky_orig.img.bin"
 ALIGN 4
 #include "src/hostable.lyn.event"
 ALIGN 4
