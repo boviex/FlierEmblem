@@ -88,6 +88,12 @@ void NewWMLoop(SoarProc* CurrentProc){
 		};
 	};
 
+	//prevent leaving the area
+	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
+	else if (CurrentProc->sPlayerPosX < 0) CurrentProc->sPlayerPosX = 0;
+	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
+	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
+
 	Render(CurrentProc); //draw and then flip
 	FPS_COUNTER += 1;
 };
