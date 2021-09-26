@@ -1,6 +1,6 @@
 ﻿
 cd %~dp0
 
-make all
+make patch
 
 pause

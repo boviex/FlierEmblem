@@ -141,7 +141,8 @@ patch: $(UPS);
 $(UPS): $(ROM)
 	ups/ups diff -b $(CLEANROM) -m $< -o $@
 rom: $(ROM)
-$(ROM): $(CLEANROM) $(BUILDFILE) $(LASMFILES) $(LYNFILES) $(OFILES) $(ASMFILES) $(DMPFILES)
+$(ROM): $(CLEANROM) $(BUILDFILE) $(LASMFILES) $(LYNFILES) $(OFILES) $(ASMFILES) 
+# 	$(DMPFILES)
 # 	$(shell python3 'scripts/edeps_wrapper.py' $(EDEPS)) # i give up lol
 	$(shell cp $< $@)
 	$(CORE) $(COREFLAGS)

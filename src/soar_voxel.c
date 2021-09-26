@@ -74,8 +74,8 @@ void SoarVBlankInterrupt()
 	m4aSoundMain();
 	// int animClock = GetGameClock() & 0x3F;
 	int animClock = *(u8*)(0x3000014) & 0x3F;
-	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
-	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x30; //the same as eirika's map sprite?
+	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 
 	if (animClock == 0x20) m4aSongNumStart(0xa6);
 

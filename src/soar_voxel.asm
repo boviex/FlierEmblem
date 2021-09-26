@@ -74,18 +74,18 @@ SoarVBlankInterrupt:
 	ldr	r3, .L11+36	@ tmp141,
 	ldrb	r3, [r3]	@ MEM[(u8 *)50331668B], MEM[(u8 *)50331668B]
 	ands	r3, r2	@ _1, tmp145
-@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
+@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x30; //the same as eirika's map sprite?
 	movs	r1, r3	@ tmp147, _1
 	subs	r1, r1, #16	@ tmp147,
 	ldr	r2, .L11+40	@ tmp159,
-@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
+@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x30; //the same as eirika's map sprite?
 	cmp	r1, #32	@ tmp147,
 	bls	.L3		@,
-@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x18; //the same as eirika's map sprite?
+@ src/soar_voxel.c:77: 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x30; //the same as eirika's map sprite?
 	ldr	r1, [r2]	@ _8, MEM[(volatile vu32 *)50344144B]
-	subs	r1, r1, #24	@ _9,
+	subs	r1, r1, #48	@ _9,
 .L10:
-@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 	str	r1, [r2]	@ _12,
 .L4:
 @ src/soar_voxel.c:80: 	if (animClock == 0x20) m4aSongNumStart(0xa6);
@@ -102,15 +102,15 @@ SoarVBlankInterrupt:
 	pop	{r0}
 	bx	r0
 .L3:
-@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 	ldr	r0, [r2]	@ _10, MEM[(volatile vu32 *)50344144B]
-@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 	ldr	r1, .L11+48	@ tmp151,
 	cmp	r0, r1	@ _10, tmp151
 	bhi	.L4		@,
-@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x18;
+@ src/soar_voxel.c:78: 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 	ldr	r1, [r2]	@ _11, MEM[(volatile vu32 *)50344144B]
-	adds	r1, r1, #24	@ _12,
+	adds	r1, r1, #48	@ _12,
 	b	.L10		@
 .L5:
 @ src/soar_voxel.c:83: 	if (animClock == 0) //resets once per 63 frames so close enough

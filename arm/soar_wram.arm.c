@@ -247,15 +247,14 @@ static inline void Render(SoarProc* CurrentProc){
 
 	u8 yBuffer[MODE5_HEIGHT];
 
-
 	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
-	CpuFastCopy(&SkyBG, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+	CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<2) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 	// LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
 
 	int fogmask = 0b011110011100011;
 	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE - (MAX_Z_DISTANCE>>2))+((altitude)<<4)); zdist+=INC_ZSTEP){
+	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1)+32; zdist+=INC_ZSTEP){
 	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
 
@@ -277,7 +276,7 @@ static inline void Render(SoarProc* CurrentProc){
 					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
 					{
 						clr = getPointColour(offsetPoint.x, offsetPoint.y); //if not in shadow
-					    if (zdist > (((int)(FOG_DISTANCE)<<1)+0)) clr |= fogmask; //if in fog
+					    if (zdist > (FOG_DISTANCE+64)) clr |= fogmask; //if in fog
 					}
 				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
 				    yBuffer[i] = height_on_screen;
