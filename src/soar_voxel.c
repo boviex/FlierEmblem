@@ -99,6 +99,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sPlayerYaw = a_SE;
 	CurrentProc->ShowMap = TRUE;
 	CurrentProc->location = Frelia;
+	CurrentProc->isSunset = FALSE;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
 	    CurrentProc->vid_page = (u16*)(0x600A000);
@@ -192,7 +193,6 @@ const u8 translatedLocations[] = {
 
 
 void MoveLord(SoarProc* CurrentProc){
-	// CallMapEventEngine(SpawnLordEvent, 0);
 
 	// 800cc18 is the command for spawnlord, loads up the event proc and cursor and gets r3 = char id, r4 = index in gmap entity table?, r5 = location id
 	//3005280 is list of world map entities?

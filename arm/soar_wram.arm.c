@@ -50,7 +50,11 @@ void NewWMLoop(SoarProc* CurrentProc){
 		return;
 	};
 
-	if (gKeyState.pressedKeys & SELECT_BUTTON){
+	if (gKeyState.pressedKeys & L_BUTTON){
+		CurrentProc->isSunset ^= 1;
+	}
+
+	if (gKeyState.pressedKeys & R_BUTTON){
 		CurrentProc->ShowMap ^= 1;
 	};
 
@@ -107,9 +111,15 @@ extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE+SHADOW_DISTA
 
 extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); 
 
-static inline u16 getPointColour(int ptx, int pty){
-	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
-	return colourMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+static inline u16 getPointColour(int ptx, int pty, int isSunset){
+	if (isSunset){
+		if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR_SUNSET;
+		return colourMap_sunset[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+	}
+	else {
+		if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
+		return colourMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+	};
 };
 
 static inline int getPtHeight(int ptx, int pty){
@@ -140,11 +150,11 @@ static inline void UpdateSprites(SoarProc* CurrentProc){
 	if (CurrentProc->ShowMap)
 	{
 		ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
-	};
-
 	#ifdef __FPSCOUNT__
 	ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
 	#endif
+	};
+
 
 	//check if player is in a zone
 	int posX = CurrentProc->sFocusPtX;
@@ -250,17 +260,19 @@ static inline void Render(SoarProc* CurrentProc){
 	int angle = CurrentProc->sPlayerYaw;
 	int tangent = (angle+4)&0xF;
 	int altitude = (CurrentProc->sPlayerStepZ);
-
 	u8 yBuffer[MODE5_HEIGHT];
 
+	if (CurrentProc->isSunset) CpuFastCopy(&SkyBG_sunset + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+	else CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
-	CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<2) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 	// LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
 
 	int fogmask = 0b011110011100011;
 	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE+(altitude<<1); zdist<((MAX_Z_DISTANCE)+((altitude)<<4)>>1)+32; zdist+=INC_ZSTEP){
+	for (int zdist = MIN_Z_DISTANCE+(altitude<<1);
+		zdist<((MAX_Z_DISTANCE)+((altitude)<<4))-128;
+		zdist+=INC_ZSTEP){
 	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
 
@@ -268,10 +280,15 @@ static inline void Render(SoarProc* CurrentProc){
 		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation.
 		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
 		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
+		// int trunc_val = (zdist>>7);
 
 		for (int i=0; i<(MODE5_HEIGHT); i++)
 		{
 			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
+			// if (trunc_val){
+			// 	offsetPoint.x = (offsetPoint.x>>trunc_val)<<trunc_val; //truncate
+			// 	offsetPoint.y = (offsetPoint.y>>trunc_val)<<trunc_val;
+			// }
 			
 			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
 			{
@@ -281,8 +298,8 @@ static inline void Render(SoarProc* CurrentProc){
 					u16 clr = 0; //default to shadow
 					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
 					{
-						clr = getPointColour(offsetPoint.x, offsetPoint.y); //if not in shadow
-					    if (zdist > (FOG_DISTANCE+64)) clr |= fogmask; //if in fog
+						clr = getPointColour(offsetPoint.x, offsetPoint.y, CurrentProc->isSunset); //if not in shadow
+					    if (zdist > (FOG_DISTANCE+180)) clr |= fogmask; //if in fog
 					}
 				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
 				    yBuffer[i] = height_on_screen;

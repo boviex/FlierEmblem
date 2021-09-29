@@ -2,7 +2,7 @@
 #include "soar.h"
 #include "hostable.h"
 
-extern const s16 hosTables[6][0xff][0xff] = {
+extern const u8 hosTables[6][0xff][0xff] = {
 	HOS_TABLE(CAMERA_MIN_HEIGHT),
 	HOS_TABLE((CAMERA_MIN_HEIGHT+CAMERA_Z_STEP)),
 	HOS_TABLE((CAMERA_MIN_HEIGHT+(2*CAMERA_Z_STEP))),

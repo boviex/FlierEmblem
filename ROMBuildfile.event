@@ -64,6 +64,9 @@ ALIGN 4
 SkyBG:
 #incbin "graphics/sky_wrap.img.bin"
 ALIGN 4
+SkyBG_sunset:
+#incbin "graphics/sky_wrap_sunset.img.bin"
+ALIGN 4
 #include "src/hostable.lyn.event"
 ALIGN 4
 #include "EngineHacks/_FE8EssentialFixes.event"
@@ -104,10 +107,6 @@ ALIGN 4
 // #incbin "graphics/wmap.pal.bin"
 // ALIGN 4
 
-colourMap:
-#incbin "graphics/ue4_magvel_wmap.img.bin"
-// #incbin "graphics/wmap.img.bin"
-ALIGN 4
 
 heightMap:
 #incbin "graphics/magvel_hmap.img.bin"
@@ -171,9 +170,11 @@ fpsSprite:
 //#include "Blitz Palettes/Palette Setup.event"   
 
 ALIGN 4
-SpawnLordEvent:
-MUSC 0x2c
-ENDA
+colourMap:
+#incbin "graphics/ue4_magvel_wmap.img.bin"
+ALIGN 4
+colourMap_sunset:
+#incbin "graphics/Magvel_Map_sunset.img.bin"
 
 ALIGN 4
 EndOfFreeSpace:

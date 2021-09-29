@@ -25,10 +25,11 @@
 #define MAP_DIMENSIONS 1024
 #define MAP_DIMENSIONS_LOG2 10
 #define MAP_YOFS 170
-#define INC_ZSTEP ((zdist>>6)+(zdist>>7)+(zdist>>8)+2)
+#define INC_ZSTEP ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 #define SCALING_FACTOR 4
 #define SKY_COLOUR 0x7f0f
-#define SEA_COLOUR 0x1840//0x1c84
+#define SEA_COLOUR 0x1840
+#define SEA_COLOUR_SUNSET 0x0820
 
 #define R_MASK(clr) (clr & 0b11111)
 #define G_MASK(clr) (clr>>5)&0b11111
@@ -54,9 +55,10 @@
 #define WM_CURSOR ((volatile int*)(0x3005288)) //[0] is x<<8 and [1] is y<<8
 
 extern const u16 colourMap[];
+extern const u16 colourMap_sunset[];
 extern const u8 heightMap[];
 extern const u16 xMatrix[];
-extern const s16 hosTables[6][0xff][0xff]; 
+extern const u8 hosTables[6][0xff][0xff]; 
 extern const void* pkSprite;
 extern const void* locationSprites;
 extern const void* pkPal;
@@ -64,8 +66,8 @@ extern const void* minimapSprite;
 extern const void* minimapPal;
 extern const void* miniCursorSprite;
 extern const void* fpsSprite;
-extern const int* SkyBG;   
-extern const void* SpawnLordEvent;
+extern const int* SkyBG;
+extern const int* SkyBG_sunset;   
 extern const s16 pleftmatrix[0x10][MAX_Z_DISTANCE];
 
 extern const u16 gObj_32x8[3];
@@ -144,6 +146,7 @@ struct SoarProc { //so we can store this info locally.
   int sFocusPtX;
   int sFocusPtY;
   int location;
+  int isSunset;
 };
 
 typedef struct Point Point;
@@ -188,7 +191,7 @@ void NewWMLoop(SoarProc* CurrentProc);
 static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
 static inline int getScrHeight(int ptx, int pty, int altitude, int zdist);
 static inline int getPtHeight(int ptx, int pty);
-static inline u16 getPointColour(int ptx, int pty);
+static inline u16 getPointColour(int ptx, int pty, int isSunset);
 static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
 static inline void Render(SoarProc* CurrentProc);
 static inline void UpdateSprites(SoarProc* CurrentProc);
