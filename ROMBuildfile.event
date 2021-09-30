@@ -20,8 +20,13 @@
 ORG FreeSpaceBLRange
 #include "src/soar_voxel.lyn.event"
 ALIGN 4
+#define iwram_clr_blend_asm 0x3007000+clr_blend_asm_ofs-NewWMLoop
 // #include "src/soar_wram.lyn.event":
 #include "arm/soar_wram.arm.lyn.event"
+
+
+clr_blend_asm_ofs:
+#include "arm/pal_blend.arm.lyn.event"
 // NewWMLoop:
 // #include "src/soar_wram.arm.event" //first run thru assemble arm nothumb and then use lyn (force longcalls) also make sure gkeystate is not poin
 ALIGN 4
@@ -66,6 +71,12 @@ SkyBG:
 ALIGN 4
 SkyBG_sunset:
 #incbin "graphics/sky_wrap_sunset.img.bin"
+ALIGN 4
+SkyBG_lighter:
+#incbin "graphics/sky_wrap_lighter.img.bin"
+ALIGN 4
+SkyBG_darker:
+#incbin "graphics/sky_wrap_darker.img.bin"
 ALIGN 4
 #include "src/hostable.lyn.event"
 ALIGN 4

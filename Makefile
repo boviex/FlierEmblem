@@ -34,7 +34,7 @@ LYNLIB := $(MAIN_DIR)/src/libgbafe/fe8u.o
 ARCH    := -mcpu=arm7tdmi -mthumb -mthumb-interwork
 CFLAGS  := $(ARCH) $(INCFLAGS) -Os -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w
 ASFLAGS := $(ARCH) $(INCFLAGS)
-CARMFLAGS:= -mcpu=arm7tdmi -marm -mthumb-interwork $(INCFLAGS) -Ofast -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w
+CARMFLAGS:= -mcpu=arm7tdmi -marm -mthumb-interwork $(INCFLAGS) -O2 -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w
 
 # dependency generation flags for CC
 CDEPFLAGS = -MD -MT $*.o -MT $*.asm -MF $*.d -MP
@@ -51,6 +51,7 @@ EADEPFLAGS = --add-missings --add-externals
 TEXT := $(MAIN_DIR)/Text/InstallTextData.text.event
 
 # Finding all possible source files (in src folder)
+ARMASMFILES := $(shell find arm/ -type f -name '*.arm.asm')
 ARMCFILES := $(shell find arm/ -type f -name '*.arm.c')
 CFILES := $(shell find src/ -type f -name '*.c')
 SFILES := $(shell find src/ -type f -name '*.s')
@@ -64,7 +65,7 @@ OFILES := $(CFILES:.c=.o) $(SFILES:.s=.o)
 # listing possible generated asm files
 ASMFILES := $(CFILES:.c=.asm) $(ARMCFILES:.arm.c=.arm.asm)
 
-LASMFILES := $(ARMCFILES:.arm.c=.arm.lyn.event)
+LASMFILES := $(ARMCFILES:.arm.c=.arm.lyn.event) $(ARMASMFILES:.arm.asm=.arm.lyn.event)
 
 # listing possible lyn event files
 LYNFILES := $(OFILES:.o=.lyn.event)
@@ -95,7 +96,7 @@ EDEPS := $(EADEP) $(BUILDFILE) $(EADEPFLAGS)
 
 %.arm.event: %.arm.elf
 	@echo "$(notdir $<) => $(notdir $@)"
-	@lyn $< > $@ -longcalls
+	@lyn $< > $@ -longcalls -nohook
 
 %.arm.elf: %.arm.asm
 	@echo "$(notdir $<) => $(notdir $@)"

@@ -1,5 +1,5 @@
 #include "cHacks.h"
-#include "soar.h"
+#include "params.h"
 #include "hostable.h"
 
 extern const u8 hosTables[6][0xff][0xff] = {

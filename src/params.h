@@ -1,0 +1,16 @@
+#ifndef __PARAMS__
+#define __PARAMS__
+
+#define CAMERA_MIN_HEIGHT 0x40
+#define CAMERA_NUM_STEPS 5
+#define CAMERA_Z_STEP 0x30
+#define CAMERA_MAX_HEIGHT CAMERA_MIN_HEIGHT + (CAMERA_NUM_STEPS * CAMERA_Z_STEP)
+
+#define HORIZON 110//130
+
+#define MODE5_HEIGHT 128
+#define MODE5_WIDTH 160
+
+#define SCALING_FACTOR 4
+
+#endif

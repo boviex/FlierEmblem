@@ -34,8 +34,8 @@ src/hostable.o src/hostable.asm: src/hostable.c src/cHacks.h \
  src/libgbafe/gbafe/sram.h src/libgbafe/gbafe/save.h \
  src/libgbafe/gbafe/event.h src/libgbafe/gbafe/battle.h \
  src/libgbafe/gbafe/support.h src/libgbafe/gbafe/wm.h \
- src/libgbafe/gbafe/dialogue.h src/libgbafe/gbafe/drawutils.h src/soar.h \
- src/hostable.h
+ src/libgbafe/gbafe/dialogue.h src/libgbafe/gbafe/drawutils.h \
+ src/params.h src/hostable.h
 src/cHacks.h:
 src/libgbafe/gbafe.h:
 src/libgbafe/gba/gba.h:
@@ -100,5 +100,5 @@ src/libgbafe/gbafe/support.h:
 src/libgbafe/gbafe/wm.h:
 src/libgbafe/gbafe/dialogue.h:
 src/libgbafe/gbafe/drawutils.h:
-src/soar.h:
+src/params.h:
 src/hostable.h:

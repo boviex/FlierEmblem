@@ -4,6 +4,8 @@
 
 //current cycles: 1415721
 
+u16 iwram_clr_blend_asm(u16 a, u16 b, u32 alpha);
+
 void NewWMLoop(SoarProc* CurrentProc){
 	
 	UpdateSprites(CurrentProc);
@@ -51,8 +53,22 @@ void NewWMLoop(SoarProc* CurrentProc){
 	};
 
 	if (gKeyState.pressedKeys & L_BUTTON){
-		CurrentProc->isSunset ^= 1;
-	}
+		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
+		else CurrentProc->sunTransition = 1;
+		CurrentProc->sunsetVal += CurrentProc->sunTransition;
+	};
+
+	if (CurrentProc->sunTransition!=0)
+	{
+		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
+		{
+			CurrentProc->sunsetVal += CurrentProc->sunTransition;
+		}
+		else
+		{
+			CurrentProc->sunTransition = 0;
+		}
+	};
 
 	if (gKeyState.pressedKeys & R_BUTTON){
 		CurrentProc->ShowMap ^= 1;
@@ -111,8 +127,24 @@ extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE+SHADOW_DISTA
 
 extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); 
 
-static inline u16 getPointColour(int ptx, int pty, int isSunset){
-	if (isSunset){
+extern const u16 alphamasks[6] = {
+	0,
+	0b00001|(0b00001<<5)|(0b00001<<10),
+	0b00011|(0b00011<<5)|(0b00011<<10),
+	0b00111|(0b00111<<5)|(0b00111<<10),
+	0b01111|(0b01111<<5)|(0b01111<<10),
+	0b11111|(0b11111<<5)|(0b11111<<10),
+};
+
+static inline u16 getPointColour(int ptx, int pty, int sunsetVal){
+	if ((sunsetVal > 0) & (sunsetVal<8))
+	{
+		if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR;
+		u16 clr2 = colourMap_sunset[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+		u16 clr1 = colourMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+		return iwram_clr_blend_asm(clr1, clr2, sunsetVal);
+	};
+	if (sunsetVal){
 		if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return SEA_COLOUR_SUNSET;
 		return colourMap_sunset[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
 	}
@@ -261,9 +293,30 @@ static inline void Render(SoarProc* CurrentProc){
 	int tangent = (angle+4)&0xF;
 	int altitude = (CurrentProc->sPlayerStepZ);
 	u8 yBuffer[MODE5_HEIGHT];
+	int sky;
 
-	if (CurrentProc->isSunset) CpuFastCopy(&SkyBG_sunset + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
-	else CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+	// if (CurrentProc->sunsetVal > 3) CpuFastCopy(&SkyBG_sunset + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+	// else CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+
+	switch (CurrentProc->sunsetVal){
+		case 0:
+		case 1:
+		case 2:
+			sky = (int)(&SkyBG);
+			break;
+		case 3:
+		case 4:
+			sky = (int)(&SkyBG_lighter);
+			break;
+		case 5:
+		case 6:
+			sky = (int)(&SkyBG_darker);
+			break;
+		default:
+			sky = (int)(&SkyBG_sunset);
+	};
+	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+
 	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
 	// LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
@@ -298,7 +351,7 @@ static inline void Render(SoarProc* CurrentProc){
 					u16 clr = 0; //default to shadow
 					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
 					{
-						clr = getPointColour(offsetPoint.x, offsetPoint.y, CurrentProc->isSunset); //if not in shadow
+						clr = getPointColour(offsetPoint.x, offsetPoint.y, CurrentProc->sunsetVal); //if not in shadow
 					    if (zdist > (FOG_DISTANCE+180)) clr |= fogmask; //if in fog
 					}
 				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);

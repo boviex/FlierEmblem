@@ -1,11 +1,13 @@
 #ifndef __SOAR_H__
 #define __SOAR_H__
 
+#include "params.h"
+
 #define __PAGEFLIP__ //remove to show draw
 #define __ALWAYS_MOVE__
 #define __FPSCOUNT__ //remove to hide fps counter
 
-#define HORIZON 110//130
+
 #define m7_screenbase 0x17
 #define m7_charbase 2
 #define CHARBLOCK(num) VRAM+(num * 0x4000)
@@ -14,8 +16,6 @@
 #define FPS_COUNTER *(int*)(0x203fff8)
 #define FPS_CURRENT *(int*)(0x203fffc)
 
-#define MODE5_HEIGHT 128
-#define MODE5_WIDTH 160
 
 #define MIN_Z_DISTANCE 24
 #define MAX_Z_DISTANCE 512
@@ -26,7 +26,7 @@
 #define MAP_DIMENSIONS_LOG2 10
 #define MAP_YOFS 170
 #define INC_ZSTEP ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
-#define SCALING_FACTOR 4
+
 #define SKY_COLOUR 0x7f0f
 #define SEA_COLOUR 0x1840
 #define SEA_COLOUR_SUNSET 0x0820
@@ -34,11 +34,6 @@
 #define R_MASK(clr) (clr & 0b11111)
 #define G_MASK(clr) (clr>>5)&0b11111
 #define B_MASK(clr) (clr>>10)&0b11111
-
-#define CAMERA_MIN_HEIGHT 0x40
-#define CAMERA_NUM_STEPS 5
-#define CAMERA_Z_STEP 0x30
-#define CAMERA_MAX_HEIGHT CAMERA_MIN_HEIGHT + (CAMERA_NUM_STEPS * CAMERA_Z_STEP)
 
 #define CEL_SHADE_THRESHOLD 6
 
@@ -67,7 +62,9 @@ extern const void* minimapPal;
 extern const void* miniCursorSprite;
 extern const void* fpsSprite;
 extern const int* SkyBG;
-extern const int* SkyBG_sunset;   
+extern const int* SkyBG_lighter;
+extern const int* SkyBG_darker;
+extern const int* SkyBG_sunset;
 extern const s16 pleftmatrix[0x10][MAX_Z_DISTANCE];
 
 extern const u16 gObj_32x8[3];
@@ -146,7 +143,8 @@ struct SoarProc { //so we can store this info locally.
   int sFocusPtX;
   int sFocusPtY;
   int location;
-  int isSunset;
+  int sunsetVal;
+  int sunTransition;
 };
 
 typedef struct Point Point;
@@ -191,10 +189,11 @@ void NewWMLoop(SoarProc* CurrentProc);
 static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
 static inline int getScrHeight(int ptx, int pty, int altitude, int zdist);
 static inline int getPtHeight(int ptx, int pty);
-static inline u16 getPointColour(int ptx, int pty, int isSunset);
+static inline u16 getPointColour(int ptx, int pty, int sunsetVal);
 static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
 static inline void Render(SoarProc* CurrentProc);
 static inline void UpdateSprites(SoarProc* CurrentProc);
+extern const u16 alphamasks[6];
 void NewFadeOut(int time);
 void LoadSprite();
 void EndLoop(SoarProc* CurrentProc);

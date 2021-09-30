@@ -35,7 +35,7 @@ src/soar_voxel.o src/soar_voxel.asm: src/soar_voxel.c src/cHacks.h \
  src/libgbafe/gbafe/event.h src/libgbafe/gbafe/battle.h \
  src/libgbafe/gbafe/support.h src/libgbafe/gbafe/wm.h \
  src/libgbafe/gbafe/dialogue.h src/libgbafe/gbafe/drawutils.h src/soar.h \
- src/hostable.h src/wm_nodes.h
+ src/params.h src/hostable.h src/wm_nodes.h
 src/cHacks.h:
 src/libgbafe/gbafe.h:
 src/libgbafe/gba/gba.h:
@@ -101,5 +101,6 @@ src/libgbafe/gbafe/wm.h:
 src/libgbafe/gbafe/dialogue.h:
 src/libgbafe/gbafe/drawutils.h:
 src/soar.h:
+src/params.h:
 src/hostable.h:
 src/wm_nodes.h:

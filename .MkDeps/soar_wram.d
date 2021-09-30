@@ -36,7 +36,7 @@ arm/soar_wram.o arm/soar_wram.asm: arm/soar_wram.arm.c \
  src/libgbafe/gbafe/event.h src/libgbafe/gbafe/battle.h \
  src/libgbafe/gbafe/support.h src/libgbafe/gbafe/wm.h \
  src/libgbafe/gbafe/dialogue.h src/libgbafe/gbafe/drawutils.h \
- arm/../src/soar.h
+ arm/../src/soar.h arm/../src/params.h
 arm/../src/cHacks.h:
 src/libgbafe/gbafe.h:
 src/libgbafe/gba/gba.h:
@@ -102,3 +102,4 @@ src/libgbafe/gbafe/wm.h:
 src/libgbafe/gbafe/dialogue.h:
 src/libgbafe/gbafe/drawutils.h:
 arm/../src/soar.h:
+arm/../src/params.h:

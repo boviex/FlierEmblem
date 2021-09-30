@@ -99,7 +99,8 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sPlayerYaw = a_SE;
 	CurrentProc->ShowMap = TRUE;
 	CurrentProc->location = Frelia;
-	CurrentProc->isSunset = FALSE;
+	CurrentProc->sunsetVal = 0;
+	CurrentProc->sunTransition = 0;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
 	    CurrentProc->vid_page = (u16*)(0x600A000);
@@ -129,6 +130,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	g_REG_BG2PD=0x00;	//
 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
 	g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
+	// g_REG_BG2CNT = 0x0e00; //set to lowest priority/t
 	//stop map music??
 	Sound_FadeSongOut(10);
 	LoadSprite();
