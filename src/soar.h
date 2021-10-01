@@ -20,7 +20,7 @@
 #define MIN_Z_DISTANCE 24
 #define MAX_Z_DISTANCE 512
 #define SHADOW_DISTANCE MIN_Z_DISTANCE+16
-#define FOG_DISTANCE (MAX_Z_DISTANCE/2)*0.8
+#define FOG_DISTANCE (MAX_Z_DISTANCE>>1)
 #define NUM_ALTITUDES 16
 #define MAP_DIMENSIONS 1024
 #define MAP_DIMENSIONS_LOG2 10
@@ -66,7 +66,8 @@ extern const int* SkyBG_lighter;
 extern const int* SkyBG_darker;
 extern const int* SkyBG_sunset;
 extern const s16 pleftmatrix[0x10][MAX_Z_DISTANCE];
-extern const skies[5];
+extern const int skies[5];
+extern const u16 fogClrs[5];
 
 extern const u16 gObj_32x8[3];
 extern const u16 gObj_64x64[3];

@@ -31,7 +31,8 @@ extern const ProcCode Proc_Soaring[] = { //expose it to lyn
   PROC_END
 }; 
 
-extern const skies[] = {(int)(&SkyBG), (int)(&SkyBG), (int)(&SkyBG_lighter), (int)(&SkyBG_darker), (int)(&SkyBG_sunset)};
+extern const int skies[] = {(int)(&SkyBG), (int)(&SkyBG), (int)(&SkyBG_lighter), (int)(&SkyBG_darker), (int)(&SkyBG_sunset)};
+extern const u16 fogClrs[] = {0x7f74, 0x7f74, 0x6a8d, 0x51c7, 0x34e0};
 
 //LUTs
 extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
