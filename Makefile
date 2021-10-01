@@ -34,7 +34,7 @@ LYNLIB := $(MAIN_DIR)/src/libgbafe/fe8u.o
 ARCH    := -mcpu=arm7tdmi -mthumb -mthumb-interwork
 CFLAGS  := $(ARCH) $(INCFLAGS) -Os -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w
 ASFLAGS := $(ARCH) $(INCFLAGS)
-CARMFLAGS:= -mcpu=arm7tdmi -marm -mthumb-interwork $(INCFLAGS) -O2 -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w
+CARMFLAGS:= -mcpu=arm7tdmi -marm -mthumb-interwork $(INCFLAGS) -Ofast -mtune=arm7tdmi -fomit-frame-pointer -ffast-math -fno-jump-tables -w -mlong-calls
 
 # dependency generation flags for CC
 CDEPFLAGS = -MD -MT $*.o -MT $*.asm -MF $*.d -MP
@@ -96,7 +96,7 @@ EDEPS := $(EADEP) $(BUILDFILE) $(EADEPFLAGS)
 
 %.arm.event: %.arm.elf
 	@echo "$(notdir $<) => $(notdir $@)"
-	@lyn $< > $@ -longcalls -nohook
+	@lyn $< > $@ -nohook
 
 %.arm.elf: %.arm.asm
 	@echo "$(notdir $<) => $(notdir $@)"

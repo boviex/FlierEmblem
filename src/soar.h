@@ -66,6 +66,7 @@ extern const int* SkyBG_lighter;
 extern const int* SkyBG_darker;
 extern const int* SkyBG_sunset;
 extern const s16 pleftmatrix[0x10][MAX_Z_DISTANCE];
+extern const skies[5];
 
 extern const u16 gObj_32x8[3];
 extern const u16 gObj_64x64[3];

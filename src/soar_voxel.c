@@ -31,8 +31,16 @@ extern const ProcCode Proc_Soaring[] = { //expose it to lyn
   PROC_END
 }; 
 
+extern const skies[] = {(int)(&SkyBG), (int)(&SkyBG), (int)(&SkyBG_lighter), (int)(&SkyBG_darker), (int)(&SkyBG_sunset)};
 
+//LUTs
+extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
 
+extern const s16 cam_dy_Angles[16] = DY_TABLE(MOVEMENT_STEP);
+
+extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); // camera distance from focal point
+
+extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); 
 //
 
 u16 *vid_flip(u16* vid_page)

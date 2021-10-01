@@ -82,7 +82,7 @@ void NewWMLoop(SoarProc* CurrentProc){
 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
 		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
 	};
-	if (gKeyState.heldKeys == DPAD_DOWN) return; //don't bother rendering if only holding down
+	if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return; //don't bother rendering if only holding down
 
 
 	//set camera
@@ -116,24 +116,6 @@ void NewWMLoop(SoarProc* CurrentProc){
 
 	Render(CurrentProc); //draw and then flip
 	FPS_COUNTER += 1;
-};
-
-//LUTs
-extern const s16 cam_dx_Angles[16] = DX_TABLE(MOVEMENT_STEP);
-
-extern const s16 cam_dy_Angles[16] = DY_TABLE(MOVEMENT_STEP);
-
-extern const s16 cam_pivot_dx_Angles[16] = DX_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); // camera distance from focal point
-
-extern const s16 cam_pivot_dy_Angles[16] = DY_TABLE((MIN_Z_DISTANCE+SHADOW_DISTANCE)); 
-
-extern const u16 alphamasks[6] = {
-	0,
-	0b00001|(0b00001<<5)|(0b00001<<10),
-	0b00011|(0b00011<<5)|(0b00011<<10),
-	0b00111|(0b00111<<5)|(0b00111<<10),
-	0b01111|(0b01111<<5)|(0b01111<<10),
-	0b11111|(0b11111<<5)|(0b11111<<10),
 };
 
 static inline u16 getPointColour(int ptx, int pty, int sunsetVal){
@@ -298,23 +280,8 @@ static inline void Render(SoarProc* CurrentProc){
 	// if (CurrentProc->sunsetVal > 3) CpuFastCopy(&SkyBG_sunset + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 	// else CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 
-	switch (CurrentProc->sunsetVal){
-		case 0:
-		case 1:
-		case 2:
-			sky = (int)(&SkyBG);
-			break;
-		case 3:
-		case 4:
-			sky = (int)(&SkyBG_lighter);
-			break;
-		case 5:
-		case 6:
-			sky = (int)(&SkyBG_darker);
-			break;
-		default:
-			sky = (int)(&SkyBG_sunset);
-	};
+	sky = skies[(CurrentProc->sunsetVal)>>1];
+
 	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
 
 	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
