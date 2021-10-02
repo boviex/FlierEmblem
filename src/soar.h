@@ -187,6 +187,8 @@ enum BumpDirs{
 };
 
 void NewWMLoop(SoarProc* CurrentProc);
+void thumb_loop(SoarProc* CurrentProc);
+static inline int getPtHeight_thumb(int ptx, int pty);
 
 static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
 static inline int getScrHeight(int ptx, int pty, int altitude, int zdist);

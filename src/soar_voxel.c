@@ -279,3 +279,118 @@ void BumpScreen(int direction){
 	};
 };
 
+static inline int getPtHeight_thumb(int ptx, int pty){
+	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
+	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+};
+
+void thumb_loop(SoarProc* CurrentProc)
+{
+
+	int newx,  newy;
+
+	if (gKeyState.heldKeys & DPAD_LEFT){
+		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
+		newy = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
+		CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw - 1)&0xF; //16 angles so skip the conditional
+		newx -= (cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
+		newy -= (cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
+		CurrentProc->sPlayerPosX = newx;
+		CurrentProc->sPlayerPosY = newy;
+		BumpScreen(bump_left);
+	}
+	else if (gKeyState.heldKeys & DPAD_RIGHT){
+		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
+		newy = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
+		CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw + 1)&0xF; //16 angles so skip the conditional
+		newx -= (cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
+		newy -= (cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]>>2)*3; // step back partway from focal point
+		CurrentProc->sPlayerPosX = newx;
+		CurrentProc->sPlayerPosY = newy;
+		BumpScreen(bump_right);
+	}
+	else if (gKeyState.prevKeys & (DPAD_LEFT|DPAD_RIGHT)) {
+		BumpScreen(4); //reset
+	};
+
+	#ifndef __ALWAYS_MOVE__
+	if (gKeyState.heldKeys == 0){ //Only bother updating if a key is pressed!
+		return;
+	};
+	#else
+	CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw]; 
+	CurrentProc->sPlayerPosY += cam_dy_Angles[CurrentProc->sPlayerYaw];
+	CurrentProc->sFocusPtX = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // set focal point
+	CurrentProc->sFocusPtY = CurrentProc->sPlayerPosY + cam_pivot_dy_Angles[CurrentProc->sPlayerYaw]; // set focal point
+	#endif
+
+	if (gKeyState.pressedKeys & START_BUTTON){
+		EndLoop(CurrentProc);
+		return;
+	};
+
+	if (gKeyState.pressedKeys & L_BUTTON){
+		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
+		else CurrentProc->sunTransition = 1;
+		CurrentProc->sunsetVal += CurrentProc->sunTransition;
+	};
+
+	if (CurrentProc->sunTransition!=0)
+	{
+		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
+		{
+			CurrentProc->sunsetVal += CurrentProc->sunTransition;
+		}
+		else
+		{
+			CurrentProc->sunTransition = 0;
+		}
+	};
+
+	if (gKeyState.pressedKeys & R_BUTTON){
+		CurrentProc->ShowMap ^= 1;
+	};
+
+	if (gKeyState.heldKeys & DPAD_UP){ //turbo
+		CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw];
+		CurrentProc->sPlayerPosY += cam_dy_Angles[CurrentProc->sPlayerYaw];
+	};
+	if (gKeyState.heldKeys & DPAD_DOWN){ //hover
+		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
+		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
+	};
+	if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return; //don't bother rendering if only holding down
+
+
+	//set camera
+	int player_terrain_ht = getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY);
+	int camera_terrain_ht = getPtHeight_thumb(CurrentProc->sPlayerPosX, CurrentProc->sPlayerPosY);
+	int camera_ht = CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP);
+	if ((player_terrain_ht > camera_ht) || (camera_terrain_ht > camera_ht)){
+		CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
+		CurrentProc->sPlayerStepZ += 1;
+	}
+	else if (gKeyState.heldKeys & B_BUTTON){ //prevent clipping through ground
+		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
+			CurrentProc->sPlayerPosZ -= CAMERA_Z_STEP;
+			CurrentProc->sPlayerStepZ -= 1;
+			BumpScreen(bump_down);
+		};
+	};
+	if (gKeyState.heldKeys & A_BUTTON){
+		if (CurrentProc->sPlayerPosZ<CAMERA_MAX_HEIGHT){
+			CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
+			CurrentProc->sPlayerStepZ += 1;
+			BumpScreen(bump_up);
+		};
+	};
+
+	//prevent leaving the area
+	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
+	else if (CurrentProc->sPlayerPosX < 0) CurrentProc->sPlayerPosX = 0;
+	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
+	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
+
+	return;
+};
+
