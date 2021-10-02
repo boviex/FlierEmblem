@@ -9,9 +9,10 @@ u16 iwram_clr_blend_asm(u16 a, u16 b, u32 alpha);
 void NewWMLoop(SoarProc* CurrentProc){
 
 	UpdateSprites(CurrentProc);
-	thumb_loop(CurrentProc);
-	Render(CurrentProc); //draw and then flip
-	FPS_COUNTER += 1;
+	if (thumb_loop(CurrentProc)){
+		Render(CurrentProc); //draw and then flip
+		FPS_COUNTER += 1;
+	};
 };
 
 static inline u16 getPointColour(int ptx, int pty, int sunsetVal){

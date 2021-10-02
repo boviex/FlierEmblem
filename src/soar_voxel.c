@@ -4,7 +4,7 @@
 #include "wm_nodes.h"
 
 #define IRAM_NewWMLoop 0x3007000 //using as a safe??? place 
-#define SIZEOF_NewWMLoop 0xa90 //to be safe?
+#define SIZEOF_NewWMLoop 0x800 //to be safe?
 
 //procs
 
@@ -25,8 +25,12 @@ extern const ProcCode Proc_Soaring[] = { //expose it to lyn
 	  PROC_END_ALL(0x8a3df64), //gmapscreen2
   PROC_SLEEP(8),
   PROC_LOOP_ROUTINE(IRAM_NewWMLoop),
-  PROC_CALL_ROUTINE(0x8099e69),
+  // PROC_SLEEP(8),
   PROC_CALL_ROUTINE(MoveLord),
+  PROC_CALL_ROUTINE(0x8099e69),
+    PROC_CALL_ROUTINE_ARG(NewFadeIn, 8),
+    PROC_WHILE_ROUTINE(FadeInExists),
+    PROC_SLEEP(1),
   PROC_CALL_ROUTINE(UnlockGameLogic),
   PROC_END
 }; 
@@ -192,7 +196,7 @@ const u8 WorldMapNodes[11][16] = {
 };
 
 const u8 translatedLocations[] = {
-	1, //none (default frelia)
+	0, //none (default frelia)
 	1, //frelia
 	0x13, //jehanna
 	0x12, //grado
@@ -204,6 +208,10 @@ const u8 translatedLocations[] = {
 
 
 void MoveLord(SoarProc* CurrentProc){
+
+	VBlankIntrWait();
+	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
+	RefreshWMProc(wmproc);
 
 	// 800cc18 is the command for spawnlord, loads up the event proc and cursor and gets r3 = char id, r4 = index in gmap entity table?, r5 = location id
 	//3005280 is list of world map entities?
@@ -217,32 +225,44 @@ void MoveLord(SoarProc* CurrentProc){
 	cursorY = *(u16*)(0x82060b0 + (32*location) + 0x1a);
 	WM_CURSOR[0] = cursorX<<8;
 	WM_CURSOR[1] = cursorY<<8;
+
+	g_LCDIOBuffer = DISPCNT_MODE_0
+	| DISPCNT_BG0_ON
+	| DISPCNT_BG1_ON
+	| DISPCNT_BG2_ON
+	| DISPCNT_BG3_ON
+	| DISPCNT_OBJ_ON
+	;
 };
 
 void EndLoop(SoarProc* CurrentProc){
-  	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
-	g_LCDIOBuffer = DISPCNT_MODE_0
-		| DISPCNT_BG0_ON
-		| DISPCNT_BG1_ON
-		| DISPCNT_BG2_ON
-		| DISPCNT_BG3_ON
-		| DISPCNT_OBJ_ON
-		;
-	// SetColorEffectsParameters(3,0,0,0x10); //do these even do anything?
-	// SetColorEffectsFirstTarget(0,0,0,0,0);
-	// SetColorEffectBackdropFirstTarget(1);
-	// gPaletteBuffer[0] = 0;
-	// EnablePaletteSync();
+	SetInterrupt_LCDVBlank(OnVBlankMain);
+	int vid_page = CurrentProc->vid_page;
+	VBlankIntrWait();
+  	CpuFastFill16(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
+  	vid_flip(vid_page);
+  	vid_page ^= 0xa000;
+  	VBlankIntrWait();
+  	CpuFastFill16(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
+  	vid_flip(vid_page);
+  	
+  	VBlankIntrWait();
+	g_LCDIOBuffer = DISPCNT_MODE_5; //disable all layers
+	// 	// | DISPCNT_BG0_ON
+	// 	// | DISPCNT_BG1_ON
+	// 	// | DISPCNT_BG2_ON
+	// 	// | DISPCNT_BG3_ON
+	// 	// | DISPCNT_OBJ_ON
+	// 	;
 
 	//actually ending the loop
 	BreakProcLoop(CurrentProc);
 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
 	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
 	LoadObjUIGfx();
-	RefreshWMProc(wmproc);
+	VBlankIntrWait();
 	//8099e68 called after exiting manage items
 	// REG_WAITCNT = 0x45b7; //restore this
-	SetInterrupt_LCDVBlank(OnVBlankMain);
 };
 
 void BumpScreen(int direction){
@@ -284,7 +304,7 @@ static inline int getPtHeight_thumb(int ptx, int pty){
 	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
 };
 
-void thumb_loop(SoarProc* CurrentProc)
+int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 {
 
 	int newx,  newy;
@@ -315,7 +335,7 @@ void thumb_loop(SoarProc* CurrentProc)
 
 	#ifndef __ALWAYS_MOVE__
 	if (gKeyState.heldKeys == 0){ //Only bother updating if a key is pressed!
-		return;
+		return 0;
 	};
 	#else
 	CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw]; 
@@ -325,8 +345,13 @@ void thumb_loop(SoarProc* CurrentProc)
 	#endif
 
 	if (gKeyState.pressedKeys & START_BUTTON){
-		EndLoop(CurrentProc);
-		return;
+		if (CurrentProc->location)
+		{
+			m4aSongNumStart(0x73);
+			EndLoop(CurrentProc);
+			return 0;
+		}
+		else m4aSongNumStart(0x6c); //invalid sfx
 	};
 
 	if (gKeyState.pressedKeys & L_BUTTON){
@@ -359,7 +384,7 @@ void thumb_loop(SoarProc* CurrentProc)
 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
 		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
 	};
-	if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return; //don't bother rendering if only holding down
+	if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return 0; //don't bother rendering if only holding down
 
 
 	//set camera
@@ -391,6 +416,6 @@ void thumb_loop(SoarProc* CurrentProc)
 	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
 	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
 
-	return;
+	return 1;
 };
 
