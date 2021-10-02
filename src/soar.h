@@ -195,7 +195,6 @@ static inline u16 getPointColour(int ptx, int pty, int sunsetVal);
 static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
 static inline void Render(SoarProc* CurrentProc);
 static inline void UpdateSprites(SoarProc* CurrentProc);
-extern const u16 alphamasks[6];
 void NewFadeOut(int time);
 void LoadSprite();
 void EndLoop(SoarProc* CurrentProc);

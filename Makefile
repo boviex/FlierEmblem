@@ -96,7 +96,7 @@ EDEPS := $(EADEP) $(BUILDFILE) $(EADEPFLAGS)
 
 %.arm.event: %.arm.elf
 	@echo "$(notdir $<) => $(notdir $@)"
-	@lyn $< > $@ -nohook
+	@lyn $< > $@
 
 %.arm.elf: %.arm.asm
 	@echo "$(notdir $<) => $(notdir $@)"

@@ -70,11 +70,11 @@ void SoarVBlankInterrupt()
 	*(u16*)(0x3007ff8) = 1;
 	IncrementGameClock();
 	m4aSoundVSync();
-	ExecProc(*(int*)(0x2026A70));
 	SyncLoOAM();
 	if(gGameState.boolMainLoopEnded)
 	{
 		gGameState.boolMainLoopEnded = 0;
+		ExecProc(*(int*)(0x2026A70));
 		SyncLCDControl();
 		SyncBgAndPals();
 		SyncRegisteredTiles();

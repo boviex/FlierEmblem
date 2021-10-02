@@ -20,8 +20,8 @@
 081C2434 skies
 081C2448 Proc_Soaring
 081C24D8 NewWMLoop
-081C2EA4 clr_blend_asm_ofs
-081C2EA4 clr_blend_asm
+081C2E8C clr_blend_asm_ofs
+081C2E8C clr_blend_asm
 08EFB2E0 NewTitleLogo
 08EFBC60 NewTitleScroll
 08EFC680 Chname

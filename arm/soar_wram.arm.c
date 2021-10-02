@@ -197,7 +197,7 @@ static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist){
 	// pleft.x = pleftmatrix[angle][zdist]
 	// pleft.y = pleftmatrix[(0x10-angle)&0xF][zdist] //mirrored about the ns axis
 
-	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(0x10-angle)&0xF][zdist]};
+	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(-angle)&0xF][zdist]};
 	// switch (angle){
 	// 	case a_NNE:
 	// 	    pleft.x = camera_x - ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
@@ -267,7 +267,6 @@ static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist){
 	return pleft;
 };
 
-
 static inline void Render(SoarProc* CurrentProc){
 	int posX = CurrentProc->sPlayerPosX;
 	int posY = CurrentProc->sPlayerPosY;
@@ -276,21 +275,21 @@ static inline void Render(SoarProc* CurrentProc){
 	int altitude = (CurrentProc->sPlayerStepZ);
 	u8 yBuffer[MODE5_HEIGHT];
 	int sky;
+	int sunsetVal = CurrentProc->sunsetVal;
 	u16 fogclr;
 
-	// if (CurrentProc->sunsetVal > 3) CpuFastCopy(&SkyBG_sunset + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
-	// else CpuFastCopy(&SkyBG + ((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
-
-	sky = skies[(CurrentProc->sunsetVal)>>1];
+	sky = skies[(sunsetVal)>>1];
 
 	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+
+	//88k cycles up to here
 
 	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
 	// LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
 
 	// int fogmask = 0b011110011100011;
-	fogclr = fogClrs[CurrentProc->sunsetVal>>1];
+	fogclr = fogClrs[sunsetVal>>1];
 	//drawing front to back
 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1);
 		zdist<((MAX_Z_DISTANCE)+((altitude)<<4))-128;
@@ -300,13 +299,13 @@ static inline void Render(SoarProc* CurrentProc){
 
 		Point pleft = getPLeft(posX, posY, angle, zdist); //assume facing north and 90deg fov
 		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation.
-		int dx = (pright.x - pleft.x)<<1; //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
-		int dy = (pright.y - pleft.y)<<1; //was 8 and 7 but??? TODO optimise out the division.
+		int dx = (pright.x - pleft.x); //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
+		int dy = (pright.y - pleft.y); //was 8 and 7 but??? TODO optimise out the division.
 		// int trunc_val = (zdist>>7);
 
 		for (int i=0; i<(MODE5_HEIGHT); i++)
 		{
-			Point offsetPoint = {pleft.x+((i*dx)>>8), pleft.y+((i*dy)>>8)};
+			Point offsetPoint = {pleft.x+((i*dx)>>7), pleft.y+((i*dy)>>7)};
 			// if (trunc_val){
 			// 	offsetPoint.x = (offsetPoint.x>>trunc_val)<<trunc_val; //truncate
 			// 	offsetPoint.y = (offsetPoint.y>>trunc_val)<<trunc_val;
@@ -315,20 +314,24 @@ static inline void Render(SoarProc* CurrentProc){
 			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
 			{
 				int height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
-				if (height_on_screen>yBuffer[i]){ //only draw if that line has been higher this screen
-					//only fetch the colour if we're actually drawing!
-					u16 clr = 0; //default to shadow
-					if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
-					{
-						clr = getPointColour(offsetPoint.x, offsetPoint.y, CurrentProc->sunsetVal); //if not in shadow
-					    if (zdist > (FOG_DISTANCE)) clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
+				if (height_on_screen == 0) i += 4; //skip ahead a few columns if 0 height
+				else {
+					int ylen = height_on_screen - yBuffer[i];
+					if (ylen>0){ //only draw if that line has been higher this screen
+						//only fetch the colour if we're actually drawing!
+						u16 clr = 0; //default to shadow
+						if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
+						{
+							clr = getPointColour(offsetPoint.x, offsetPoint.y, sunsetVal); //if not in shadow
+						    if (zdist > (FOG_DISTANCE)) clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
+						}
+					    DrawVerticalLine(i, yBuffer[i], ylen, clr, CurrentProc->vid_page);
+					    yBuffer[i] = height_on_screen;
 					}
-				    DrawVerticalLine(i, yBuffer[i], height_on_screen-yBuffer[i], clr, CurrentProc->vid_page);
-				    yBuffer[i] = height_on_screen;
-				}
-				//cel shading bit
-				else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
-					DrawVerticalLine(i, yBuffer[i]-1, 1, 0x0000, CurrentProc->vid_page); //draw a black border if not
+					//cel shading bit
+					else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
+						*(u16*)((CurrentProc->vid_page) + (i<<5) + (i<<7) + (yBuffer[i] - 1)) = 0;
+					};
 				};
 			};
 		};

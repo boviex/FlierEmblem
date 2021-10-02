@@ -36,24 +36,24 @@ SoarVBlankInterrupt:
 	bl	IncrementGameClock		@
 @ src/soar_voxel.c:72: 	m4aSoundVSync();
 	bl	m4aSoundVSync		@
-@ src/soar_voxel.c:73: 	ExecProc(*(int*)(0x2026A70));
+@ src/soar_voxel.c:73: 	SyncLoOAM();
 	ldr	r3, .L11+4	@ tmp129,
-@ src/soar_voxel.c:73: 	ExecProc(*(int*)(0x2026A70));
-	ldr	r0, [r3]	@, MEM[(int *)33712752B]
+	bl	.L13		@
+@ src/soar_voxel.c:74: 	if(gGameState.boolMainLoopEnded)
 	ldr	r3, .L11+8	@ tmp130,
-	bl	.L13		@
-@ src/soar_voxel.c:74: 	SyncLoOAM();
-	ldr	r3, .L11+12	@ tmp131,
-	bl	.L13		@
-@ src/soar_voxel.c:75: 	if(gGameState.boolMainLoopEnded)
-	ldr	r3, .L11+16	@ tmp132,
-@ src/soar_voxel.c:75: 	if(gGameState.boolMainLoopEnded)
+@ src/soar_voxel.c:74: 	if(gGameState.boolMainLoopEnded)
 	ldrb	r2, [r3]	@ gGameState, gGameState
 	cmp	r2, #0	@ gGameState,
 	beq	.L2		@,
-@ src/soar_voxel.c:77: 		gGameState.boolMainLoopEnded = 0;
-	movs	r2, #0	@ tmp135,
-	strb	r2, [r3]	@ tmp135, gGameState.boolMainLoopEnded
+@ src/soar_voxel.c:76: 		gGameState.boolMainLoopEnded = 0;
+	movs	r2, #0	@ tmp133,
+	strb	r2, [r3]	@ tmp133, gGameState.boolMainLoopEnded
+@ src/soar_voxel.c:77: 		ExecProc(*(int*)(0x2026A70));
+	ldr	r3, .L11+12	@ tmp135,
+@ src/soar_voxel.c:77: 		ExecProc(*(int*)(0x2026A70));
+	ldr	r0, [r3]	@, MEM[(int *)33712752B]
+	ldr	r3, .L11+16	@ tmp136,
+	bl	.L13		@
 @ src/soar_voxel.c:78: 		SyncLCDControl();
 	ldr	r3, .L11+20	@ tmp137,
 	bl	.L13		@
@@ -132,10 +132,10 @@ SoarVBlankInterrupt:
 	.align	2
 .L11:
 	.word	50364408
-	.word	33712752
-	.word	ExecProc
 	.word	SyncLoOAM
 	.word	gGameState
+	.word	33712752
+	.word	ExecProc
 	.word	SyncLCDControl
 	.word	SyncBgAndPals
 	.word	SyncRegisteredTiles
