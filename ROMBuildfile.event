@@ -153,8 +153,18 @@ ALIGN 4
 
 fpsSprite:
 #incbin "graphics/sprites/fps.img.bin"
+ALIGN 4
+
+lensFlareSprite:
+#incbin "graphics/sprites/lensflare.img.bin"
+ALIGN 4
+
+lensFlarePal:
+#incbin "graphics/sprites/lensflare.pal.bin"
+ALIGN 4
 
 //Text
+
 #include "Text/InstallTextData.text.event"
 
 //CSV tables

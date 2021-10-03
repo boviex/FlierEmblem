@@ -134,6 +134,10 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 		| DISPCNT_OBJ_1D_MAP
 		;
 
+	SetColorEffectsParameters(3,4,0x10,0); //do these even do anything?
+	SetColorEffectsFirstTarget(0,0,0,0,0);
+	SetColorEffectBackdropFirstTarget(1);
+
 	// REG_WAITCNT = 0x45bb; //orig 0x45b7, we change ws0 from 3 to 2
 	
 		//turn it sideways so it's easier to draw on
@@ -161,8 +165,10 @@ void LoadSprite(){
 	LZ77UnCompVram(&miniCursorSprite, &tile_mem[5][96]);
 	LZ77UnCompVram(&minimapSprite, &tile_mem[5][97]);
 	LZ77UnCompVram(&fpsSprite, &tile_mem[5][161]); //fps numbers
+	LZ77UnCompVram(&lensFlareSprite, &tile_mem[5][193]);
 	LoadMapSpritePalettes(); //puts in palette 0xc
 	ApplyPalette(&minimapPal, 0x12);
+	ApplyPalette(&lensFlarePal, 0x13);
 };
 
 const int PkOamData = 0;
@@ -178,6 +184,12 @@ const u16 gObj_64x64[3] = {
 	0x1, //length?
 	0x0000, //set shape bit
 	0xc000 //set size bit
+};
+
+const u16 gObj_aff32x32[3] = {
+	0x1,
+	0x400, //enable alpha blending
+	0x8000 //32x32
 };
 
 

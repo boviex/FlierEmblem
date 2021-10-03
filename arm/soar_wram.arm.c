@@ -66,6 +66,24 @@ static inline void UpdateSprites(SoarProc* CurrentProc){
 	#endif
 	};
 
+	if (CurrentProc->sunsetVal < 3)
+	{
+		//draw lens flare test
+		int flarex = 64;
+		int flarey = 80 - (CurrentProc->sPlayerStepZ<<2) - ((g_REG_BG2X - 0x9e40)>>10);
+		switch(CurrentProc->sPlayerYaw){
+			default:
+			break;
+			case a_W:
+			flarex += 32;
+			case a_WSW:
+			flarex += 32;
+			case a_SW:
+			flarex += 32;
+			case a_SSW:
+			ObjInsertSafe(9, flarex, flarey, &gObj_aff32x32, 0x3aa1+31);
+		};
+	};
 
 	//check if player is in a zone
 	int posX = CurrentProc->sFocusPtX;

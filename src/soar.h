@@ -61,6 +61,8 @@ extern const void* minimapSprite;
 extern const void* minimapPal;
 extern const void* miniCursorSprite;
 extern const void* fpsSprite;
+extern const void* lensFlareSprite;
+extern const void* lensFlarePal;
 extern const int* SkyBG;
 extern const int* SkyBG_lighter;
 extern const int* SkyBG_darker;
@@ -71,6 +73,7 @@ extern const u16 fogClrs[5];
 
 extern const u16 gObj_32x8[3];
 extern const u16 gObj_64x64[3];
+extern const u16 gObj_aff32x32[3];
 extern const u8 WorldMapNodes[11][16];
 extern const u8 translatedLocations[];
 
