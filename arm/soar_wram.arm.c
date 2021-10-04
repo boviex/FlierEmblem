@@ -33,18 +33,18 @@ static inline u16 getPointColour(int ptx, int pty, int sunsetVal){
 	};
 };
 
-static inline int getPtHeight(int ptx, int pty){
+static inline u8 getPtHeight(int ptx, int pty){
 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
 	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
 };
 
-static inline int getScrHeight(int ptx, int pty, int altitude, int zdist){
-	int height = getPtHeight(ptx, pty);
+static inline u8 getScrHeight(int ptx, int pty, int altitude, int zdist){
+	u8 height = getPtHeight(ptx, pty);
 	 //    height = (height-altitude)<<SCALING_FACTOR;
 		// height /= (zdist>>1); //this breaks it! too far....
 		// height += HORIZON;
 	 // return height;
-	height = (int)(hosTables[altitude][zdist>>1][height]);
+	height = hosTables[altitude][zdist>>1][height];
 	// if (height<0) return 0;
 	// if (height>MODE5_WIDTH) return MODE5_WIDTH;
 	return height;
@@ -193,69 +193,64 @@ static inline void Render(SoarProc* CurrentProc){
 	int sunsetVal = CurrentProc->sunsetVal;
 	u16 fogclr;
 
-	sky = skies[(sunsetVal)>>1];
+	sky = skies[(sunsetVal)>>1]; //multiple skyboxes to transition to sunset
 
-	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1));
+	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //sky depends on angle and altitude
 
-	//88k cycles up to here
-
-	// CpuFastFill16(SKY_COLOUR, CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //draw skybox
-	// LZ77UnCompVram(&SkyBG, CurrentProc->vid_page);
 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
 
-	// int fogmask = 0b011110011100011;
-	fogclr = fogClrs[sunsetVal>>1];
+	// fogclr = fogClrs[sunsetVal>>1];
+	
 	//drawing front to back
 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1);
 		zdist<((MAX_Z_DISTANCE)+((altitude)<<4))-128;
 		zdist+=INC_ZSTEP){
-	// for (int zdist = MAX_Z_DISTANCE; zdist>MIN_Z_DISTANCE; zdist-=INC_ZSTEP){
 
-
-		Point pleft = getPLeft(posX, posY, angle, zdist); //assume facing north and 90deg fov
-		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation.
+		Point pleft = getPLeft(posX, posY, angle, zdist); //90deg FOV, left point
+		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation to get right point
 		int dx = (pright.x - pleft.x); //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
 		int dy = (pright.y - pleft.y); //was 8 and 7 but??? TODO optimise out the division.
-		// int trunc_val = (zdist>>7);
 
 		for (int i=0; i<(MODE5_HEIGHT); i++)
 		{
-			Point offsetPoint = {pleft.x+((i*dx)>>7), pleft.y+((i*dy)>>7)};
-			// if (trunc_val){
-			// 	offsetPoint.x = (offsetPoint.x>>trunc_val)<<trunc_val; //truncate
-			// 	offsetPoint.y = (offsetPoint.y>>trunc_val)<<trunc_val;
-			// }
+			Point offsetPoint = {pleft.x+((i*dx)>>7), pleft.y+((i*dy)>>7)}; //TODO: remove the mul and add dx/dy each loop without rounding errors
 			
-			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup
+			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup?
 			{
-				int height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
-				if (height_on_screen == 0) i += 4; //skip ahead a few columns if 0 height
+				u8 height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
+				if (height_on_screen == 0) i += 4; //skip ahead a few columns if 0 height because it's probably off the bottom of the screen?
 				else {
 					int ylen = height_on_screen - yBuffer[i];
 					if (ylen>0){ //only draw if that line has been higher this screen
 						//only fetch the colour if we're actually drawing!
 						u16 clr = 0; //default to shadow
-						if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4))))
+						if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4)))) //conditions for being in shadow
 						{
 							clr = getPointColour(offsetPoint.x, offsetPoint.y, sunsetVal); //if not in shadow
-						    if (zdist > (FOG_DISTANCE)) clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
+						    if (zdist > (FOG_DISTANCE))
+						    {
+						    	// if ((clr == SEA_COLOUR_SUNSET) & (angle>>2 == 3)) fogclr = 0b000000001111111;
+						    	if (CurrentProc->sunsetVal > 4)
+						    	{
+							    	int offset = (i<<5) + (i<<7) + yBuffer[i] + 2;
+							    	u16* base = CurrentProc->vid_page + offset;
+							    	fogclr = *base;
+							    }
+							    else fogclr = fogClrs[sunsetVal>>1];
+							    clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
+							}
 						}
 					    DrawVerticalLine(i, yBuffer[i], ylen, clr, CurrentProc->vid_page);
 					    yBuffer[i] = height_on_screen;
 					}
 					//cel shading bit
-					else if ((yBuffer[i] - height_on_screen)>CEL_SHADE_THRESHOLD) {
+					else if ((-ylen)>CEL_SHADE_THRESHOLD) {
 						*(u16*)((CurrentProc->vid_page) + (i<<5) + (i<<7) + (yBuffer[i] - 1)) = 0;
 					};
 				};
 			};
 		};
 	};
-	// for (int i=0; i<MODE5_HEIGHT; i++)
-	// {
-	// 	int offset = ((i<<5) + (i<<7) + yBuffer[i]);
-	// 	CpuCopy32(&SkyBG + (offset>>1), CurrentProc->vid_page + offset, (MODE5_WIDTH - yBuffer[i])<<1);
-	// };
 
 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
 };
@@ -266,9 +261,9 @@ static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color,
 	// if ((ystart + ylen) > MODE5_WIDTH) ylen = MODE5_WIDTH - ystart; //never draw higher than screen
 	int offset = (xcoord<<5) + (xcoord<<7)+(ystart);  //shifting to replace multiplication by MODE5_WIDTH
 	u16* base = vid_page + (offset);
-	for (u16* i = base; i < base+ylen; i++) *i = color;
+	// for (u16* i = base; i < base+ylen; i++) *i = color;
 	// CpuFill16(color, base, (ylen<<1));
-	// DmaFill16(0, color, base, (ylen<<1)); //dma 0 is the highest priority
+	DmaFill16(0, color, base, (ylen<<1)); //dma 0 is the highest priority
 }
 
 

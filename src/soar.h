@@ -194,8 +194,8 @@ int thumb_loop(SoarProc* CurrentProc);
 static inline int getPtHeight_thumb(int ptx, int pty);
 
 static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page);
-static inline int getScrHeight(int ptx, int pty, int altitude, int zdist);
-static inline int getPtHeight(int ptx, int pty);
+static inline u8 getScrHeight(int ptx, int pty, int altitude, int zdist);
+static inline u8 getPtHeight(int ptx, int pty);
 static inline u16 getPointColour(int ptx, int pty, int sunsetVal);
 static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist);
 static inline void Render(SoarProc* CurrentProc);
