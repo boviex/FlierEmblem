@@ -29,6 +29,15 @@
     .set MAX_Z_DISTANCE, 512
     .set MAX_Z_DISTANCE_LOG2, 9
     .set MAP_DIMENSIONS_LOG2, 10
+    .set SHADOW_DISTANCE, (MIN_Z_DISTANCE+16)
+
+	.equ o_zdist, (MODE5_ROTATED_WIDTH + 4) @keep this on the stack above the ybuffer
+	.equ o_maxzdist, o_zdist+4
+	.equ o_altitude, o_zdist+8
+	.equ o_vidpage, o_zdist+12
+	.equ o_currproc, o_zdist+16
+	.equ o_sunsetval, o_zdist+20
+	.equ o_angle, o_zdist+24
 
 @ rewriting render by hand
 	.global	Render_arm
@@ -40,14 +49,7 @@ Render_arm:
 	@ r0 is a pointer to CurrentProc
 
 	push {r4-r11, lr}
-	sub sp, sp, #(MODE5_ROTATED_WIDTH + 28) @this is ybuffer
-	.equ o_zdist, (MODE5_ROTATED_WIDTH + 4) @keep this on the stack above the ybuffer
-	.equ o_maxzdist, o_zdist+4
-	.equ o_altitude, o_zdist+8
-	.equ o_vidpage, o_zdist+12
-	.equ o_currproc, o_zdist+16
-	.equ o_sunsetval, o_zdist+20
-	.equ o_angle, o_zdist+24
+	sub sp, sp, #(MODE5_ROTATED_WIDTH + 40) @this is ybuffer
 	str r0, [sp, #o_currproc]
 	ldr r4, [r0, #60] @r4 = angle
 	ldr r5, [r0, #44] @r5 = posX
@@ -128,32 +130,39 @@ Render_arm:
 	sub r5, r2, r0 @r5 = dx
 	sub r6, r3, r1 @r6 = dy
 
-	mov r10, r0 @save pleft.x
-	mov r11, r1 @save pleft.y
+	lsl r7, r0, #8 @save pleft.x << 8 for precision
+	lsl r8, r1, #8 @save pleft.y << 8
+	lsl r5, #8 @dx << 8 for precision
+	lsl r6, #8 @dy << 8 for precision
 
 	mov r4, #0 @r4 is inner loop counter
+
+	ldr r10, =hosTables
+	ldr r11, =heightMap
+	ldr r12, [sp, #o_sunsetval]
 
 	@@inner loop left to right
 	InnerLoop:
 	@offsetpoint = pleft+dx/dy
-	@r3 = zdist
-	@r4 = loop
+	
+	@r4 = loop (goes up to 128) | altitude << 8 
+	
 	@r5 = dx
 	@r6 = dy
-	@r7 = offsetpoint.x
-	@r8 = offsetpoint.y
+	@r7 = offsetpoint.x << 8
+	@r8 = offsetpoint.y << 8
 	@r9 = vid_page
-	@r10 = pleft.x
-	@r11 = pleft.y
-	@r12 = sunsetVal
-	@r14 = altitude
+	@r10 = hostables
+	@r11 = heightmap
+	@r12 = sunsetval
 	
-	mul r0, r4, r5
-	add r7, r10, r0, asr #7
-	mul r1, r4, r6
-	add r8, r11, r1, asr #7
+	@ mul r0, r4, r5
+	@ add r7, r10, r0, asr #7
+	ldrb r0, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+	
+	add r7, r7, r5, asr #7 @increment offsetpoint.x
+	add r8, r8, r6, asr #7 @increment offsetpoint.y
 
-	ldrb r0, [sp, r4] @ybuffer[i]
 	mov r1, #MODE5_ROTATED_HEIGHT
 	cmp r0, r1
 	bge SkipDraw
@@ -162,13 +171,15 @@ Render_arm:
 	blt HeightZero
 	cmp r8, #0
 	blt HeightZero
-	cmp r7, #1024
+	cmp r7, #(1024<<8)
 	bge HeightZero
-	cmp r8, #1024
+	cmp r8, #(1024<<8)
 	bge HeightZero
-	ldr r2, =heightMap
-	add r1, r7, r8, lsl #MAP_DIMENSIONS_LOG2
-	ldrb r1, [r2, r1]
+	@ ldr r2, =heightMap
+	asr r3, r7, #8
+	asr r1, r8, #8
+	add r1, r3, r1, lsl #(MAP_DIMENSIONS_LOG2)
+	ldrb r1, [r11, r1]
 	b GetScrHeight
 
 	HeightZero:
@@ -179,11 +190,11 @@ Render_arm:
 	@r0 = ybuffer[i]
 	@r1 = ptheight
 	@ height = hosTables[altitude][zdist>>1][height];
-	ldr r2, =hosTables
+	@ ldr r2, =hosTables
 	@altitude * 0x10000 + (zdist/2) * 0x100 + height
-	add r2, r1
+	ldr r3, [sp, #o_zdist] @do we need to get rid of this?
+	add r2, r10, r1
 	add r2, r2, r14, lsl #16
-	ldr r3, [sp, #o_zdist]
 	lsr r3, #1
 	ldrb r1, [r2, r3, lsl #8]
 
@@ -194,26 +205,86 @@ Render_arm:
 	strb r1, [sp, r4] @update ybuffer if we're drawing
 
 	@getptclr
-	@r2 = ylen
-	@r12 = sunsetval
-	cmp r7, #0
-	blt SeaClr
-	cmp r8, #0
-	blt SeaClr
-	cmp r7, #1024
-	bge SeaClr
-	cmp r8, #1024
-	bge SeaClr
+		@r2 = ylen
+		@r12 = sunsetval
+		cmp r7, #0
+		blt SeaClr
+		cmp r8, #0
+		blt SeaClr
+		cmp r7, #(1024<<8)
+		bge SeaClr
+		cmp r8, #(1024<<8)
+		bge SeaClr
 
-	ldr r3, =colourMap
-	add r3, r3, r8, lsl #(MAP_DIMENSIONS_LOG2+1)
-	add r3, r3, r7, lsl #1
-	ldrh r3, [r3]
+		@if shadow just #0000
+		ldr r3, [sp, #o_zdist]
+		cmp r3, #SHADOW_DISTANCE
+		bne NotShadow
+		add r3, r4, #4
+		sub r3, #(MODE5_ROTATED_WIDTH/2)
+		@if r3 between 0 and 8 make it black
+		cmp r3, #0
+		ble NotShadow
+		cmp r3, #8
+		bge NotShadow
+		mov r3, #0
+		b DrawLine
+
+		NotShadow:
+		@if sunsetval > 0, get sunsetclr into r3
+		@if sunsetval < 8, get clr into r1
+
+		cmp r12, #0 @if daytime
+		bgt LoadSunset
+			ldr r3, =colourMap
+			asr r1, r8, #8
+			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+			asr r1, r7, #8
+			add r3, r3, r1, lsl #1
+			ldrh r3, [r3]
+			b DrawLine
+
+		LoadSunset:
+		cmp r12, #8
+		bne BlendColours
+			ldr r3, =colourMap_sunset
+			asr r1, r8, #8
+			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+			asr r1, r7, #8
+			add r3, r3, r1, lsl #1
+			ldrh r3, [r3]
+			b DrawLine
+
+		BlendColours:
+			push {r0-r2,lr}
+			ldr r3, =colourMap
+			asr r1, r8, #8
+			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+			asr r1, r7, #8
+			add r3, r3, r1, lsl #1
+			ldrh r0, [r3]
+			ldr r3, =colourMap_sunset
+			asr r1, r8, #8
+			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+			asr r1, r7, #8
+			add r3, r3, r1, lsl #1
+			ldrh r1, [r3]
+			mov r2, r12
+			ldr r3, =iwram_clr_blend_asm
+			mov lr, pc
+			bx r3
+			mov r3, r0
+			pop {r0-r2, lr}
+
+	@now handle fog
+	
 
 	b DrawLine
 
 	SeaClr:
-	ldr r3, =#0x1840
+	cmp r12, #3
+	ldrle r3, =#0x1840
+	ldrgt r3, =#0x0820
 
 	@output clr into r3
 
@@ -240,7 +311,7 @@ Render_arm:
 
 	@now that inner loops are done we can have r10, r11 back
 	ldr r10, [sp, #o_maxzdist]
-	ldr r11, [sp, #o_zdist]
+	ldr r11, [sp, #o_zdist] @r11 is actually already kept
 
 	@ inc_zstep = ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 	lsr r0, r11, #6
@@ -263,7 +334,7 @@ Render_arm:
 		str r0, [r11, #64] @update currentproc->vid_page
 
 	@restore stack and return
-	add	sp, sp, #(MODE5_ROTATED_WIDTH + 28)
+	add	sp, sp, #(MODE5_ROTATED_WIDTH + 40)
 	pop {r4-r11}
 	pop {r0}
 	bx r0
