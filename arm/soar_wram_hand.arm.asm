@@ -339,7 +339,13 @@ Render_arm:
 	b SkipDraw
 
 	CelShade:
-	@does nothing for now
+	rsb r2, r2, #0 @-ylen
+	cmp r2, #6 @ cel shade threshold
+	ble SkipDraw
+	sub r0, #1
+	mov r3, #0x0000 @border clr
+	mov r2, #1
+	b DrawLine
 
 	SkipDraw:
 	add r4, #1
