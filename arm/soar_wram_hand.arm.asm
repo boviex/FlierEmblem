@@ -30,6 +30,7 @@
     .set MAX_Z_DISTANCE_LOG2, 9
     .set MAP_DIMENSIONS_LOG2, 10
     .set SHADOW_DISTANCE, (MIN_Z_DISTANCE+16)
+    .set FOG_DISTANCE, (MAX_Z_DISTANCE>>1)
 
 	.equ o_zdist, (MODE5_ROTATED_WIDTH + 4) @keep this on the stack above the ybuffer
 	.equ o_maxzdist, o_zdist+4
@@ -242,7 +243,7 @@ Render_arm:
 			asr r1, r7, #8
 			add r3, r3, r1, lsl #1
 			ldrh r3, [r3]
-			b DrawLine
+			b ApplyFog
 
 		LoadSunset:
 		cmp r12, #8
@@ -253,7 +254,7 @@ Render_arm:
 			asr r1, r7, #8
 			add r3, r3, r1, lsl #1
 			ldrh r3, [r3]
-			b DrawLine
+			b ApplyFog
 
 		BlendColours:
 			push {r0-r2,lr}
@@ -275,17 +276,53 @@ Render_arm:
 			bx r3
 			mov r3, r0
 			pop {r0-r2, lr}
-
-	@now handle fog
-	
-
-	b DrawLine
+			b ApplyFog
 
 	SeaClr:
 	cmp r12, #3
 	ldrle r3, =#0x1840
 	ldrgt r3, =#0x0820
 
+	@now handle fog
+	ApplyFog:
+	@r0 is ystart, r2 is ylen
+	ldr r1, [sp, #o_zdist]
+	cmp r1, #FOG_DISTANCE
+	ble DrawLine
+
+	cmp r12, #4
+	bge SunsetFog
+	push {r0, r2, lr}
+	sub r2, r1, #FOG_DISTANCE
+	ldr r1, =#0x7f74
+	mov r0, r3
+	lsr r2, #5
+	ldr r3, =iwram_clr_blend_asm
+	mov lr, pc
+	bx r3
+	mov r3, r0
+	pop {r0, r2, lr}
+	b DrawLine
+
+	SunsetFog:
+	push {r0, r2, lr}
+
+	sub r2, r1, #FOG_DISTANCE
+
+	@r1 = the pixel above where we would be drawing
+	add r1, r9, r4, lsl #6
+	add r1, r1, r4, lsl #8
+	add r1, r1, r0, lsl #1
+	ldrh r1, [r1, #2]
+
+	mov r0, r3
+	lsr r2, #5
+	ldr r3, =iwram_clr_blend_asm
+	mov lr, pc
+	bx r3
+	mov r3, r0
+	pop {r0, r2, lr}
+	@ b DrawLine
 	@output clr into r3
 
 	
