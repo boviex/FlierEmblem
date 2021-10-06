@@ -1,16 +1,17 @@
 #include "../src/cHacks.h"
 #include "../src/soar.h"
 
-
 //current cycles: 1415721
 
 u16 iwram_clr_blend_asm(u16 a, u16 b, u32 alpha);
+void iwram_Render_arm(SoarProc* CurrentProc);
 
 void NewWMLoop(SoarProc* CurrentProc){
 
 	UpdateSprites(CurrentProc);
 	if (thumb_loop(CurrentProc)){
-		Render(CurrentProc); //draw and then flip
+		iwram_Render_arm(CurrentProc);
+		// Render(CurrentProc); //draw and then flip
 		FPS_COUNTER += 1;
 	};
 };
@@ -104,81 +105,11 @@ static inline void UpdateSprites(SoarProc* CurrentProc){
 };
 
 static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist){
-	// int sin_angle = SIN_LOOKUP((angle<<4))*zdist;  //angle in degrees
-	// int cos_angle = COS_LOOKUP((angle<<4))*zdist;
-
-	//lookup table does not seem any faster lol
 	// theory: x = table of all possible zdists and angles = 0x10 * 0x200 = 0x2000 entries. (signed halfwords?)
 	// pleft.x = pleftmatrix[angle][zdist]
 	// pleft.y = pleftmatrix[(0x10-angle)&0xF][zdist] //mirrored about the ns axis
 
 	Point pleft = {camera_x + pleftmatrix[angle][zdist], camera_y + pleftmatrix[(-angle)&0xF][zdist]};
-	// switch (angle){
-	// 	case a_NNE:
-	// 	    pleft.x = camera_x - ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    pleft.y = camera_y - (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    break;
-	// 	case a_NE:
-	// 	    pleft.x = camera_x;
-	// 	    pleft.y = camera_y - zdist; 
-	// 	    break;
-	// 	case a_ENE:
-	// 	    pleft.x = camera_x + ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    pleft.y = camera_y - (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    break;
-	// 	case a_E:
- //    		pleft.x = camera_x + (zdist - (zdist>>2) - (zdist>>5)); //using 0.71875 as an approximation for 0.7071
-	// 		pleft.y = camera_y - (zdist - (zdist>>2) - (zdist>>5));
-	// 		break;
-	// 	case a_ESE:
-	// 	    pleft.x = camera_x + (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    pleft.y = camera_y - ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    break;
-	// 	case a_SE:
-	// 	    pleft.x = camera_x + zdist;
-	// 		pleft.y = camera_y;
-	// 		break; 
-	// 	case a_SSE:
-	// 	    pleft.x = camera_x + (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    pleft.y = camera_y + ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    break;
-	// 	case a_S:
- //    		pleft.x = camera_x + (zdist - (zdist>>2) - (zdist>>5));//using 0.71875 as an approximation for 0.7071
-	// 		pleft.y = camera_y + (zdist - (zdist>>2) - (zdist>>5));
-	// 		break;
-	// 	case a_SSW:
-	// 	    pleft.x = camera_x + ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    pleft.y = camera_y + (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    break;
-	// 	case a_SW:
-	// 	    pleft.x = camera_x;
-	// 		pleft.y = camera_y + zdist;
-	// 		break; //using 0.71875 as an approximation for 0.7071
-	// 	case a_WSW:
-	// 	    pleft.x = camera_x - ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    pleft.y = camera_y + (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    break;
-	// 	case a_W:
-	// 	    pleft.x = camera_x - (zdist - (zdist>>2) - (zdist>>5)); //using 0.71875 as an approximation for 0.7071
-	// 		pleft.y = camera_y + (zdist - (zdist>>2) - (zdist>>5));
-	// 		break;
-	// 	case a_WNW:
-	// 	    pleft.x = camera_x - (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    pleft.y = camera_y + ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    break;
-	// 	case a_NW:
-	// 	    pleft.x = camera_x - zdist;
-	// 		pleft.y = camera_y;
-	// 		break; //using 0.71875 as an approximation for 0.7071
-	// 	case a_NNW:		
-	// 	    pleft.x = camera_x - (zdist - (zdist>>4) - (zdist>>6)); //using 0.921875 as an approximation for 0.92?
-	// 	    pleft.y = camera_y - ((zdist>>1) - (zdist>>3)); //using 0.375 as an approximation for .38
-	// 	    break;
-	// 	default: //north
-	// 	    pleft.x = camera_x - (zdist - (zdist>>2) - (zdist>>5)); //using 0.71875 as an approximation for 0.7071
-	// 		pleft.y = camera_y - (zdist - (zdist>>2) - (zdist>>5));
-	// 		break;
-	// };
 	return pleft;
 };
 

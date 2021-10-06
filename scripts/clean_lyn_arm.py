@@ -6,7 +6,7 @@ def main(infile, outfile):
 	'''
 	with open(infile, 'r') as f:
 		text = f.read()
-		text = text.replace('{','').replace('}','').replace('4-CURRENTOFFSET', '8-CURRENTOFFSET').replace('POIN gKeyState', 'WORD gKeyState').replace('POIN gPaletteBuffer', 'WORD gPaletteBuffer').replace('POIN iwram_clr_blend_asm', 'WORD iwram_clr_blend_asm')
+		text = text.replace('{','').replace('}','').replace('4-CURRENTOFFSET', '8-CURRENTOFFSET').replace('POIN gKeyState', 'WORD gKeyState').replace('POIN gPaletteBuffer', 'WORD gPaletteBuffer').replace('POIN iwram_clr_blend_asm', 'WORD iwram_clr_blend_asm').replace('POIN iwram_Render_arm', 'WORD iwram_Render_arm')
 
 	with open(outfile, 'w') as o:
 		o.write(text)

@@ -21,12 +21,17 @@ ORG FreeSpaceBLRange
 #include "src/soar_voxel.lyn.event"
 ALIGN 4
 #define iwram_clr_blend_asm 0x3007000+clr_blend_asm_ofs-NewWMLoop
+#define iwram_Render_arm 0x3007000+Render_arm_ofs-NewWMLoop
 // #include "src/soar_wram.lyn.event":
 #include "arm/soar_wram.arm.lyn.event"
 
 
 clr_blend_asm_ofs:
 #include "arm/pal_blend.arm.lyn.event"
+ALIGN 4
+Render_arm_ofs:
+#include "arm/soar_wram_hand.arm.lyn.event"
+
 // NewWMLoop:
 // #include "src/soar_wram.arm.event" //first run thru assemble arm nothumb and then use lyn (force longcalls) also make sure gkeystate is not poin
 ALIGN 4
