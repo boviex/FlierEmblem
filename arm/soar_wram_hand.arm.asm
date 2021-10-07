@@ -34,11 +34,12 @@
 
 	.equ o_zdist, (MODE5_ROTATED_WIDTH + 4) @keep this on the stack above the ybuffer
 	.equ o_maxzdist, o_zdist+4
-	.equ o_altitude, o_zdist+8
-	.equ o_vidpage, o_zdist+12
+	.equ o_dx, o_zdist+8
+	.equ o_dy, o_zdist+12
 	.equ o_currproc, o_zdist+16
 	.equ o_sunsetval, o_zdist+20
 	.equ o_angle, o_zdist+24
+	.equ o_altitude, o_zdist+28
 
 @ rewriting render by hand
 	.global	Render_arm
@@ -67,7 +68,7 @@ Render_arm:
 	str r4, [sp, #o_angle]
 	str r7, [sp, #o_sunsetval]
 	str r8, [sp, #o_altitude]
-	str r9, [sp, #o_vidpage]
+	@ str r9, [sp, #o_vidpage]
 
 	@@draw sky bg
 		ldr r1, =skies
@@ -134,8 +135,9 @@ Render_arm:
 	lsl r7, r0, #8 @save pleft.x << 8 for precision
 	lsl r8, r1, #8 @save pleft.y << 8
 	lsl r5, #8 @dx << 8 for precision
+	str r5, [sp, #o_dx]
 	lsl r6, #8 @dy << 8 for precision
-
+	str r6, [sp, #o_dy]
 	mov r4, #0 @r4 is inner loop counter
 
 	ldr r10, =hosTables
@@ -159,13 +161,16 @@ Render_arm:
 	
 	@ mul r0, r4, r5
 	@ add r7, r10, r0, asr #7
-	ldrb r0, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+
+	ldr r0, [sp, #o_dx]
+	add r7, r7, r0, asr #7 @increment offsetpoint.x
 	
-	add r7, r7, r5, asr #7 @increment offsetpoint.x
-	add r8, r8, r6, asr #7 @increment offsetpoint.y
+	ldr r1, [sp, #o_dy]
+	add r8, r8, r1, asr #7 @increment offsetpoint.y
 
 	mov r1, #MODE5_ROTATED_HEIGHT
-	cmp r0, r1
+	cmp r5, r1
 	bge SkipDraw
 	@get point height
 	cmp r7, #0
@@ -188,7 +193,7 @@ Render_arm:
 
 	@get screen height
 	GetScrHeight:
-	@r0 = ybuffer[i]
+	@r5 = ybuffer[i]
 	@r1 = ptheight
 	@ height = hosTables[altitude][zdist>>1][height];
 	@ ldr r2, =hosTables
@@ -199,14 +204,14 @@ Render_arm:
 	lsr r3, #1
 	ldrb r1, [r2, r3, lsl #8]
 
-	subs r2, r1, r0 @hos -= ybuffer[i]
+	subs r6, r1, r5 @hos -= ybuffer[i]
 	ble CelShade
 	
 	@draw
 	strb r1, [sp, r4] @update ybuffer if we're drawing
 
 	@getptclr
-		@r2 = ylen
+		@r6 = ylen
 		@r12 = sunsetval
 		cmp r7, #0
 		blt SeaClr
@@ -257,7 +262,7 @@ Render_arm:
 			b ApplyFog
 
 		BlendColours:
-			push {r0-r2,lr}
+			push {lr}
 			ldr r3, =colourMap
 			asr r1, r8, #8
 			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
@@ -275,7 +280,7 @@ Render_arm:
 			mov lr, pc
 			bx r3
 			mov r3, r0
-			pop {r0-r2, lr}
+			pop {lr}
 			b ApplyFog
 
 	SeaClr:
@@ -285,14 +290,14 @@ Render_arm:
 
 	@now handle fog
 	ApplyFog:
-	@r0 is ystart, r2 is ylen
+	@r5 is ystart, r6 is ylen
 	ldr r1, [sp, #o_zdist]
 	cmp r1, #FOG_DISTANCE
 	ble DrawLine
 
 	cmp r12, #4
 	bge SunsetFog
-	push {r0, r2, lr}
+	push {lr}
 	sub r2, r1, #FOG_DISTANCE
 	ldr r1, =#0x7f74
 	mov r0, r3
@@ -301,18 +306,18 @@ Render_arm:
 	mov lr, pc
 	bx r3
 	mov r3, r0
-	pop {r0, r2, lr}
+	pop {lr}
 	b DrawLine
 
 	SunsetFog:
-	push {r0, r2, lr}
+	push {lr}
 
 	sub r2, r1, #FOG_DISTANCE
 
 	@r1 = the pixel above where we would be drawing
 	add r1, r9, r4, lsl #6
 	add r1, r1, r4, lsl #8
-	add r1, r1, r0, lsl #1
+	add r1, r1, r5, lsl #1
 	ldrh r1, [r1, #2]
 
 	mov r0, r3
@@ -321,7 +326,7 @@ Render_arm:
 	mov lr, pc
 	bx r3
 	mov r3, r0
-	pop {r0, r2, lr}
+	pop {lr}
 	@ b DrawLine
 	@output clr into r3
 
@@ -331,20 +336,20 @@ Render_arm:
 	DrawLine:
 	add r1, r9, r4, lsl #6
 	add r1, r1, r4, lsl #8
-	add r1, r1, r0, lsl #1
+	add r1, r1, r5, lsl #1
 	DrawPx:
 	strh r3, [r1], #2
-	subs r2, #1
+	subs r6, #1
 	bgt DrawPx
 	b SkipDraw
 
 	CelShade:
-	rsb r2, r2, #0 @-ylen
-	cmp r2, #6 @ cel shade threshold
+	rsb r6, r6, #0 @-ylen
+	cmp r6, #6 @ cel shade threshold
 	ble SkipDraw
-	sub r0, #1
+	sub r5, #1
 	mov r3, #0x0000 @border clr
-	mov r2, #1
+	mov r6, #1
 	b DrawLine
 
 	SkipDraw:
@@ -370,7 +375,8 @@ Render_arm:
 
 	@@vid_flip
 		ldr r12, =vid_flip
-		ldr r0, [sp, #o_vidpage]
+		@ ldr r0, [sp, #o_vidpage]
+		mov r0, r9
 		mov lr, pc
 		bx r12
 		ldr r11, [sp, #o_currproc]
