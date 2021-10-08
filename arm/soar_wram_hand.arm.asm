@@ -37,9 +37,9 @@
 	.equ o_dx, o_zdist+8
 	.equ o_dy, o_zdist+12
 	.equ o_currproc, o_zdist+16
-	.equ o_sunsetval, o_zdist+20
-	.equ o_angle, o_zdist+24
-	.equ o_altitude, o_zdist+28
+	@ .equ o_sunsetval, o_zdist+20
+	.equ o_angle, o_zdist+20
+	@ .equ o_altitude, o_zdist+28
 
 @ rewriting render by hand
 	.global	Render_arm
@@ -66,8 +66,8 @@ Render_arm:
 	str r10, [sp, #o_maxzdist]
 	str r11, [sp, #o_zdist]
 	str r4, [sp, #o_angle]
-	str r7, [sp, #o_sunsetval]
-	str r8, [sp, #o_altitude]
+	@ str r7, [sp, #o_sunsetval]
+	@ str r8, [sp, #o_altitude]
 	@ str r9, [sp, #o_vidpage]
 
 	@@draw sky bg
@@ -101,8 +101,8 @@ Render_arm:
 	ldr r4, [r0, #60] @r4 = angle
 	ldr r5, [r0, #44] @r5 = posX
 	ldr r6, [r0, #48] @r6 = posY
-	ldr r12, [sp, #o_sunsetval] @sunsetval
-	ldr r14, [sp, #o_altitude] @altitude
+	ldr r12, [r0, #84] @sunsetval
+	ldr r14, [r0, #56] @altitude
 	lsl r11, #1
 	ldr r3, =pleftmatrix
 	add r1, r11, r4, lsl #(MAX_Z_DISTANCE_LOG2+1)
@@ -138,11 +138,13 @@ Render_arm:
 	str r5, [sp, #o_dx]
 	lsl r6, #8 @dy << 8 for precision
 	str r6, [sp, #o_dy]
+
+	@ lsl r4, r14, #8
 	mov r4, #0 @r4 is inner loop counter
 
 	ldr r10, =hosTables
 	ldr r11, =heightMap
-	ldr r12, [sp, #o_sunsetval]
+	@ ldr r12, [sp, #o_sunsetval]
 
 	@@inner loop left to right
 	InnerLoop:
@@ -161,6 +163,7 @@ Render_arm:
 	
 	@ mul r0, r4, r5
 	@ add r7, r10, r0, asr #7
+	@ and r0, r4, #0xFF
 	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
 
 	ldr r0, [sp, #o_dx]
@@ -173,23 +176,17 @@ Render_arm:
 	cmp r5, r1
 	bge SkipDraw
 	@get point height
-	cmp r7, #0
+
+	orr r0, r7, r8
+	cmp r0, #0
 	blt HeightZero
-	cmp r8, #0
-	blt HeightZero
-	cmp r7, #(1024<<8)
-	bge HeightZero
-	cmp r8, #(1024<<8)
+	cmp r0, #(1024<<8)
 	bge HeightZero
 	@ ldr r2, =heightMap
 	asr r3, r7, #8
 	asr r1, r8, #8
 	add r1, r3, r1, lsl #(MAP_DIMENSIONS_LOG2)
 	ldrb r1, [r11, r1]
-	b GetScrHeight
-
-	HeightZero:
-	mov r1, #0
 
 	@get screen height
 	GetScrHeight:
@@ -200,6 +197,7 @@ Render_arm:
 	@altitude * 0x10000 + (zdist/2) * 0x100 + height
 	ldr r3, [sp, #o_zdist] @do we need to get rid of this?
 	add r2, r10, r1
+	@ lsr r14, r4, #8
 	add r2, r2, r14, lsl #16
 	lsr r3, #1
 	ldrb r1, [r2, r3, lsl #8]
@@ -208,33 +206,30 @@ Render_arm:
 	ble CelShade
 	
 	@draw
+	@ and r0, r4, #0xff @get the loop index
 	strb r1, [sp, r4] @update ybuffer if we're drawing
 
 	@getptclr
 		@r6 = ylen
 		@r12 = sunsetval
-		cmp r7, #0
-		blt SeaClr
-		cmp r8, #0
-		blt SeaClr
-		cmp r7, #(1024<<8)
-		bge SeaClr
-		cmp r8, #(1024<<8)
-		bge SeaClr
+		
+		@ don't need to check! if height 0 then seaclr
+		@ orr r0, r7, r8
+		@ cmp r0, #0
+		@ blt SeaClr
+		@ cmp r0, #(1024<<8)
+		@ bge SeaClr 
 
 		@if shadow just #0000
 		ldr r3, [sp, #o_zdist]
 		cmp r3, #SHADOW_DISTANCE
 		bne NotShadow
-		add r3, r4, #4
-		sub r3, #(MODE5_ROTATED_WIDTH/2)
-		@if r3 between 0 and 8 make it black
-		cmp r3, #0
-		ble NotShadow
-		cmp r3, #8
-		bge NotShadow
-		mov r3, #0
-		b DrawLine
+		add r0, r4, #4
+		sub r0, #(MODE5_ROTATED_WIDTH/2)
+		@if r0 between 0 and 8 make it black
+		lsr r0, #2 @if it is between 0 and 7 it is now 0 or 1, otherwise higher
+		cmp r0, #1
+		ble Shadow
 
 		NotShadow:
 		@if sunsetval > 0, get sunsetclr into r3
@@ -262,7 +257,6 @@ Render_arm:
 			b ApplyFog
 
 		BlendColours:
-			push {lr}
 			ldr r3, =colourMap
 			asr r1, r8, #8
 			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
@@ -275,59 +269,37 @@ Render_arm:
 			asr r1, r7, #8
 			add r3, r3, r1, lsl #1
 			ldrh r1, [r3]
-			mov r2, r12
-			ldr r3, =iwram_clr_blend_asm
-			mov lr, pc
-			bx r3
-			mov r3, r0
-			pop {lr}
-			b ApplyFog
 
-	SeaClr:
-	cmp r12, #3
-	ldrle r3, =#0x1840
-	ldrgt r3, =#0x0820
+				@colour blending inline
+				lsl     r2, r12, #2               @alpha x 4
+			    push {r4-r10}
+			    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
+			    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
+				@ --- -g-|b-r
+		        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
+		        and     r5, r7, r1              @ y: -g-|b-r
+		        sub     r5, r5, r4, lsr #5      @ z: y-x
+		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+		        and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
+		        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
+		        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
+		        and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
+		        sub     r5, r5, r4, lsr #5      @ z: y-x
+		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+		        and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
+		        @ --- mix -g-|b-r and b-r|-g-
+		        orr     r0, r10, r4, ror #16
+		        lsl r0, #16
+		        lsr r3, r0, #16 @@wipe top 2 bytes???
+		        pop {r4-r10}
+			@ b ApplyFog
 
 	@now handle fog
 	ApplyFog:
 	@r5 is ystart, r6 is ylen
 	ldr r1, [sp, #o_zdist]
 	cmp r1, #FOG_DISTANCE
-	ble DrawLine
-
-	cmp r12, #4
-	bge SunsetFog
-	push {lr}
-	sub r2, r1, #FOG_DISTANCE
-	ldr r1, =#0x7f74
-	mov r0, r3
-	lsr r2, #5
-	ldr r3, =iwram_clr_blend_asm
-	mov lr, pc
-	bx r3
-	mov r3, r0
-	pop {lr}
-	b DrawLine
-
-	SunsetFog:
-	push {lr}
-
-	sub r2, r1, #FOG_DISTANCE
-
-	@r1 = the pixel above where we would be drawing
-	add r1, r9, r4, lsl #6
-	add r1, r1, r4, lsl #8
-	add r1, r1, r5, lsl #1
-	ldrh r1, [r1, #2]
-
-	mov r0, r3
-	lsr r2, #5
-	ldr r3, =iwram_clr_blend_asm
-	mov lr, pc
-	bx r3
-	mov r3, r0
-	pop {lr}
-	@ b DrawLine
+	bgt ApplyFogBlend
 	@output clr into r3
 
 	
@@ -337,29 +309,45 @@ Render_arm:
 	add r1, r9, r4, lsl #6
 	add r1, r1, r4, lsl #8
 	add r1, r1, r5, lsl #1
-	DrawPx:
-	strh r3, [r1], #2
-	subs r6, #1
-	bgt DrawPx
-	b SkipDraw
+	@r3 = clr, r1 = pixel address, r6 = number of pixels
+	
+	@ @if r1 is not word aligned, draw 1 pixel to get it there
+	@ tst r1, #2
+	@ strhne r3, [r1], #2
+	@ subsne r6, #1
+	@ cmp r6, #0
+	@ ble SkipDraw @skip if we only had to draw 1 pixel
 
-	CelShade:
-	rsb r6, r6, #0 @-ylen
-	cmp r6, #6 @ cel shade threshold
-	ble SkipDraw
-	sub r5, #1
-	mov r3, #0x0000 @border clr
-	mov r6, #1
-	b DrawLine
+	@ tst r6, #1 @is it odd?
+	@ subne r6, #1
+	@ lslne r0, r6, #1
+	@ strhne r3, [r1, r0] @draw another pixel at the end but don't increment r1
+	
+	.equ DUFFNUM, (1<<4)
+	@ orr r3, r3, r3, lsl #16 @can use this to write 2px at a time?
+	and r0, r6, #(DUFFNUM - 1)
+	rsb r0, r0, #DUFFNUM @r6 % duffnum
+	add r15, r15, r0, lsl #2 @jump ahead
+	nop
+	DrawPx:
+	.rept DUFFNUM
+		strh r3, [r1], #2
+	.endr
+	subs r6, #DUFFNUM
+	bge DrawPx
+	@ b SkipDraw
+
+
 
 	SkipDraw:
 	add r4, #1
+	@ and r0, r4, #0xff
 	cmp r4, #MODE5_ROTATED_WIDTH
 	blt InnerLoop
 
 	@now that inner loops are done we can have r10, r11 back
 	ldr r10, [sp, #o_maxzdist]
-	ldr r11, [sp, #o_zdist] @r11 is actually already kept
+	ldr r11, [sp, #o_zdist]
 
 	@ inc_zstep = ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 	lsr r0, r11, #6
@@ -388,4 +376,105 @@ Render_arm:
 	pop {r0}
 	bx r0
 
+	CelShade:
+		rsb r6, r6, #0 @-ylen
+		cmp r6, #6 @ cel shade threshold
+		ble SkipDraw
+		sub r5, #1
+		mov r3, #0x0000 @border clr
+		mov r6, #1
+		b ApplyFog
+
+	HeightZero: @skip other checks
+		mov r1, #0
+		ldr r3, [sp, #o_zdist] @do we need to get rid of this?
+		add r2, r10, r1
+		@ lsr r14, r4, #8
+		add r2, r2, r14, lsl #16
+		lsr r3, #1
+		ldrb r1, [r2, r3, lsl #8]
+
+		subs r6, r1, r5 @hos -= ybuffer[i]
+		ble CelShade
+
+		@ SeaClr:
+		cmp r12, #3
+		ldrle r3, =#0x1840
+		ldrgt r3, =#0x0820
+		
+		@draw
+		@ and r0, r4, #0xff @get the loop index
+		strb r1, [sp, r4] @update ybuffer if we're drawing
+		b ApplyFog
+
+	ApplyFogBlend:
+		cmp r12, #4
+		bge SunsetFog
+		sub r2, r1, #FOG_DISTANCE
+		ldr r1, =#0x7f74
+		mov r0, r3
+			lsr r2, #3
+			@inline blending
+			    push {r4-r10}
+			    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
+			    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
+				@ --- -g-|b-r
+		        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
+		        and     r5, r7, r1              @ y: -g-|b-r
+		        sub     r5, r5, r4, lsr #5      @ z: y-x
+		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+		        and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
+		        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
+		        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
+		        and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
+		        sub     r5, r5, r4, lsr #5      @ z: y-x
+		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+		        and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
+		        @ --- mix -g-|b-r and b-r|-g-
+		        orr     r0, r10, r4, ror #16
+		        lsl r0, #16
+		        lsr r3, r0, #16 @@wipe top 2 bytes???
+		        pop {r4-r10}
+		b DrawLine
+
+		SunsetFog:
+
+		sub r2, r1, #FOG_DISTANCE
+
+		@r1 = the pixel above where we would be drawing
+		@ and r0, r4, #0xff @get the loop index
+		add r1, r9, r4, lsl #6
+		add r1, r1, r4, lsl #8
+		add r1, r1, r5, lsl #1
+		ldrh r1, [r1, #2]
+
+		lsr r2, #3
+		add r2, r2, r2, lsr #2
+		mov r0, r3
+			@inline blending
+		    push {r4-r10}
+		    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
+		    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
+			@ --- -g-|b-r
+	        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
+	        and     r5, r7, r1              @ y: -g-|b-r
+	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	        and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
+	        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
+	        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
+	        and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
+	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	        and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
+	        @ --- mix -g-|b-r and b-r|-g-
+	        orr     r0, r10, r4, ror #16
+	        lsl r0, #16
+	        lsr r3, r0, #16 @@wipe top 2 bytes???
+	        pop {r4-r10}
+		b DrawLine
+
+	Shadow:
+		mov r3, #0
+		b DrawLine
 	.pool
