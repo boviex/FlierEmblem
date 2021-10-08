@@ -54,18 +54,15 @@ static inline u8 getScrHeight(int ptx, int pty, int altitude, int zdist){
 static inline void UpdateSprites(SoarProc* CurrentProc){
 	// int animClock = GetGameClock() & 0x3F;
 	u8 animClock = *(u8*)(0x3000014) & 0x3F;
+
 	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca00); //player frames
 	else if (animClock < 0x20)	ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca10);
 	else if (animClock < 0x30)	ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca20);
 	else ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca30);
 
-	if (CurrentProc->ShowMap)
-	{
-		ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
-	#ifdef __FPSCOUNT__
-	ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
-	#endif
-	};
+	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
+
+	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
 
 	if (CurrentProc->sunsetVal < 3)
 	{

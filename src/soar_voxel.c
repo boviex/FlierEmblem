@@ -107,13 +107,15 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 
 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
-	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+CAMERA_Z_STEP;
-	CurrentProc->sPlayerStepZ = 1;
+	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+(2 * CAMERA_Z_STEP);
+	CurrentProc->sPlayerStepZ = 2;
 	CurrentProc->sPlayerYaw = a_SE;
 	CurrentProc->ShowMap = TRUE;
+	CurrentProc->ShowFPS = TRUE;
 	CurrentProc->location = Frelia;
 	CurrentProc->sunsetVal = 0;
 	CurrentProc->sunTransition = 0;
+	CurrentProc->takeOffTransition = 1;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
 	    CurrentProc->vid_page = (u16*)(0x600A000);
@@ -319,6 +321,19 @@ static inline int getPtHeight_thumb(int ptx, int pty){
 int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 {
 
+	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
+	{
+		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP)))
+		{
+			CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
+			CurrentProc->sPlayerStepZ += 1;
+		};
+		CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
+		CurrentProc->sPlayerStepZ += 1;
+		return 1;
+	}
+	else CurrentProc->takeOffTransition = 0;
+
 	int newx,  newy;
 
 	if (gKeyState.heldKeys & DPAD_LEFT){
@@ -366,7 +381,9 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 		else m4aSongNumStart(0x6c); //invalid sfx
 	};
 
-	if (gKeyState.pressedKeys & L_BUTTON){
+	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
+
+	if ((gKeyState.pressedKeys & L_BUTTON) && (CurrentProc->sunTransition==0)){
 		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
 		else CurrentProc->sunTransition = 1;
 		CurrentProc->sunsetVal += CurrentProc->sunTransition;
@@ -402,8 +419,8 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 	//set camera
 	int player_terrain_ht = getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY);
 	int camera_terrain_ht = getPtHeight_thumb(CurrentProc->sPlayerPosX, CurrentProc->sPlayerPosY);
-	int camera_ht = CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP);
-	if ((player_terrain_ht > camera_ht) || (camera_terrain_ht > camera_ht)){
+	int camera_ht = CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP) - 10;
+	if ((player_terrain_ht > (camera_ht)) || (camera_terrain_ht > camera_ht)){
 		CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
 		CurrentProc->sPlayerStepZ += 1;
 	}
@@ -425,7 +442,7 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 	//prevent leaving the area // CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw + 7) & 0xf; // 
 	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerYaw = CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
 	else if (CurrentProc->sPlayerPosX < 0) CurrentProc->sPlayerPosX = 0;
-	
+
 	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
 	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
 
