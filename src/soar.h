@@ -53,7 +53,7 @@ extern const u16 colourMap[];
 extern const u16 colourMap_sunset[];
 extern const u8 heightMap[];
 extern const u16 xMatrix[];
-extern const u8 hosTables[6][0x100][0x100]; 
+extern const u8 hosTables[12][0x100][0x100]; 
 extern const void* pkSprite;
 extern const void* locationSprites;
 extern const void* pkPal;

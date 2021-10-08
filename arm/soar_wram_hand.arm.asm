@@ -76,7 +76,7 @@ Render_arm:
 		ldr r0, [r1, r2, lsl #2] @r0 = sky pointer
 		add r1, r4, r4, lsl #2
 		lsl r1, r1, #9
-		add r1, r1, r8, lsl #1
+		add r1, r1, r8 @, lsl #1
 		sub r0, r0, #400
 		add r0, r0, r1, lsl #2
 		mov r1, r9
@@ -143,8 +143,14 @@ Render_arm:
 	mov r4, #0 @r4 is inner loop counter
 
 	ldr r10, =hosTables
-	ldr r11, =heightMap
+	ldr r11, [sp, #o_zdist]
 	@ ldr r12, [sp, #o_sunsetval]
+
+	@prepare for first loop
+	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+	ldr r0, [sp, #o_dx]
+	ldr r1, [sp, #o_dy]
+	
 
 	@@inner loop left to right
 	InnerLoop:
@@ -158,18 +164,15 @@ Render_arm:
 	@r8 = offsetpoint.y << 8
 	@r9 = vid_page
 	@r10 = hostables
-	@r11 = heightmap
+	@r11 = zdist
 	@r12 = sunsetval
 	
 	@ mul r0, r4, r5
 	@ add r7, r10, r0, asr #7
 	@ and r0, r4, #0xFF
-	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
 
-	ldr r0, [sp, #o_dx]
 	add r7, r7, r0, asr #7 @increment offsetpoint.x
 	
-	ldr r1, [sp, #o_dy]
 	add r8, r8, r1, asr #7 @increment offsetpoint.y
 
 	cmp r5, #MODE5_ROTATED_HEIGHT
@@ -185,7 +188,8 @@ Render_arm:
 	asr r3, r7, #8
 	asr r1, r8, #8
 	add r1, r3, r1, lsl #(MAP_DIMENSIONS_LOG2)
-	ldrb r1, [r11, r1]
+	ldr r2, =heightMap
+	ldrb r1, [r2, r1]
 	@r1 = map height
 
 	@get screen height
@@ -195,11 +199,11 @@ Render_arm:
 	@ height = hosTables[altitude][zdist>>1][height];
 	@ ldr r2, =hosTables
 	@altitude * 0x10000 + (zdist/2) * 0x100 + height
-	ldr r3, [sp, #o_zdist] @do we need to get rid of this?
+	
 	add r2, r10, r1
 	@ lsr r14, r4, #8
 	add r2, r2, r14, lsl #16
-	lsr r3, #1
+	lsr r3, r11, #1 @ zdist is in r11
 	ldrb r1, [r2, r3, lsl #8]
 
 	subs r6, r1, r5 @hos -= ybuffer[i]
@@ -275,11 +279,17 @@ Render_arm:
 	SkipDraw:
 	add r4, #1
 	cmp r4, #MODE5_ROTATED_WIDTH
-	blt InnerLoop
+	bge endInnerLoop
+	@preload for next loop
+	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+	ldr r0, [sp, #o_dx]
+	ldr r1, [sp, #o_dy]
+	b InnerLoop
 
+	endInnerLoop:
 	@now that inner loops are done we can have r10, r11 back
-	ldr r10, [sp, #o_maxzdist]
 	ldr r11, [sp, #o_zdist]
+	ldr r10, [sp, #o_maxzdist]
 
 	@ inc_zstep = ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 	lsr r0, r11, #6
@@ -353,37 +363,9 @@ Render_arm:
 
 	ApplyFog:
 		cmp r12, #4
-		bge SunsetFog
-		sub r2, r1, #FOG_DISTANCE
-		ldr r1, =#0x7f74
-		mov r0, r3
-			lsr r2, #3
-			b InlineBlend
-			@inline blending
-		@ 	    push {r4-r10}
-		@ 	    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
-		@ 	    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
-		@ 		@ --- -g-|b-r
-		@         and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
-		@         and     r5, r7, r1              @ y: -g-|b-r
-		@         sub     r5, r5, r4, lsr #5      @ z: y-x
-		@         mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		@         and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
-		@         @ --- b-r|-g- (rotated by 16 for cheapskatiness)
-		@         and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
-		@         and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
-		@         sub     r5, r5, r4, lsr #5      @ z: y-x
-		@         mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		@         and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
-		@         @ --- mix -g-|b-r and b-r|-g-
-		@         orr     r0, r10, r4, ror #16
-		@         lsl r0, #16
-		@         lsr r3, r0, #16 @@wipe top 2 bytes???
-		@         pop {r4-r10}
-		@ b DrawLine
+		blt DayFog
 
 		SunsetFog:
-
 		sub r2, r1, #FOG_DISTANCE
 
 		@r1 = the pixel above where we would be drawing
@@ -394,9 +376,10 @@ Render_arm:
 		ldrh r1, [r1, #2]
 
 		lsr r2, #4
-		add r2, r2, r2, lsr #2
+		add r2, r2, r2, lsr #3
 		mov r0, r3
-			InlineBlend:
+		
+		InlineBlend:
 		    push {r4-r10}
 		    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
 		    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
@@ -418,6 +401,14 @@ Render_arm:
 	        lsr r3, r0, #16 @@wipe top 2 bytes???
 	        pop {r4-r10}
 		b DrawLine
+
+		DayFog:
+		sub r2, r1, #FOG_DISTANCE
+		ldr r1, =#0x7f74
+		mov r0, r3
+		lsr r2, #3
+		b InlineBlend
+
 
 	LoadSunset:
 		cmp r12, #8

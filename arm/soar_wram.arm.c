@@ -113,78 +113,80 @@ static inline Point getPLeft(int camera_x, int camera_y, int angle, int zdist){
 	return pleft;
 };
 
-static inline void Render(SoarProc* CurrentProc){
-	int posX = CurrentProc->sPlayerPosX;
-	int posY = CurrentProc->sPlayerPosY;
-	int angle = CurrentProc->sPlayerYaw;
-	int tangent = (angle+4)&0xF;
-	int altitude = (CurrentProc->sPlayerStepZ);
-	u8 yBuffer[MODE5_HEIGHT];
-	int sky;
-	int sunsetVal = CurrentProc->sunsetVal;
-	u16 fogclr;
 
-	sky = skies[(sunsetVal)>>1]; //multiple skyboxes to transition to sunset
+// replaced by asm routine
+// static inline void Render(SoarProc* CurrentProc){
+// 	int posX = CurrentProc->sPlayerPosX;
+// 	int posY = CurrentProc->sPlayerPosY;
+// 	int angle = CurrentProc->sPlayerYaw;
+// 	int tangent = (angle+4)&0xF;
+// 	int altitude = (CurrentProc->sPlayerStepZ);
+// 	u8 yBuffer[MODE5_HEIGHT];
+// 	int sky;
+// 	int sunsetVal = CurrentProc->sunsetVal;
+// 	u16 fogclr;
 
-	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //sky depends on angle and altitude
+// 	sky = skies[(sunsetVal)>>1]; //multiple skyboxes to transition to sunset
 
-	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
+// 	CpuFastCopy((int*)(sky) + (((angle<<5) + (angle<<7)<<4) + (altitude<<1) - 100), CurrentProc->vid_page, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //sky depends on angle and altitude
 
-	// fogclr = fogClrs[sunsetVal>>1];
+// 	CpuFastFill16(0, yBuffer, (MODE5_HEIGHT)); //clear ybuffer
+
+// 	// fogclr = fogClrs[sunsetVal>>1];
 	
-	//drawing front to back
-	for (int zdist = MIN_Z_DISTANCE+(altitude<<1);
-		zdist<((MAX_Z_DISTANCE)+((altitude)<<4))-128;
-		zdist+=INC_ZSTEP){
+// 	//drawing front to back
+// 	for (int zdist = MIN_Z_DISTANCE+(altitude<<1);
+// 		zdist<((MAX_Z_DISTANCE)+((altitude)<<4))-128;
+// 		zdist+=INC_ZSTEP){
 
-		Point pleft = getPLeft(posX, posY, angle, zdist); //90deg FOV, left point
-		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation to get right point
-		int dx = (pright.x - pleft.x); //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
-		int dy = (pright.y - pleft.y); //was 8 and 7 but??? TODO optimise out the division.
+// 		Point pleft = getPLeft(posX, posY, angle, zdist); //90deg FOV, left point
+// 		Point pright = getPLeft(posX, posY, tangent, zdist); //do the same but with 90 deg clockwise rotation to get right point
+// 		int dx = (pright.x - pleft.x); //make it fixed point (division by MODE5_HEIGHT is the same as rsh 7)
+// 		int dy = (pright.y - pleft.y); //was 8 and 7 but??? TODO optimise out the division.
 
-		for (int i=0; i<(MODE5_HEIGHT); i++)
-		{
-			Point offsetPoint = {pleft.x+((i*dx)>>7), pleft.y+((i*dy)>>7)}; //TODO: remove the mul and add dx/dy each loop without rounding errors
+// 		for (int i=0; i<(MODE5_HEIGHT); i++)
+// 		{
+// 			Point offsetPoint = {pleft.x+((i*dx)>>7), pleft.y+((i*dy)>>7)}; //TODO: remove the mul and add dx/dy each loop without rounding errors
 			
-			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup?
-			{
-				u8 height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
-				if (height_on_screen == 0) i += 4; //skip ahead a few columns if 0 height because it's probably off the bottom of the screen?
-				else {
-					int ylen = height_on_screen - yBuffer[i];
-					if (ylen>0){ //only draw if that line has been higher this screen
-						//only fetch the colour if we're actually drawing!
-						u16 clr = 0; //default to shadow
-						if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4)))) //conditions for being in shadow
-						{
-							clr = getPointColour(offsetPoint.x, offsetPoint.y, sunsetVal); //if not in shadow
-						    if (zdist > (FOG_DISTANCE))
-						    {
-						    	// if ((clr == SEA_COLOUR_SUNSET) & (angle>>2 == 3)) fogclr = 0b000000001111111;
-						    	if (CurrentProc->sunsetVal > 4)
-						    	{
-							    	int offset = (i<<5) + (i<<7) + yBuffer[i] + 2;
-							    	u16* base = CurrentProc->vid_page + offset;
-							    	fogclr = *base;
-							    }
-							    else fogclr = fogClrs[sunsetVal>>1];
-							    clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
-							}
-						}
-					    DrawVerticalLine(i, yBuffer[i], ylen, clr, CurrentProc->vid_page);
-					    yBuffer[i] = height_on_screen;
-					}
-					//cel shading bit
-					else if ((-ylen)>CEL_SHADE_THRESHOLD) {
-						*(u16*)((CurrentProc->vid_page) + (i<<5) + (i<<7) + (yBuffer[i] - 1)) = 0;
-					};
-				};
-			};
-		};
-	};
+// 			if (yBuffer[i]<MODE5_WIDTH) //don't bother drawing if the screen is filled - tiny speedup?
+// 			{
+// 				u8 height_on_screen = getScrHeight(offsetPoint.x, offsetPoint.y, altitude, zdist);
+// 				if (height_on_screen == 0) i += 4; //skip ahead a few columns if 0 height because it's probably off the bottom of the screen?
+// 				else {
+// 					int ylen = height_on_screen - yBuffer[i];
+// 					if (ylen>0){ //only draw if that line has been higher this screen
+// 						//only fetch the colour if we're actually drawing!
+// 						u16 clr = 0; //default to shadow
+// 						if (!((zdist == (SHADOW_DISTANCE)) && ((i < (MODE5_HEIGHT/2)+4) && (i > (MODE5_HEIGHT/2)-4)))) //conditions for being in shadow
+// 						{
+// 							clr = getPointColour(offsetPoint.x, offsetPoint.y, sunsetVal); //if not in shadow
+// 						    if (zdist > (FOG_DISTANCE))
+// 						    {
+// 						    	// if ((clr == SEA_COLOUR_SUNSET) & (angle>>2 == 3)) fogclr = 0b000000001111111;
+// 						    	if (CurrentProc->sunsetVal > 4)
+// 						    	{
+// 							    	int offset = (i<<5) + (i<<7) + yBuffer[i] + 2;
+// 							    	u16* base = CurrentProc->vid_page + offset;
+// 							    	fogclr = *base;
+// 							    }
+// 							    else fogclr = fogClrs[sunsetVal>>1];
+// 							    clr = iwram_clr_blend_asm(clr, fogclr, (zdist - (FOG_DISTANCE))>>5); //if in fog
+// 							}
+// 						}
+// 					    DrawVerticalLine(i, yBuffer[i], ylen, clr, CurrentProc->vid_page);
+// 					    yBuffer[i] = height_on_screen;
+// 					}
+// 					//cel shading bit
+// 					else if ((-ylen)>CEL_SHADE_THRESHOLD) {
+// 						*(u16*)((CurrentProc->vid_page) + (i<<5) + (i<<7) + (yBuffer[i] - 1)) = 0;
+// 					};
+// 				};
+// 			};
+// 		};
+// 	};
 
-	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
-};
+// 	CurrentProc->vid_page = vid_flip(CurrentProc->vid_page);
+// };
 
 static inline void DrawVerticalLine(int xcoord, int ystart, int ylen, u16 color, u16* vid_page){
 	// remove checks, assume it's good data

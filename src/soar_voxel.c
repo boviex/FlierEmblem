@@ -422,9 +422,10 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 		};
 	};
 
-	//prevent leaving the area
-	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
+	//prevent leaving the area // CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw + 7) & 0xf; // 
+	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerYaw = CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
 	else if (CurrentProc->sPlayerPosX < 0) CurrentProc->sPlayerPosX = 0;
+	
 	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
 	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
 
