@@ -116,6 +116,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sunsetVal = 0;
 	CurrentProc->sunTransition = 0;
 	CurrentProc->takeOffTransition = 1;
+	CurrentProc->landingTransition = 0;
 	// CurrentProc->animClock = 0;
 	#ifdef __PAGEFLIP__
 	    CurrentProc->vid_page = (u16*)(0x600A000);
@@ -321,6 +322,17 @@ static inline int getPtHeight_thumb(int ptx, int pty){
 int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 {
 
+	if (CurrentProc->oceanClock & 1)
+	{
+		if (CurrentProc->oceanClock < (0x41-4))	CurrentProc->oceanClock+=4;
+		else CurrentProc->oceanClock -= 1;
+	}
+	else
+	{
+		if (CurrentProc->oceanClock > 4) CurrentProc->oceanClock-=4;
+		else CurrentProc->oceanClock += 1;
+	}
+
 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
 	{
 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP)))
@@ -333,6 +345,22 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 		return 1;
 	}
 	else CurrentProc->takeOffTransition = 0;
+
+	if (CurrentProc->landingTransition)
+	{
+		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (2*CAMERA_Z_STEP)))
+		{
+			m4aSongNumStart(0x73);
+			EndLoop(CurrentProc);
+			return 0;
+		}
+		else
+		{
+			CurrentProc->sPlayerPosZ -= CAMERA_Z_STEP;
+			CurrentProc->sPlayerStepZ -= 1;
+			return 1;
+		}
+	};
 
 	int newx,  newy;
 
@@ -374,9 +402,7 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 	if (gKeyState.pressedKeys & START_BUTTON){
 		if (CurrentProc->location)
 		{
-			m4aSongNumStart(0x73);
-			EndLoop(CurrentProc);
-			return 0;
+			CurrentProc->landingTransition = TRUE;
 		}
 		else m4aSongNumStart(0x6c); //invalid sfx
 	};
@@ -413,7 +439,7 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
 		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
 	};
-	if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return 0; //don't bother rendering if only holding down
+	// if ((gKeyState.heldKeys == DPAD_DOWN) & (CurrentProc->sunTransition==0)) return 0; //don't bother rendering if only holding down
 
 
 	//set camera
@@ -440,11 +466,11 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 	};
 
 	//prevent leaving the area // CurrentProc->sPlayerYaw = (CurrentProc->sPlayerYaw + 7) & 0xf; // 
-	if (CurrentProc->sPlayerPosX > MAP_DIMENSIONS) CurrentProc->sPlayerYaw = CurrentProc->sPlayerPosX = MAP_DIMENSIONS;
-	else if (CurrentProc->sPlayerPosX < 0) CurrentProc->sPlayerPosX = 0;
+	if (CurrentProc->sPlayerPosX > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosX = MAP_DIMENSIONS-10;
+	else if (CurrentProc->sPlayerPosX < 10) CurrentProc->sPlayerPosX = 10;
 
-	if (CurrentProc->sPlayerPosY > MAP_DIMENSIONS) CurrentProc->sPlayerPosY = MAP_DIMENSIONS;
-	else if (CurrentProc->sPlayerPosY < 0) CurrentProc->sPlayerPosY = 0;
+	if (CurrentProc->sPlayerPosY > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosY = MAP_DIMENSIONS-10;
+	else if (CurrentProc->sPlayerPosY < 10) CurrentProc->sPlayerPosY = 10;
 
 	return 1;
 };

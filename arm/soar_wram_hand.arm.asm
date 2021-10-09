@@ -29,6 +29,7 @@
     .set MAX_Z_DISTANCE, 512
     .set MAX_Z_DISTANCE_LOG2, 9
     .set MAP_DIMENSIONS_LOG2, 10
+    .set MAP_DIMENSIONS, 1024
     .set SHADOW_DISTANCE, (MIN_Z_DISTANCE+16)
     .set FOG_DISTANCE, (MAX_Z_DISTANCE>>1)
 
@@ -39,7 +40,7 @@
 	.equ o_currproc, o_zdist+16
 	@ .equ o_sunsetval, o_zdist+20
 	.equ o_angle, o_zdist+20
-	@ .equ o_altitude, o_zdist+28
+	.equ o_oceanclock, o_zdist+24
 
 @ rewriting render by hand
 	.global	Render_arm
@@ -53,6 +54,10 @@ Render_arm:
 	push {r4-r11, lr}
 	sub sp, sp, #(MODE5_ROTATED_WIDTH + 40) @this is ybuffer
 	str r0, [sp, #o_currproc]
+
+	ldrb r1, [r0, #70] @oceanClock
+	strb r1, [sp, #o_oceanclock]
+
 	ldr r4, [r0, #60] @r4 = angle
 	ldr r5, [r0, #44] @r5 = posX
 	ldr r6, [r0, #48] @r6 = posY
@@ -156,23 +161,18 @@ Render_arm:
 	InnerLoop:
 	@offsetpoint = pleft+dx/dy
 	
-	@r4 = loop (goes up to 128) | altitude << 8 
-	
-	@r5 = dx
-	@r6 = dy
+	@r4 = loop (goes up to 128)
+	@r5 = ybuffer[i]
+	@r6 = ylen
 	@r7 = offsetpoint.x << 8
 	@r8 = offsetpoint.y << 8
 	@r9 = vid_page
 	@r10 = hostables
 	@r11 = zdist
 	@r12 = sunsetval
-	
-	@ mul r0, r4, r5
-	@ add r7, r10, r0, asr #7
-	@ and r0, r4, #0xFF
+	@r14 = altitude
 
 	add r7, r7, r0, asr #7 @increment offsetpoint.x
-	
 	add r8, r8, r1, asr #7 @increment offsetpoint.y
 
 	cmp r5, #MODE5_ROTATED_HEIGHT
@@ -181,16 +181,19 @@ Render_arm:
 
 	orr r0, r7, r8
 	cmp r0, #0
-	blt HeightZero
+	blt OutOfBounds
 	cmp r0, #(1024<<8)
-	bge HeightZero
+	bge OutOfBounds
 
 	asr r3, r7, #8
-	asr r1, r8, #8
-	add r1, r3, r1, lsl #(MAP_DIMENSIONS_LOG2)
+	asr r0, r8, #8
+	add r1, r3, r0, lsl #(MAP_DIMENSIONS_LOG2)
 	ldr r2, =heightMap
 	ldrb r1, [r2, r1]
 	@r1 = map height
+
+	cmp r1, #8
+	ble addOcean
 
 	@get screen height
 	GetScrHeight:
@@ -210,7 +213,6 @@ Render_arm:
 	ble CelShade
 	
 	@draw
-	@ and r0, r4, #0xff @get the loop index
 	ldr r3, [sp, #o_zdist] @interleave this
 
 	strb r1, [sp, r4] @update ybuffer if we're drawing
@@ -339,8 +341,23 @@ Render_arm:
 		mov r6, #1
 		b CheckFog
 
-	HeightZero: @skip other checks
+	OutOfBounds: @skip other checks
 		mov r1, #0
+		mov r2, #(MAP_DIMENSIONS)
+		sub r2, #1
+		lsr r3, r7, #8
+		lsr r0, r8, #8
+		and r3, r2 @mod 1024
+		and r0, r2 @mod 1024
+		ldr r2, =oceanMap
+		lsr r3, #1
+		@ asr r0, #1 @half size oceanmap is accounted for below
+		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
+		ldrb r3, [sp, #o_oceanclock]
+		add r0, r0, r3, lsr #0 @offset by this much?
+		ldrb r0, [r2, r0]
+		add r1, r1, r0, lsr #4 @new height
+
 		ldr r3, [sp, #o_zdist] @do we need to get rid of this?
 		add r2, r10, r1
 		@ lsr r14, r4, #8
@@ -357,9 +374,24 @@ Render_arm:
 		ldrgt r3, =#0x0820
 		
 		@draw
-		@ and r0, r4, #0xff @get the loop index
 		strb r1, [sp, r4] @update ybuffer if we're drawing
 		b CheckFog
+
+	addOcean:
+		@r1 = current height, we want to load up the ocean noisemap and modify
+		@impact should be heaviest at r1 = 0 decreasing as r1 goes to 8
+		ldr r2, =oceanMap
+		asr r3, #1 @half size oceanmap
+		@ asr r0, #1 @half size oceanmap is accounted for below
+		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
+		ldrb r3, [sp, #o_oceanclock]
+		add r0, r0, r3, lsr #0 @offset by this much?
+		ldrb r0, [r2, r0]
+		lsr r0, #4 @divide the new height by 8
+		lsr r2, r1, #2
+		add r1, r1, r0, lsr r2 @new height
+		b GetScrHeight
+
 
 	ApplyFog:
 		cmp r12, #4
@@ -369,7 +401,6 @@ Render_arm:
 		sub r2, r1, #FOG_DISTANCE
 
 		@r1 = the pixel above where we would be drawing
-		@ and r0, r4, #0xff @get the loop index
 		add r1, r9, r4, lsl #6
 		add r1, r1, r4, lsl #8
 		add r1, r1, r5, lsl #1

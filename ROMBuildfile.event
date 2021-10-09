@@ -201,6 +201,9 @@ colourMap:
 ALIGN 4
 colourMap_sunset:
 #incbin "graphics/Magvel_Map_sunset.img.bin"
+ALIGN 4
+oceanMap:
+#incbin "graphics/oceanmap.img.bin"
 
 ALIGN 4
 EndOfFreeSpace:
