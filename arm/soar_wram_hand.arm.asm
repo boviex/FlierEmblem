@@ -56,14 +56,15 @@ Render_arm:
 	str r0, [sp, #o_currproc]
 
 	ldrb r1, [r0, #70] @oceanClock
-	strb r1, [sp, #o_oceanclock]
-
 	ldr r4, [r0, #60] @r4 = angle
 	ldr r5, [r0, #44] @r5 = posX
 	ldr r6, [r0, #48] @r6 = posY
 	ldr r7, [r0, #84] @r7 = sunsetVal
 	ldr r8, [r0, #56] @r8 = altitude
 	ldr r9, [r0, #64] @r9 = vid_page
+
+	strb r1, [sp, #o_oceanclock]
+	
 	lsl r10, r8, #4
 	add r10, #(MAX_Z_DISTANCE - 128) @r10 = far plane
 	mov r0, #MIN_Z_DISTANCE
@@ -112,29 +113,25 @@ Render_arm:
 	ldr r3, =pleftmatrix
 	add r1, r11, r4, lsl #(MAX_Z_DISTANCE_LOG2+1)
 	ldrsh r0, [r3, r1]
-	add r0, r5 @r0 = pleft.x
-
 	rsb r2, r4, #0
 	and r2, #0xf @-angle
 	add r1, r11, r2, lsl #(MAX_Z_DISTANCE_LOG2+1)
 	ldrsh r1, [r3, r1]
-	add r1, r6 @r1 = pleft.y 
-
+	add r0, r5 @r0 = pleft.x
 	@get pright
 	add r4, #4
+	add r1, r6 @r1 = pleft.y 
 	and r4, #0xf @angle is now tangent
 	add r2, r11, r4, lsl #(MAX_Z_DISTANCE_LOG2+1)
 	ldrsh r2, [r3, r2]
-	add r2, r5 @r2 = pright.x
-
 	rsb r4, r4, #0
 	and r4, #0xf
+	add r2, r5 @r2 = pright.x
 	add r4, r11, r4, lsl #(MAX_Z_DISTANCE_LOG2+1)
 	ldrsh r3, [r3, r4]
-	add r3, r6 @r3 = pright.y
-
 	@calc dx and dy, we no longer need r4 and r5
 	sub r5, r2, r0 @r5 = dx
+	add r3, r6 @r3 = pright.y
 	sub r6, r3, r1 @r6 = dy
 
 	lsl r7, r0, #8 @save pleft.x << 8 for precision
@@ -185,13 +182,15 @@ Render_arm:
 	cmp r0, #(1024<<8)
 	bge OutOfBounds
 
+	ldr r2, =heightMap
 	asr r3, r7, #8
 	asr r0, r8, #8
 	add r1, r3, r0, lsl #(MAP_DIMENSIONS_LOG2)
-	ldr r2, =heightMap
+
 	ldrb r1, [r2, r1]
 	@r1 = map height
 
+	@pipeline stall
 	cmp r1, #8
 	ble addOcean
 
@@ -208,16 +207,15 @@ Render_arm:
 	add r2, r2, r14, lsl #16
 	lsr r3, r11, #1 @ zdist is in r11
 	ldrb r1, [r2, r3, lsl #8]
-
+	@pipeline stall
 	subs r6, r1, r5 @hos -= ybuffer[i]
 	ble CelShade
 	
 	@draw
-	ldr r3, [sp, #o_zdist] @interleave this
 
 	strb r1, [sp, r4] @update ybuffer if we're drawing
 		@if shadow just #0000
-		cmp r3, #SHADOW_DISTANCE
+		cmp r11, #SHADOW_DISTANCE
 		beq CheckShadow
 		@if sunsetval > 0, get sunsetclr into r3
 		@if sunsetval < 8, get clr into r1
@@ -236,8 +234,7 @@ Render_arm:
 	@now handle fog
 	CheckFog:
 	@r5 is ystart, r6 is ylen
-	ldr r1, [sp, #o_zdist]
-	cmp r1, #FOG_DISTANCE
+	cmp r11, #FOG_DISTANCE
 	bgt ApplyFog
 	@output clr into r3
 
@@ -290,7 +287,7 @@ Render_arm:
 
 	endInnerLoop:
 	@now that inner loops are done we can have r10, r11 back
-	ldr r11, [sp, #o_zdist]
+	@ ldr r11, [sp, #o_zdist] 
 	ldr r10, [sp, #o_maxzdist]
 
 	@ inc_zstep = ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
@@ -306,12 +303,12 @@ Render_arm:
 	ble Outer_Loop
 
 	@@vid_flip
+		ldr r11, [sp, #o_currproc]
 		ldr r12, =vid_flip
 		@ ldr r0, [sp, #o_vidpage]
 		mov r0, r9
 		mov lr, pc
 		bx r12
-		ldr r11, [sp, #o_currproc]
 		str r0, [r11, #64] @update currentproc->vid_page
 
 	@restore stack and return
@@ -342,7 +339,6 @@ Render_arm:
 		b CheckFog
 
 	OutOfBounds: @skip other checks
-		mov r1, #0
 		mov r2, #(MAP_DIMENSIONS)
 		sub r2, #1
 		lsr r3, r7, #8
@@ -354,41 +350,40 @@ Render_arm:
 		@ asr r0, #1 @half size oceanmap is accounted for below
 		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
 		ldrb r3, [sp, #o_oceanclock]
+		mov r1, #0
 		add r0, r0, r3, lsr #0 @offset by this much?
 		ldrb r0, [r2, r0]
 		add r1, r1, r0, lsr #4 @new height
-
-		ldr r3, [sp, #o_zdist] @do we need to get rid of this?
 		add r2, r10, r1
 		@ lsr r14, r4, #8
 		add r2, r2, r14, lsl #16
-		lsr r3, #1
+		lsr r3, r11, #1
 		ldrb r1, [r2, r3, lsl #8]
-
+		@pipeline stall
 		subs r6, r1, r5 @hos -= ybuffer[i]
 		ble CelShade
 
 		@ SeaClr:
 		cmp r12, #3
+		strb r1, [sp, r4] @update ybuffer if we're drawing
 		ldrle r3, =#0x1840
 		ldrgt r3, =#0x0820
 		
 		@draw
-		strb r1, [sp, r4] @update ybuffer if we're drawing
 		b CheckFog
 
 	addOcean:
 		@r1 = current height, we want to load up the ocean noisemap and modify
 		@impact should be heaviest at r1 = 0 decreasing as r1 goes to 8
-		ldr r2, =oceanMap
 		asr r3, #1 @half size oceanmap
 		@ asr r0, #1 @half size oceanmap is accounted for below
 		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
 		ldrb r3, [sp, #o_oceanclock]
+		ldr r2, =oceanMap
 		add r0, r0, r3, lsr #0 @offset by this much?
 		ldrb r0, [r2, r0]
-		lsr r0, #4 @divide the new height by 8
 		lsr r2, r1, #2
+		lsr r0, #4 @divide the new height by 8
 		add r1, r1, r0, lsr r2 @new height
 		b GetScrHeight
 
@@ -398,7 +393,7 @@ Render_arm:
 		blt DayFog
 
 		SunsetFog:
-		sub r2, r1, #FOG_DISTANCE
+		sub r2, r11, #FOG_DISTANCE
 
 		@r1 = the pixel above where we would be drawing
 		add r1, r9, r4, lsl #6
@@ -411,30 +406,30 @@ Render_arm:
 		mov r0, r3
 		
 		InlineBlend:
-		    push {r4-r10}
-		    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
-		    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
+		    ldr     r3, =0x03E07C1F         @ MASKLO: -g-|b-r
+		    push {r4-r7}
+		    mov     r6, r3, lsl #5          @ MASKHI: g-|b-r-
 			@ --- -g-|b-r
 	        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
-	        and     r5, r7, r1              @ y: -g-|b-r
+	        and     r5, r3, r1              @ y: -g-|b-r
 	        sub     r5, r5, r4, lsr #5      @ z: y-x
 	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-	        and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
+	        and     r7, r3, r4, lsr #5     @ blend(-g-|b-r)            
 	        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
 	        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
-	        and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
+	        and     r5, r3, r1, ror #16     @ y: -g-|b-r (ror16)
 	        sub     r5, r5, r4, lsr #5      @ z: y-x
 	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-	        and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
+	        and     r4, r3, r4, lsr #5      @ blend(-g-|b-r (ror16))
 	        @ --- mix -g-|b-r and b-r|-g-
-	        orr     r0, r10, r4, ror #16
+	        orr     r0, r7, r4, ror #16
 	        lsl r0, #16
 	        lsr r3, r0, #16 @@wipe top 2 bytes???
-	        pop {r4-r10}
+	        pop {r4-r7}
 		b DrawLine
 
 		DayFog:
-		sub r2, r1, #FOG_DISTANCE
+		sub r2, r11, #FOG_DISTANCE
 		ldr r1, =#0x7f74
 		mov r0, r3
 		lsr r2, #3
@@ -468,26 +463,26 @@ Render_arm:
 
 				@colour blending inline
 				lsl     r2, r12, #2               @alpha x 4
-			    push {r4-r10}
-			    ldr     r7, =0x03E07C1F         @ MASKLO: -g-|b-r
-			    mov     r6, r7, lsl #5          @ MASKHI: g-|b-r-
+			    ldr     r3, =0x03E07C1F         @ MASKLO: -g-|b-r
+			    push {r4-r7}
+			    mov     r6, r3, lsl #5          @ MASKHI: g-|b-r-
 				@ --- -g-|b-r
 		        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
-		        and     r5, r7, r1              @ y: -g-|b-r
+		        and     r5, r3, r1              @ y: -g-|b-r
 		        sub     r5, r5, r4, lsr #5      @ z: y-x
 		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		        and     r10, r7, r4, lsr #5     @ blend(-g-|b-r)            
+		        and     r7, r3, r4, lsr #5     @ blend(-g-|b-r)            
 		        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
 		        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
-		        and     r5, r7, r1, ror #16     @ y: -g-|b-r (ror16)
+		        and     r5, r3, r1, ror #16     @ y: -g-|b-r (ror16)
 		        sub     r5, r5, r4, lsr #5      @ z: y-x
 		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		        and     r4, r7, r4, lsr #5      @ blend(-g-|b-r (ror16))
+		        and     r4, r3, r4, lsr #5      @ blend(-g-|b-r (ror16))
 		        @ --- mix -g-|b-r and b-r|-g-
-		        orr     r0, r10, r4, ror #16
+		        orr     r0, r7, r4, ror #16
 		        lsl r0, #16
 		        lsr r3, r0, #16 @@wipe top 2 bytes???
-		        pop {r4-r10}
+		        pop {r4-r7}
 			b CheckFog
 
 
