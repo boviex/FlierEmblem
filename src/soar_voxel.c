@@ -4,7 +4,7 @@
 #include "wm_nodes.h"
 
 #define IRAM_NewWMLoop 0x3007000 //using as a safe??? place 
-#define SIZEOF_NewWMLoop 0x800 //to be safe?
+#define SIZEOF_NewWMLoop 0xa00 //to be safe?
 
 //procs
 

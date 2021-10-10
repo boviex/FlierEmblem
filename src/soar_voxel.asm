@@ -576,7 +576,7 @@ SetUpNewWMGraphics:
 	lsls	r3, r3, #12	@ tmp151, tmp152,
 	orrs	r3, r2	@ tmp154, tmp155
 @ src/soar_voxel.c:128: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
-	movs	r2, #128	@ tmp204,
+	movs	r2, #160	@ tmp204,
 @ src/soar_voxel.c:117: 	CurrentProc->sunTransition = 0;
 	strh	r3, [r4, #62]	@ tmp154, MEM <unsigned short> [(void *)CurrentProc_11(D) + 68B]
 @ src/soar_voxel.c:128: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);

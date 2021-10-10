@@ -82,8 +82,8 @@ Render_arm:
 		ldr r0, [r1, r2, lsl #2] @r0 = sky pointer
 		add r1, r4, r4, lsl #2
 		lsl r1, r1, #9
-		add r1, r1, r8 @, lsl #1
-		sub r0, r0, #400
+		add r1, r1, r8, lsl #1
+		sub r0, r0, #110 @horizon
 		add r0, r0, r1, lsl #2
 		mov r1, r9
 		ldr r2, =(MODE5_ROTATED_HEIGHT * MODE5_ROTATED_WIDTH / 2)
@@ -212,7 +212,7 @@ Render_arm:
 	ble CelShade
 	
 	@draw
-
+	UpdateYBuffer:
 	strb r1, [sp, r4] @update ybuffer if we're drawing
 		@if shadow just #0000
 		cmp r11, #SHADOW_DISTANCE
@@ -273,21 +273,18 @@ Render_arm:
 	bge DrawPx
 	@ b SkipDraw
 
-
-
 	SkipDraw:
 	add r4, #1
 	cmp r4, #MODE5_ROTATED_WIDTH
 	bge endInnerLoop
 	@preload for next loop
-	ldrb r5, [sp, r4] @ybuffer[i], interleave the ldrb so we don't have to wait for r0
+	ldrb r5, [sp, r4] @ybuffer[i]
 	ldr r0, [sp, #o_dx]
 	ldr r1, [sp, #o_dy]
 	b InnerLoop
 
 	endInnerLoop:
-	@now that inner loops are done we can have r10, r11 back
-	@ ldr r11, [sp, #o_zdist] 
+	@now that inner loops are done we can have r10 back
 	ldr r10, [sp, #o_maxzdist]
 
 	@ inc_zstep = ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
@@ -328,7 +325,6 @@ Render_arm:
 		mov r3, #0
 		b DrawLine
 
-
 	CelShade:
 		rsb r6, r6, #0 @-ylen
 		cmp r6, #6 @ cel shade threshold
@@ -337,6 +333,24 @@ Render_arm:
 		mov r3, #0x0000 @border clr
 		mov r6, #1
 		b CheckFog
+
+	CelShade_ocean:
+		rsb r6, r6, #0 @-ylen
+		cmp r6, #2 @ cel shade threshold
+		bge SkipDraw
+		cmp r11, #128
+		ble SkipDraw
+		sub r5, #1
+		mov r6, #1
+		@r3 = the pixel we are drawing over
+		add r3, r9, r4, lsl #6
+		add r3, r3, r4, lsl #8
+		add r3, r3, r5, lsl #1
+		ldrh r3, [r3]
+
+		sub r2, r11, #32
+		lsr r2, #1
+		b SunsetFog
 
 	OutOfBounds: @skip other checks
 		mov r2, #(MAP_DIMENSIONS)
@@ -355,13 +369,12 @@ Render_arm:
 		ldrb r0, [r2, r0]
 		add r1, r1, r0, lsr #4 @new height
 		add r2, r10, r1
-		@ lsr r14, r4, #8
 		add r2, r2, r14, lsl #16
 		lsr r3, r11, #1
 		ldrb r1, [r2, r3, lsl #8]
 		@pipeline stall
 		subs r6, r1, r5 @hos -= ybuffer[i]
-		ble CelShade
+		ble CelShade_ocean
 
 		@ SeaClr:
 		cmp r12, #3
@@ -373,6 +386,8 @@ Render_arm:
 		b CheckFog
 
 	addOcean:
+		@r0 = y
+		@r3 = x
 		@r1 = current height, we want to load up the ocean noisemap and modify
 		@impact should be heaviest at r1 = 0 decreasing as r1 goes to 8
 		asr r3, #1 @half size oceanmap
@@ -385,15 +400,23 @@ Render_arm:
 		lsr r2, r1, #2
 		lsr r0, #4 @divide the new height by 8
 		add r1, r1, r0, lsr r2 @new height
-		b GetScrHeight
+		@getscrheight
+		add r2, r10, r1
+		add r2, r2, r14, lsl #16
+		lsr r3, r11, #1 @ zdist is in r11
+		ldrb r1, [r2, r3, lsl #8]
+		@pipeline stall
+		subs r6, r1, r5 @hos -= ybuffer[i]
+		ble CelShade_ocean
+		b UpdateYBuffer
 
 
 	ApplyFog:
 		cmp r12, #4
+		sub r2, r11, #FOG_DISTANCE
 		blt DayFog
 
 		SunsetFog:
-		sub r2, r11, #FOG_DISTANCE
 
 		@r1 = the pixel above where we would be drawing
 		add r1, r9, r4, lsl #6
@@ -429,7 +452,6 @@ Render_arm:
 		b DrawLine
 
 		DayFog:
-		sub r2, r11, #FOG_DISTANCE
 		ldr r1, =#0x7f74
 		mov r0, r3
 		lsr r2, #3
