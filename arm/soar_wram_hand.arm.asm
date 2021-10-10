@@ -394,16 +394,19 @@ Render_arm:
 	        pop {r4-r7}
 	    ldr r0, =(160<<1)
 	    strh r3, [r6]
-	    @draw 2px at a time?
-    	add r4, #2
+	    @draw 3px at a time?
+    	add r4, #3
 		cmp r4, #MODE5_ROTATED_WIDTH
 		bge endInnerLoop
 	    strh r3, [r6, r0] @only draw if definitely ok to
+	    lsl r0, #1
+	    strh r3, [r6, r0]
 		@preload for next loop
 		ldr r0, [sp, #o_dx]
 		ldr r1, [sp, #o_dy]
-		add r7, r7, r0, asr #7 @increment offsetpoint.x
-		add r8, r8, r1, asr #7 @increment offsetpoint.y
+		add r7, r7, r0, asr #6 @increment offsetpoint.x
+		add r8, r8, r1, asr #6 @increment offsetpoint.y
+
 		ldrb r5, [sp, r4] @ybuffer[i]
 		b InnerLoop
 

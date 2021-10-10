@@ -1,0 +1,22 @@
+#include "drumfix_fe8.event"
+
+
+#ifndef SongTableOffset
+  #define SongTableOffset  0x224470
+  #define SongTable(index,SongPointer,Group) "PUSH; ORG SongTableOffset+(8*index); POIN SongPointer; SHORT Group Group; POP"
+#endif
+// PUSH
+// ORG 0x1001860
+// #incbin "bin/custom_piano.bin"
+// POP
+
+voicegroup000:
+#incbin "FE8_NI_Map_custompiano.bin"
+
+
+//arr by Winged Souls
+// SongTable(0x58,orasSoaringDayPiano_FINAL,1)
+// #include "orasSoaringDayPiano_FINAL.event"
+
+SongTable(0x58, falcon_FINAL, 1)
+#include "falcon_FINAL.event"

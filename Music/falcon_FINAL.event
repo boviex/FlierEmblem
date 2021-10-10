@@ -1188,7 +1188,7 @@ falcon_FINAL_2_B2:
 falcon_FINAL_3:
 	BYTE	KEYSH   falcon_FINAL_key+0
 // 000   ----------------------------------------
-	BYTE		VOICE   50
+	BYTE		VOICE   48
 	BYTE		MODT    0
 	BYTE		LFOS    44
 	BYTE		VOL     39*falcon_FINAL_mvl/mxv
@@ -1835,7 +1835,7 @@ falcon_FINAL_3_B2:
 falcon_FINAL_4:
 	BYTE	KEYSH   falcon_FINAL_key+0
 // 000   ----------------------------------------
-	BYTE		VOICE   41
+	BYTE		VOICE   49
 	BYTE		MODT    0
 	BYTE		LFOS    44
 	BYTE		VOL     39*falcon_FINAL_mvl/mxv
