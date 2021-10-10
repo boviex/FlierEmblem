@@ -4542,12 +4542,12 @@ falcon_windy_FINAL_7_B1:
 	BYTE	W96
 // 041   ----------------------------------------
 	BYTE	W96
+	BYTE		EOT     Cn3 
 	BYTE	GoTo
 	 POIN2	falcon_windy_FINAL_7_B1
 falcon_windy_FINAL_7_B2:
 // 042   ----------------------------------------
 	BYTE	W96
-	BYTE		EOT     Cn3 
 // 043   ----------------------------------------
 	BYTE	W96
 // 044   ----------------------------------------

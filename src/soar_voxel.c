@@ -110,8 +110,8 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	CurrentProc->sPlayerPosZ = CAMERA_MIN_HEIGHT+(2 * CAMERA_Z_STEP);
 	CurrentProc->sPlayerStepZ = 2;
 	CurrentProc->sPlayerYaw = a_SE;
-	CurrentProc->ShowMap = TRUE;
-	CurrentProc->ShowFPS = TRUE;
+	CurrentProc->ShowMap = FALSE;
+	CurrentProc->ShowFPS = FALSE;
 	CurrentProc->location = Frelia;
 	CurrentProc->sunsetVal = 0;
 	CurrentProc->sunTransition = 0;
@@ -150,7 +150,6 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	g_REG_BG2PD=0x00;	//
 	g_REG_BG2X=0x9e40;	//offset 'horizontal' can bump 0x180 each way
 	g_REG_BG2Y = 0x180;     //can bump it 0x180 each way
-	// g_REG_BG2CNT = 0x0e00; //set to lowest priority/t
 	//stop map music??
 	Sound_FadeSongOut(10);
 	LoadSprite();
@@ -226,6 +225,9 @@ void MoveLord(SoarProc* CurrentProc){
 
 	VBlankIntrWait();
 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
+	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
+	VBlankIntrWait();
+	LoadObjUIGfx();
 	RefreshWMProc(wmproc);
 
 	// 800cc18 is the command for spawnlord, loads up the event proc and cursor and gets r3 = char id, r4 = index in gmap entity table?, r5 = location id
@@ -254,12 +256,8 @@ void EndLoop(SoarProc* CurrentProc){
 	SetInterrupt_LCDVBlank(OnVBlankMain);
 	int vid_page = CurrentProc->vid_page;
 	VBlankIntrWait();
-  	CpuFastFill16(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
-  	vid_flip(vid_page);
-  	vid_page ^= 0xa000;
-  	VBlankIntrWait();
-  	CpuFastFill16(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
-  	vid_flip(vid_page);
+  	CpuFastFill(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
+  	CurrentProc->vid_page = vid_flip(vid_page);
   	
   	VBlankIntrWait();
 	g_LCDIOBuffer = DISPCNT_MODE_5; //disable all layers
@@ -272,11 +270,6 @@ void EndLoop(SoarProc* CurrentProc){
 
 	//actually ending the loop
 	BreakProcLoop(CurrentProc);
-	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
-	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
-	LoadObjUIGfx();
-	VBlankIntrWait();
-	//8099e68 called after exiting manage items
 	// REG_WAITCNT = 0x45b7; //restore this
 };
 

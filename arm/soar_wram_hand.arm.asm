@@ -261,7 +261,7 @@ Render_arm:
 	@ lslne r0, r6, #1
 	@ strhne r3, [r1, r0] @draw another pixel at the end but don't increment r1
 	
-	.equ DUFFNUM, 16 @borrowing cam's implementation
+	.equ DUFFNUM, 8 @borrowing cam's implementation
 	@ orr r3, r3, r3, lsl #16 @can use this to write 2px at a time?
 	and r0, r6, #(DUFFNUM - 1)
 	rsb r0, r0, #DUFFNUM @r6 % duffnum
@@ -404,15 +404,16 @@ Render_arm:
 		@preload for next loop
 		ldr r0, [sp, #o_dx]
 		ldr r1, [sp, #o_dy]
+		
+		ldrb r5, [sp, r4] @ybuffer[i]
+
 		add r7, r7, r0, asr #6 @increment offsetpoint.x
 		add r8, r8, r1, asr #6 @increment offsetpoint.y
 
-		ldrb r5, [sp, r4] @ybuffer[i]
 		b InnerLoop
 
 	OutOfBounds: @skip other checks
-		mov r2, #(MAP_DIMENSIONS)
-		sub r2, #1
+		ldr r2, =#(MAP_DIMENSIONS-1)
 		lsr r3, r7, #8
 		lsr r0, r8, #8
 		and r3, r2 @mod 1024
@@ -422,11 +423,11 @@ Render_arm:
 		@ asr r0, #1 @half size oceanmap is accounted for below
 		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
 		ldrb r3, [sp, #o_oceanclock]
-		mov r1, #0
+		@ mov r1, #0
 		add r0, r0, r3, lsr #0 @offset by this much?
 		ldrb r0, [r2, r0]
-		add r1, r1, r0, lsr #4 @new height
-		add r2, r10, r1
+		@ lsr r1, r1, r0, lsr #4 @new height
+		add r2, r10, r0, lsr #4
 		add r2, r2, r14, lsl #16
 		lsr r3, r11, #1
 		ldrb r1, [r2, r3, lsl #8]
