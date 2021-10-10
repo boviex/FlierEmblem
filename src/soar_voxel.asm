@@ -512,7 +512,7 @@ SetUpNewWMGraphics:
 @ src/soar_voxel.c:108: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	ldr	r3, .L37	@ tmp126,
 @ src/soar_voxel.c:106: void SetUpNewWMGraphics(SoarProc* CurrentProc){
-	movs	r4, r0	@ CurrentProc, tmp198
+	movs	r4, r0	@ CurrentProc, tmp197
 @ src/soar_voxel.c:108: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	ldr	r0, [r3]	@ _1, MEM[(volatile int *)50352776B]
 @ src/soar_voxel.c:106: void SetUpNewWMGraphics(SoarProc* CurrentProc){
@@ -526,7 +526,7 @@ SetUpNewWMGraphics:
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	movs	r1, #240	@,
 @ src/soar_voxel.c:108: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
-	asrs	r0, r0, #8	@ tmp132, tmp199,
+	asrs	r0, r0, #8	@ tmp132, tmp198,
 @ src/soar_voxel.c:108: 	CurrentProc->sPlayerPosX = (WM_CURSOR[0]*MAP_DIMENSIONS/480)>>8; //x coord mapped to 1024 map size
 	str	r0, [r4, #44]	@ tmp132, CurrentProc_11(D)->sPlayerPosX
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
@@ -555,7 +555,7 @@ SetUpNewWMGraphics:
 	adds	r3, r3, #4	@ tmp145,
 	str	r3, [r4, #60]	@ tmp145, CurrentProc_11(D)->sPlayerYaw
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
-	asrs	r0, r0, #8	@ tmp139, tmp200,
+	asrs	r0, r0, #8	@ tmp139, tmp199,
 @ src/soar_voxel.c:122: 	    CurrentProc->vid_page = (u16*)(0x600A000);
 	ldr	r3, .L37+8	@ tmp146,
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
@@ -576,14 +576,14 @@ SetUpNewWMGraphics:
 	lsls	r3, r3, #12	@ tmp151, tmp152,
 	orrs	r3, r2	@ tmp154, tmp155
 @ src/soar_voxel.c:128: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
-	movs	r2, #160	@ tmp204,
+	movs	r2, #160	@ tmp203,
 @ src/soar_voxel.c:117: 	CurrentProc->sunTransition = 0;
 	strh	r3, [r4, #62]	@ tmp154, MEM <unsigned short> [(void *)CurrentProc_11(D) + 68B]
 @ src/soar_voxel.c:128: 	CpuFastCopy(NewWMLoop, IRAM_NewWMLoop, SIZEOF_NewWMLoop);
 	ldr	r0, .L37+12	@ tmp159,
 	ldr	r1, .L37+16	@,
 	ldr	r4, .L37+20	@ tmp160,
-	lsls	r2, r2, #2	@, tmp204,
+	lsls	r2, r2, #2	@, tmp203,
 	bl	.L35		@
 @ src/soar_voxel.c:130: 	VBlankIntrWait();
 	ldr	r3, .L37+24	@ tmp161,
@@ -647,31 +647,28 @@ SetUpNewWMGraphics:
 	bl	.L18		@
 @ src/soar_voxel.c:156: 	LoadSprite();
 	bl	LoadSprite		@
-@ src/soar_voxel.c:157: 	m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
-	ldr	r6, .L37+80	@ tmp186,
-	movs	r0, #78	@,
-	bl	.L40		@
 @ src/soar_voxel.c:158: 	m4aSongNumStart(0x58); //unused slot
 	movs	r0, #88	@,
-	bl	.L40		@
+	ldr	r3, .L37+80	@ tmp186,
+	bl	.L18		@
 @ src/soar_voxel.c:159: 	gCurrentMusic = 0x58;
-	movs	r2, #88	@ tmp189,
+	movs	r2, #88	@ tmp188,
 @ src/soar_voxel.c:160: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
-	movs	r1, #192	@ tmp207,
+	movs	r1, #192	@ tmp206,
 @ src/soar_voxel.c:159: 	gCurrentMusic = 0x58;
-	ldr	r3, .L37+84	@ tmp188,
+	ldr	r3, .L37+84	@ tmp187,
 @ src/soar_voxel.c:160: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
-	lsls	r1, r1, #19	@, tmp207,
+	lsls	r1, r1, #19	@, tmp206,
 @ src/soar_voxel.c:159: 	gCurrentMusic = 0x58;
-	strh	r2, [r3]	@ tmp189, MEM[(volatile u16 *)33705568B]
+	strh	r2, [r3]	@ tmp188, MEM[(volatile u16 *)33705568B]
 @ src/soar_voxel.c:160: 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 	add	r0, sp, #12	@,,
 	ldr	r2, .L37+88	@,
 	str	r5, [sp, #12]	@ tmp142, tmp
 	bl	.L35		@
 @ src/soar_voxel.c:162: 	SetInterrupt_LCDVBlank(SoarVBlankInterrupt);
-	ldr	r0, .L37+92	@ tmp196,
-	ldr	r3, .L37+96	@ tmp197,
+	ldr	r0, .L37+92	@ tmp195,
+	ldr	r3, .L37+96	@ tmp196,
 	bl	.L18		@
 @ src/soar_voxel.c:163: };
 	add	sp, sp, #20	@,,
@@ -723,20 +720,20 @@ EndLoop:
 	movs	r5, r0	@ CurrentProc, tmp141
 	sub	sp, sp, #20	@,,
 @ src/soar_voxel.c:254: 	SetInterrupt_LCDVBlank(OnVBlankMain);
-	ldr	r0, .L42	@ tmp119,
-	ldr	r3, .L42+4	@ tmp120,
+	ldr	r0, .L41	@ tmp119,
+	ldr	r3, .L41+4	@ tmp120,
 	bl	.L18		@
 @ src/soar_voxel.c:256: 	VBlankIntrWait();
-	ldr	r4, .L42+8	@ tmp121,
+	ldr	r4, .L41+8	@ tmp121,
 @ src/soar_voxel.c:255: 	int vid_page = CurrentProc->vid_page;
 	ldr	r6, [r5, #64]	@ _1, CurrentProc_5(D)->vid_page
 @ src/soar_voxel.c:256: 	VBlankIntrWait();
 	bl	.L35		@
 @ src/soar_voxel.c:257:   	CpuFastFill16(0, vid_page, (MODE5_WIDTH*MODE5_HEIGHT)<<1); //make it black
 	movs	r3, #0	@ tmp145,
-	ldr	r7, .L42+12	@ tmp123,
+	ldr	r7, .L41+12	@ tmp123,
 	str	r3, [sp, #8]	@ tmp145, tmp
-	ldr	r3, .L42+16	@ tmp125,
+	ldr	r3, .L41+16	@ tmp125,
 	movs	r2, r7	@, tmp123
 	movs	r1, r6	@, _1
 	add	r0, sp, #8	@,,
@@ -767,21 +764,21 @@ EndLoop:
 	bl	.L35		@
 @ src/soar_voxel.c:265: 	g_LCDIOBuffer = DISPCNT_MODE_5; //disable all layers
 	movs	r2, #5	@ tmp134,
-	ldr	r3, .L42+20	@ tmp133,
+	ldr	r3, .L41+20	@ tmp133,
 @ src/soar_voxel.c:274: 	BreakProcLoop(CurrentProc);
 	movs	r0, r5	@, CurrentProc
 @ src/soar_voxel.c:265: 	g_LCDIOBuffer = DISPCNT_MODE_5; //disable all layers
 	strh	r2, [r3]	@ tmp134, MEM[(volatile vu16 *)50344064B]
 @ src/soar_voxel.c:274: 	BreakProcLoop(CurrentProc);
-	ldr	r3, .L42+24	@ tmp136,
+	ldr	r3, .L41+24	@ tmp136,
 	bl	.L18		@
 @ src/soar_voxel.c:275: 	Proc* wmproc = ProcFind((ProcInstruction*)(0x8a3d748)); //worldmap
-	ldr	r3, .L42+28	@ tmp138,
-	ldr	r0, .L42+32	@,
+	ldr	r3, .L41+28	@ tmp138,
+	ldr	r0, .L41+32	@,
 	bl	.L18		@
 @ src/soar_voxel.c:276: 	ProcGoto(wmproc, 0x17); //goto the label that fades out of black
 	movs	r1, #23	@,
-	ldr	r3, .L42+36	@ tmp139,
+	ldr	r3, .L41+36	@ tmp139,
 	bl	.L18		@
 @ src/soar_voxel.c:277: 	LoadObjUIGfx();
 	bl	LoadObjUIGfx		@
@@ -793,9 +790,9 @@ EndLoop:
 	pop	{r4, r5, r6, r7}
 	pop	{r0}
 	bx	r0
-.L43:
-	.align	2
 .L42:
+	.align	2
+.L41:
 	.word	OnVBlankMain
 	.word	SetInterrupt_LCDVBlank
 	.word	VBlankIntrWait
@@ -821,83 +818,83 @@ BumpScreen:
 	push	{r4, lr}	@
 @ src/soar_voxel.c:284: 	switch (direction){
 	cmp	r0, #2	@ direction,
-	beq	.L45		@,
-	bgt	.L46		@,
+	beq	.L44		@,
+	bgt	.L45		@,
 	cmp	r0, #1	@ direction,
-	bls	.L44		@,
-.L47:
+	bls	.L43		@,
+.L46:
 	bl	BumpScreen.part.0		@
 @ src/soar_voxel.c:315: };
-	b	.L44		@
-.L46:
+	b	.L43		@
+.L45:
 @ src/soar_voxel.c:284: 	switch (direction){
 	cmp	r0, #3	@ direction,
-	bne	.L47		@,
+	bne	.L46		@,
 @ src/soar_voxel.c:300: 			g_REG_BG2Y=0x0500;	//offset horizontal
 	movs	r2, #160	@ tmp132,
-	ldr	r3, .L51	@ tmp131,
+	ldr	r3, .L50	@ tmp131,
 	lsls	r2, r2, #3	@ tmp132, tmp132,
 	str	r2, [r3]	@ tmp132, MEM[(volatile vu32 *)50344148B]
 @ src/soar_voxel.c:301: 			g_REG_BG2X=0x9c40;
-	ldr	r3, .L51+4	@ tmp133,
-	ldr	r2, .L51+8	@ tmp134,
+	ldr	r3, .L50+4	@ tmp133,
+	ldr	r2, .L50+8	@ tmp134,
 	str	r2, [r3]	@ tmp134, MEM[(volatile vu32 *)50344144B]
 @ src/soar_voxel.c:302: 			g_REG_BG2PA=0xFFF2; 
 	movs	r2, #14	@ tmp136,
-	ldr	r3, .L51+12	@ tmp135,
+	ldr	r3, .L50+12	@ tmp135,
 	rsbs	r2, r2, #0	@ tmp136, tmp136
 	strh	r2, [r3]	@ tmp136, MEM[(volatile vu16 *)50344136B]
 @ src/soar_voxel.c:303: 			g_REG_BG2PB=0xFF1C;
-	ldr	r3, .L51+16	@ tmp138,
+	ldr	r3, .L50+16	@ tmp138,
 	subs	r2, r2, #214	@ tmp139,
 	strh	r2, [r3]	@ tmp139, MEM[(volatile vu16 *)50344138B]
 @ src/soar_voxel.c:304: 			g_REG_BG2PC=0x0080;
-	ldr	r3, .L51+20	@ tmp141,
+	ldr	r3, .L50+20	@ tmp141,
 	adds	r2, r2, #101	@ tmp142,
 	adds	r2, r2, #255	@ tmp142,
 	strh	r2, [r3]	@ tmp142, MEM[(volatile vu16 *)50344140B]
 @ src/soar_voxel.c:305: 			g_REG_BG2PD=0xFFF8;
-	ldr	r3, .L51+24	@ tmp144,
+	ldr	r3, .L50+24	@ tmp144,
 	subs	r2, r2, #136	@ tmp145,
-	b	.L50		@
-.L45:
+	b	.L49		@
+.L44:
 @ src/soar_voxel.c:292: 			g_REG_BG2Y=0x180;	//offset horizontal
 	movs	r2, #192	@ tmp116,
-	ldr	r3, .L51	@ tmp115,
+	ldr	r3, .L50	@ tmp115,
 	lsls	r2, r2, #1	@ tmp116, tmp116,
 	str	r2, [r3]	@ tmp116, MEM[(volatile vu32 *)50344148B]
 @ src/soar_voxel.c:293: 			g_REG_BG2X=0x9280;
-	ldr	r3, .L51+4	@ tmp117,
-	ldr	r2, .L51+28	@ tmp118,
+	ldr	r3, .L50+4	@ tmp117,
+	ldr	r2, .L50+28	@ tmp118,
 	str	r2, [r3]	@ tmp118, MEM[(volatile vu32 *)50344144B]
 @ src/soar_voxel.c:294: 			g_REG_BG2PA=0x000E; 
 	movs	r2, #14	@ tmp120,
-	ldr	r3, .L51+12	@ tmp119,
+	ldr	r3, .L50+12	@ tmp119,
 	strh	r2, [r3]	@ tmp120, MEM[(volatile vu16 *)50344136B]
 @ src/soar_voxel.c:295: 			g_REG_BG2PB=0xFF1C;
-	ldr	r3, .L51+16	@ tmp122,
+	ldr	r3, .L50+16	@ tmp122,
 	subs	r2, r2, #242	@ tmp123,
 	strh	r2, [r3]	@ tmp123, MEM[(volatile vu16 *)50344138B]
 @ src/soar_voxel.c:296: 			g_REG_BG2PC=0x0080;
-	ldr	r3, .L51+20	@ tmp125,
+	ldr	r3, .L50+20	@ tmp125,
 	adds	r2, r2, #101	@ tmp126,
 	adds	r2, r2, #255	@ tmp126,
 	strh	r2, [r3]	@ tmp126, MEM[(volatile vu16 *)50344140B]
 @ src/soar_voxel.c:297: 			g_REG_BG2PD=0x0008;
-	ldr	r3, .L51+24	@ tmp128,
+	ldr	r3, .L50+24	@ tmp128,
 	subs	r2, r2, #120	@ tmp129,
-.L50:
+.L49:
 @ src/soar_voxel.c:305: 			g_REG_BG2PD=0xFFF8;
 	strh	r2, [r3]	@ tmp145,
-.L44:
+.L43:
 @ src/soar_voxel.c:315: };
 	@ sp needed	@
 	pop	{r4}
 	pop	{r0}
 	bx	r0
-.L52:
-	.align	2
 .L51:
+	.align	2
+.L50:
 	.word	50344148
 	.word	50344144
 	.word	40000
@@ -930,21 +927,21 @@ thumb_loop:
 	sub	sp, sp, #20	@,,
 @ src/soar_voxel.c:325: 	if (CurrentProc->oceanClock & 1)
 	lsls	r3, r2, #31	@ tmp741, _1,
-	bpl	.L54		@,
+	bpl	.L53		@,
 @ src/soar_voxel.c:328: 		else CurrentProc->oceanClock -= 1;
 	subs	r3, r2, #1	@ tmp279, _1,
 	lsls	r3, r3, #24	@ _289, tmp279,
 	lsrs	r3, r3, #24	@ _289, _289,
 @ src/soar_voxel.c:327: 		if (CurrentProc->oceanClock < (0x41-4))	CurrentProc->oceanClock+=4;
 	cmp	r2, #60	@ _1,
-	bhi	.L56		@,
+	bhi	.L55		@,
 @ src/soar_voxel.c:327: 		if (CurrentProc->oceanClock < (0x41-4))	CurrentProc->oceanClock+=4;
 	adds	r2, r2, #4	@ tmp277,
-.L132:
+.L131:
 @ src/soar_voxel.c:332: 		if (CurrentProc->oceanClock > 4) CurrentProc->oceanClock-=4;
 	lsls	r3, r2, #24	@ _289, tmp283,
 	lsrs	r3, r3, #24	@ _289, _289,
-.L56:
+.L55:
 @ src/soar_voxel.c:336: 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
 	movs	r7, r4	@ tmp297, CurrentProc
 @ src/soar_voxel.c:336: 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
@@ -973,7 +970,7 @@ thumb_loop:
 @ src/soar_voxel.c:336: 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
 	ands	r6, r2	@ tmp310, tmp303
 	tst	r1, r2	@ tmp311, tmp303
-	beq	.L58		@,
+	beq	.L57		@,
 @ src/soar_voxel.c:338: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP)))
 	ldr	r6, [r4, #52]	@ _9, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:338: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP)))
@@ -985,7 +982,7 @@ thumb_loop:
 	subs	r3, r3, #31	@ tmp312,
 @ src/soar_voxel.c:338: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (CAMERA_Z_STEP)))
 	cmp	r3, r0	@ tmp312, tmp691
-	bgt	.L59		@,
+	bgt	.L58		@,
 @ src/soar_voxel.c:340: 			CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
 	adds	r6, r6, #32	@ tmp313,
 @ src/soar_voxel.c:341: 			CurrentProc->sPlayerStepZ += 1;
@@ -994,7 +991,7 @@ thumb_loop:
 	str	r6, [r4, #52]	@ tmp313, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:341: 			CurrentProc->sPlayerStepZ += 1;
 	str	r5, [r4, #56]	@ tmp314, CurrentProc_155(D)->sPlayerStepZ
-.L59:
+.L58:
 @ src/soar_voxel.c:343: 		CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
 	ldr	r3, [r4, #52]	@ CurrentProc_155(D)->sPlayerPosZ, CurrentProc_155(D)->sPlayerPosZ
 	adds	r3, r3, #32	@ tmp315,
@@ -1003,22 +1000,22 @@ thumb_loop:
 	ldr	r3, [r4, #56]	@ CurrentProc_155(D)->sPlayerStepZ, CurrentProc_155(D)->sPlayerStepZ
 	adds	r3, r3, #1	@ tmp317,
 	str	r3, [r4, #56]	@ tmp317, CurrentProc_155(D)->sPlayerStepZ
-.L135:
+.L134:
 @ src/soar_voxel.c:361: 			return 1;
 	movs	r0, #1	@ <retval>,
-	b	.L53		@
-.L54:
+	b	.L52		@
+.L53:
 @ src/soar_voxel.c:333: 		else CurrentProc->oceanClock += 1;
 	adds	r3, r2, #1	@ tmp285, _1,
 	lsls	r3, r3, #24	@ _289, tmp285,
 	lsrs	r3, r3, #24	@ _289, _289,
 @ src/soar_voxel.c:332: 		if (CurrentProc->oceanClock > 4) CurrentProc->oceanClock-=4;
 	cmp	r2, #4	@ _1,
-	bls	.L56		@,
+	bls	.L55		@,
 @ src/soar_voxel.c:332: 		if (CurrentProc->oceanClock > 4) CurrentProc->oceanClock-=4;
 	subs	r2, r2, #4	@ tmp283,
-	b	.L132		@
-.L58:
+	b	.L131		@
+.L57:
 @ src/soar_voxel.c:347: 	else CurrentProc->takeOffTransition = 0;
 	movs	r2, #4	@ tmp327,
 	bics	r3, r2	@ tmp326, tmp327
@@ -1026,7 +1023,7 @@ thumb_loop:
 	strb	r3, [r2]	@ tmp326, CurrentProc_155(D)->takeOffTransition
 @ src/soar_voxel.c:349: 	if (CurrentProc->landingTransition)
 	lsls	r3, r3, #28	@ tmp742, tmp326,
-	bpl	.L61		@,
+	bpl	.L60		@,
 @ src/soar_voxel.c:351: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (2*CAMERA_Z_STEP)))
 	ldr	r7, [r4, #52]	@ _22, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:351: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (2*CAMERA_Z_STEP)))
@@ -1038,24 +1035,24 @@ thumb_loop:
 	subs	r3, r3, #63	@ tmp339,
 @ src/soar_voxel.c:351: 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (2*CAMERA_Z_STEP)))
 	cmp	r3, r0	@ tmp339, tmp692
-	bgt	.L62		@,
+	bgt	.L61		@,
 @ src/soar_voxel.c:353: 			m4aSongNumStart(0x73);
 	movs	r0, #115	@,
-	ldr	r3, .L136	@ tmp340,
+	ldr	r3, .L135	@ tmp340,
 	bl	.L18		@
 @ src/soar_voxel.c:354: 			EndLoop(CurrentProc);
 	movs	r0, r4	@, CurrentProc
 	bl	EndLoop		@
 @ src/soar_voxel.c:355: 			return 0;
 	movs	r0, r6	@ <retval>, tmp310
-.L53:
+.L52:
 @ src/soar_voxel.c:476: };
 	add	sp, sp, #20	@,,
 	@ sp needed	@
 	pop	{r4, r5, r6, r7}
 	pop	{r1}
 	bx	r1
-.L62:
+.L61:
 @ src/soar_voxel.c:359: 			CurrentProc->sPlayerPosZ -= CAMERA_Z_STEP;
 	subs	r7, r7, #32	@ tmp341,
 @ src/soar_voxel.c:360: 			CurrentProc->sPlayerStepZ -= 1;
@@ -1064,19 +1061,19 @@ thumb_loop:
 	str	r7, [r4, #52]	@ tmp341, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:360: 			CurrentProc->sPlayerStepZ -= 1;
 	str	r5, [r4, #56]	@ tmp342, CurrentProc_155(D)->sPlayerStepZ
-	b	.L135		@
-.L61:
+	b	.L134		@
+.L60:
 @ src/soar_voxel.c:368: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 	ldr	r3, [r4, #44]	@ pretmp_234, CurrentProc_155(D)->sPlayerPosX
 @ src/soar_voxel.c:367: 	if (gKeyState.heldKeys & DPAD_LEFT){
-	ldr	r6, .L136+4	@ tmp343,
+	ldr	r6, .L135+4	@ tmp343,
 	ldrh	r0, [r6, #4]	@ _29,
 @ src/soar_voxel.c:368: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 	str	r3, [sp, #8]	@ pretmp_234, %sfp
 @ src/soar_voxel.c:368: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 	ldr	r3, [r4, #60]	@ pretmp_264, CurrentProc_155(D)->sPlayerYaw
 @ src/soar_voxel.c:368: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
-	ldr	r5, .L136+8	@ tmp344,
+	ldr	r5, .L135+8	@ tmp344,
 	lsls	r1, r3, #1	@ tmp345, pretmp_264,
 	ldrsh	r7, [r1, r5]	@ _263, cam_pivot_dx_Angles
 	str	r7, [sp, #12]	@ _263, %sfp
@@ -1091,9 +1088,9 @@ thumb_loop:
 	ldrsh	r1, [r1, r2]	@ _230, tmp348, tmp754
 @ src/soar_voxel.c:367: 	if (gKeyState.heldKeys & DPAD_LEFT){
 	lsls	r2, r0, #26	@ tmp743, _29,
-	bmi	.LCB842	@
-	b	.L63	@long jump	@
-.LCB842:
+	bmi	.LCB840	@
+	b	.L62	@long jump	@
+.LCB840:
 @ src/soar_voxel.c:368: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 	ldr	r0, [sp, #12]	@ _263, %sfp
 	ldr	r2, [sp, #8]	@ pretmp_234, %sfp
@@ -1134,10 +1131,10 @@ thumb_loop:
 	str	r3, [r4, #44]	@ newx, CurrentProc_155(D)->sPlayerPosX
 @ src/soar_voxel.c:374: 		CurrentProc->sPlayerPosY = newy;
 	str	r1, [r4, #48]	@ newy, CurrentProc_155(D)->sPlayerPosY
-.L133:
+.L132:
 @ src/soar_voxel.c:385: 		BumpScreen(bump_right);
 	bl	BumpScreen		@
-.L64:
+.L63:
 @ src/soar_voxel.c:396: 	CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw]; 
 	ldr	r3, [r4, #60]	@ _66, CurrentProc_155(D)->sPlayerYaw
 @ src/soar_voxel.c:396: 	CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw]; 
@@ -1180,25 +1177,25 @@ thumb_loop:
 @ src/soar_voxel.c:402: 	if (gKeyState.pressedKeys & START_BUTTON){
 	ldrh	r2, [r6, #8]	@ tmp436,
 	tst	r2, r3	@ tmp436, tmp438
-	beq	.L66		@,
+	beq	.L65		@,
 @ src/soar_voxel.c:403: 		if (CurrentProc->location)
 	ldr	r2, [r4, #80]	@ CurrentProc_155(D)->location, CurrentProc_155(D)->location
 	cmp	r2, #0	@ CurrentProc_155(D)->location,
-	bne	.LCB903	@
-	b	.L67	@long jump	@
-.LCB903:
+	bne	.LCB901	@
+	b	.L66	@long jump	@
+.LCB901:
 @ src/soar_voxel.c:405: 			CurrentProc->landingTransition = TRUE;
 	movs	r2, r4	@ tmp445, CurrentProc
 	adds	r2, r2, #69	@ tmp445,
 	ldrb	r1, [r2]	@ CurrentProc_155(D)->landingTransition, CurrentProc_155(D)->landingTransition
 	orrs	r3, r1	@ tmp450, CurrentProc_155(D)->landingTransition
 	strb	r3, [r2]	@ tmp450, CurrentProc_155(D)->landingTransition
-.L66:
+.L65:
 @ src/soar_voxel.c:410: 	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
 	ldrh	r1, [r6, #8]	@ _82,
 @ src/soar_voxel.c:410: 	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
 	lsls	r3, r1, #29	@ tmp745, _82,
-	bpl	.L68		@,
+	bpl	.L67		@,
 @ src/soar_voxel.c:410: 	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
 	movs	r2, #1	@ tmp472,
 	ldr	r3, [sp, #4]	@ tmp297, %sfp
@@ -1212,54 +1209,54 @@ thumb_loop:
 	orrs	r3, r2	@ tmp489, tmp482
 	ldr	r2, [sp, #4]	@ tmp297, %sfp
 	strb	r3, [r2]	@ tmp489, CurrentProc_155(D)->ShowFPS
-.L68:
+.L67:
 	movs	r2, r4	@ tmp642, CurrentProc
 	adds	r2, r2, #68	@ tmp642,
 @ src/soar_voxel.c:412: 	if ((gKeyState.pressedKeys & L_BUTTON) && (CurrentProc->sunTransition==0)){
 	lsls	r3, r1, #22	@ tmp746, _82,
-	bpl	.L69		@,
+	bpl	.L68		@,
 @ src/soar_voxel.c:412: 	if ((gKeyState.pressedKeys & L_BUTTON) && (CurrentProc->sunTransition==0)){
 	movs	r3, #0	@ tmp499,
 	ldrsb	r3, [r2, r3]	@ tmp499,
 	cmp	r3, #0	@ tmp499,
-	bne	.L69		@,
+	bne	.L68		@,
 @ src/soar_voxel.c:413: 		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
 	ldr	r0, [r4, #84]	@ _86, CurrentProc_155(D)->sunsetVal
 @ src/soar_voxel.c:414: 		else CurrentProc->sunTransition = 1;
 	adds	r3, r3, #1	@ cstore_259,
 @ src/soar_voxel.c:413: 		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
 	cmp	r0, #0	@ _86,
-	beq	.L70		@,
+	beq	.L69		@,
 @ src/soar_voxel.c:413: 		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
 	subs	r3, r3, #2	@ cstore_259,
-.L70:
+.L69:
 	strb	r3, [r2]	@ cstore_259, CurrentProc_155(D)->sunTransition
 @ src/soar_voxel.c:415: 		CurrentProc->sunsetVal += CurrentProc->sunTransition;
 	adds	r3, r3, r0	@ tmp504, cstore_259, _86
 	str	r3, [r4, #84]	@ tmp504, CurrentProc_155(D)->sunsetVal
-.L69:
+.L68:
 @ src/soar_voxel.c:418: 	if (CurrentProc->sunTransition!=0)
 	movs	r3, #0	@ _90,
 	ldrsb	r3, [r2, r3]	@ _90,* _90
 @ src/soar_voxel.c:418: 	if (CurrentProc->sunTransition!=0)
 	cmp	r3, #0	@ _90,
-	beq	.L71		@,
+	beq	.L70		@,
 @ src/soar_voxel.c:420: 		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
 	ldr	r0, [r4, #84]	@ _91, CurrentProc_155(D)->sunsetVal
 @ src/soar_voxel.c:420: 		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
 	subs	r5, r0, #1	@ tmp508, _91,
 @ src/soar_voxel.c:420: 		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
 	cmp	r5, #6	@ tmp508,
-	bls	.LCB964	@
-	b	.L72	@long jump	@
-.LCB964:
+	bls	.LCB962	@
+	b	.L71	@long jump	@
+.LCB962:
 @ src/soar_voxel.c:422: 			CurrentProc->sunsetVal += CurrentProc->sunTransition;
 	adds	r3, r3, r0	@ tmp509, _90, _91
 	str	r3, [r4, #84]	@ tmp509, CurrentProc_155(D)->sunsetVal
-.L71:
+.L70:
 @ src/soar_voxel.c:430: 	if (gKeyState.pressedKeys & R_BUTTON){
 	lsls	r1, r1, #23	@ tmp747, _82,
-	bpl	.L73		@,
+	bpl	.L72		@,
 @ src/soar_voxel.c:431: 		CurrentProc->ShowMap ^= 1;
 	movs	r0, #1	@ tmp532,
 	movs	r1, r4	@ tmp526, CurrentProc
@@ -1272,14 +1269,14 @@ thumb_loop:
 	bics	r3, r0	@ tmp543, tmp532
 	orrs	r3, r5	@ tmp547, tmp539
 	strb	r3, [r1]	@ tmp547, CurrentProc_155(D)->ShowMap
-.L73:
+.L72:
 @ src/soar_voxel.c:434: 	if (gKeyState.heldKeys & DPAD_UP){ //turbo
 	ldrh	r6, [r6, #4]	@ _98,
 @ src/soar_voxel.c:434: 	if (gKeyState.heldKeys & DPAD_UP){ //turbo
 	lsls	r3, r6, #25	@ tmp748, _98,
-	bpl	.L74		@,
+	bpl	.L73		@,
 @ src/soar_voxel.c:435: 		CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw];
-	ldr	r3, .L136+8	@ tmp555,
+	ldr	r3, .L135+8	@ tmp555,
 @ src/soar_voxel.c:435: 		CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw];
 	ldr	r2, [r4, #60]	@ _100, CurrentProc_155(D)->sPlayerYaw
 @ src/soar_voxel.c:435: 		CurrentProc->sPlayerPosX += cam_dx_Angles[CurrentProc->sPlayerYaw];
@@ -1304,12 +1301,12 @@ thumb_loop:
 	str	r1, [r4, #44]	@ tmp561, CurrentProc_155(D)->sPlayerPosX
 @ src/soar_voxel.c:436: 		CurrentProc->sPlayerPosY += cam_dy_Angles[CurrentProc->sPlayerYaw];
 	str	r3, [r4, #48]	@ tmp569, CurrentProc_155(D)->sPlayerPosY
-.L74:
+.L73:
 @ src/soar_voxel.c:438: 	if (gKeyState.heldKeys & DPAD_DOWN){ //hover
 	lsls	r3, r6, #24	@ tmp749, _98,
-	bpl	.L75		@,
+	bpl	.L74		@,
 @ src/soar_voxel.c:439: 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
-	ldr	r3, .L136+8	@ tmp575,
+	ldr	r3, .L135+8	@ tmp575,
 @ src/soar_voxel.c:439: 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
 	ldr	r2, [r4, #60]	@ _109, CurrentProc_155(D)->sPlayerYaw
 @ src/soar_voxel.c:439: 		CurrentProc->sPlayerPosX -= cam_dx_Angles[CurrentProc->sPlayerYaw];
@@ -1334,7 +1331,7 @@ thumb_loop:
 	str	r0, [r4, #44]	@ tmp581, CurrentProc_155(D)->sPlayerPosX
 @ src/soar_voxel.c:440: 		CurrentProc->sPlayerPosY -= cam_dy_Angles[CurrentProc->sPlayerYaw];
 	str	r3, [r4, #48]	@ tmp589, CurrentProc_155(D)->sPlayerPosY
-.L75:
+.L74:
 @ src/soar_voxel.c:446: 	int player_terrain_ht = getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY);
 	ldr	r1, [r4, #76]	@, CurrentProc_155(D)->sFocusPtY
 	ldr	r0, [r4, #72]	@, CurrentProc_155(D)->sFocusPtX
@@ -1355,15 +1352,15 @@ thumb_loop:
 	str	r3, [sp, #8]	@ _120, %sfp
 @ src/soar_voxel.c:449: 	if ((player_terrain_ht > (camera_ht)) || (camera_terrain_ht > camera_ht)){
 	cmp	r0, r7	@ player_terrain_ht, camera_ht
-	bgt	.L76		@,
+	bgt	.L75		@,
 @ src/soar_voxel.c:447: 	int camera_terrain_ht = getPtHeight_thumb(CurrentProc->sPlayerPosX, CurrentProc->sPlayerPosY);
 	ldr	r1, [sp, #8]	@, %sfp
 	ldr	r0, [sp, #4]	@, %sfp
 	bl	getPtHeight_thumb		@
 @ src/soar_voxel.c:449: 	if ((player_terrain_ht > (camera_ht)) || (camera_terrain_ht > camera_ht)){
 	cmp	r0, r7	@ camera_terrain_ht, camera_ht
-	ble	.L77		@,
-.L76:
+	ble	.L76		@,
+.L75:
 @ src/soar_voxel.c:451: 		CurrentProc->sPlayerStepZ += 1;
 	ldr	r3, [r4, #56]	@ CurrentProc_155(D)->sPlayerStepZ, CurrentProc_155(D)->sPlayerStepZ
 @ src/soar_voxel.c:450: 		CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
@@ -1371,13 +1368,13 @@ thumb_loop:
 	str	r5, [r4, #52]	@ tmp590, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:451: 		CurrentProc->sPlayerStepZ += 1;
 	adds	r3, r3, #1	@ tmp591,
-.L134:
+.L133:
 @ src/soar_voxel.c:456: 			CurrentProc->sPlayerStepZ -= 1;
 	str	r3, [r4, #56]	@ tmp620, CurrentProc_155(D)->sPlayerStepZ
-.L78:
+.L77:
 @ src/soar_voxel.c:460: 	if (gKeyState.heldKeys & A_BUTTON){
 	lsls	r6, r6, #31	@ tmp751, _98,
-	bpl	.L82		@,
+	bpl	.L81		@,
 @ src/soar_voxel.c:461: 		if (CurrentProc->sPlayerPosZ<CAMERA_MAX_HEIGHT){
 	movs	r2, #160	@ tmp627,
 @ src/soar_voxel.c:461: 		if (CurrentProc->sPlayerPosZ<CAMERA_MAX_HEIGHT){
@@ -1385,7 +1382,7 @@ thumb_loop:
 @ src/soar_voxel.c:461: 		if (CurrentProc->sPlayerPosZ<CAMERA_MAX_HEIGHT){
 	lsls	r2, r2, #1	@ tmp627, tmp627,
 	cmp	r3, r2	@ _134, tmp627
-	bge	.L82		@,
+	bge	.L81		@,
 @ src/soar_voxel.c:462: 			CurrentProc->sPlayerPosZ += CAMERA_Z_STEP;
 	adds	r3, r3, #32	@ tmp628,
 	str	r3, [r4, #52]	@ tmp628, CurrentProc_155(D)->sPlayerPosZ
@@ -1393,26 +1390,26 @@ thumb_loop:
 	ldr	r3, [r4, #56]	@ CurrentProc_155(D)->sPlayerStepZ, CurrentProc_155(D)->sPlayerStepZ
 	adds	r3, r3, #1	@ tmp629,
 	str	r3, [r4, #56]	@ tmp629, CurrentProc_155(D)->sPlayerStepZ
-.L82:
+.L81:
 @ src/soar_voxel.c:469: 	if (CurrentProc->sPlayerPosX > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosX = MAP_DIMENSIONS-10;
-	ldr	r3, .L136+12	@ tmp643,
+	ldr	r3, .L135+12	@ tmp643,
 	ldr	r2, [sp, #4]	@ _119, %sfp
 	cmp	r2, r3	@ _119, tmp643
-	ble	.L83		@,
+	ble	.L82		@,
 @ src/soar_voxel.c:469: 	if (CurrentProc->sPlayerPosX > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosX = MAP_DIMENSIONS-10;
 	str	r3, [r4, #44]	@ tmp643, CurrentProc_155(D)->sPlayerPosX
-.L84:
+.L83:
 @ src/soar_voxel.c:472: 	if (CurrentProc->sPlayerPosY > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosY = MAP_DIMENSIONS-10;
 	ldr	r2, [sp, #8]	@ _120, %sfp
 	cmp	r2, r3	@ _120, tmp643
-	ble	.L85		@,
+	ble	.L84		@,
 @ src/soar_voxel.c:472: 	if (CurrentProc->sPlayerPosY > (MAP_DIMENSIONS-10)) CurrentProc->sPlayerPosY = MAP_DIMENSIONS-10;
 	str	r3, [r4, #48]	@ tmp643, CurrentProc_155(D)->sPlayerPosY
-	b	.L135		@
-.L63:
+	b	.L134		@
+.L62:
 @ src/soar_voxel.c:377: 	else if (gKeyState.heldKeys & DPAD_RIGHT){
 	lsls	r0, r0, #27	@ tmp744, _29,
-	bpl	.L65		@,
+	bpl	.L64		@,
 @ src/soar_voxel.c:378: 		newx = CurrentProc->sPlayerPosX + cam_pivot_dx_Angles[CurrentProc->sPlayerYaw]; // step forward to focal point
 	ldr	r0, [sp, #12]	@ _263, %sfp
 	ldr	r2, [sp, #8]	@ pretmp_234, %sfp
@@ -1456,62 +1453,62 @@ thumb_loop:
 	str	r3, [r4, #44]	@ newx, CurrentProc_155(D)->sPlayerPosX
 @ src/soar_voxel.c:384: 		CurrentProc->sPlayerPosY = newy;
 	str	r1, [r4, #48]	@ newy, CurrentProc_155(D)->sPlayerPosY
-	b	.L133		@
-.L65:
+	b	.L132		@
+.L64:
 @ src/soar_voxel.c:387: 	else if (gKeyState.prevKeys & (DPAD_LEFT|DPAD_RIGHT)) {
 	movs	r3, #48	@ tmp406,
 	ldrh	r2, [r6, #10]	@ tmp404,
 	tst	r2, r3	@ tmp404, tmp406
-	bne	.LCB1137	@
-	b	.L64	@long jump	@
-.LCB1137:
+	bne	.LCB1135	@
+	b	.L63	@long jump	@
+.LCB1135:
 	bl	BumpScreen.part.0		@
 @ src/soar_voxel.c:315: };
-	b	.L64		@
-.L67:
+	b	.L63		@
+.L66:
 @ src/soar_voxel.c:407: 		else m4aSongNumStart(0x6c); //invalid sfx
 	movs	r0, #108	@,
-	ldr	r3, .L136	@ tmp453,
+	ldr	r3, .L135	@ tmp453,
 	bl	.L18		@
-	b	.L66		@
-.L72:
+	b	.L65		@
+.L71:
 @ src/soar_voxel.c:426: 			CurrentProc->sunTransition = 0;
 	movs	r3, #0	@ tmp513,
 	strb	r3, [r2]	@ tmp513, CurrentProc_155(D)->sunTransition
-	b	.L71		@
-.L77:
+	b	.L70		@
+.L76:
 @ src/soar_voxel.c:453: 	else if (gKeyState.heldKeys & B_BUTTON){ //prevent clipping through ground
 	lsls	r3, r6, #30	@ tmp750, _98,
-	bpl	.L78		@,
+	bpl	.L77		@,
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	ldr	r3, [sp, #12]	@ player_terrain_ht, %sfp
 	adds	r3, r3, #32	@ player_terrain_ht,
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	movs	r2, #1	@ tmp599,
 	cmp	r3, r7	@ tmp598, camera_ht
-	blt	.L79		@,
+	blt	.L78		@,
 	movs	r2, #0	@ tmp599,
-.L79:
+.L78:
 	movs	r3, #1	@ tmp603,
 	cmp	r5, #32	@ _121,
-	bgt	.L80		@,
+	bgt	.L79		@,
 	movs	r3, #0	@ tmp603,
-.L80:
+.L79:
 	ands	r3, r2	@ tmp607, tmp599
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	lsls	r3, r3, #24	@ tmp611, tmp607,
-	beq	.L78		@,
+	beq	.L77		@,
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	adds	r0, r0, #32	@ tmp612,
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	movs	r3, #1	@ tmp613,
 	cmp	r0, r7	@ tmp612, camera_ht
-	blt	.L81		@,
+	blt	.L80		@,
 	movs	r3, #0	@ tmp613,
-.L81:
+.L80:
 @ src/soar_voxel.c:454: 		if ((CurrentProc->sPlayerPosZ>CAMERA_MIN_HEIGHT) & (camera_ht > (player_terrain_ht+CAMERA_Z_STEP)) & (camera_ht > (camera_terrain_ht+CAMERA_Z_STEP))){
 	lsls	r3, r3, #24	@ tmp618, tmp613,
-	beq	.L78		@,
+	beq	.L77		@,
 @ src/soar_voxel.c:456: 			CurrentProc->sPlayerStepZ -= 1;
 	ldr	r3, [r4, #56]	@ CurrentProc_155(D)->sPlayerStepZ, CurrentProc_155(D)->sPlayerStepZ
 @ src/soar_voxel.c:455: 			CurrentProc->sPlayerPosZ -= CAMERA_Z_STEP;
@@ -1519,33 +1516,33 @@ thumb_loop:
 	str	r5, [r4, #52]	@ tmp619, CurrentProc_155(D)->sPlayerPosZ
 @ src/soar_voxel.c:456: 			CurrentProc->sPlayerStepZ -= 1;
 	subs	r3, r3, #1	@ tmp620,
-	b	.L134		@
-.L83:
+	b	.L133		@
+.L82:
 @ src/soar_voxel.c:470: 	else if (CurrentProc->sPlayerPosX < 10) CurrentProc->sPlayerPosX = 10;
 	ldr	r2, [sp, #4]	@ _119, %sfp
 	cmp	r2, #9	@ _119,
-	bgt	.L84		@,
+	bgt	.L83		@,
 @ src/soar_voxel.c:470: 	else if (CurrentProc->sPlayerPosX < 10) CurrentProc->sPlayerPosX = 10;
 	movs	r2, #10	@ tmp633,
 	str	r2, [r4, #44]	@ tmp633, CurrentProc_155(D)->sPlayerPosX
-	b	.L84		@
-.L85:
+	b	.L83		@
+.L84:
 @ src/soar_voxel.c:473: 	else if (CurrentProc->sPlayerPosY < 10) CurrentProc->sPlayerPosY = 10;
 	ldr	r3, [sp, #8]	@ _120, %sfp
 @ src/soar_voxel.c:475: 	return 1;
 	movs	r0, #1	@ <retval>,
 @ src/soar_voxel.c:473: 	else if (CurrentProc->sPlayerPosY < 10) CurrentProc->sPlayerPosY = 10;
 	cmp	r3, #9	@ _120,
-	ble	.LCB1213	@
-	b	.L53	@long jump	@
-.LCB1213:
+	ble	.LCB1211	@
+	b	.L52	@long jump	@
+.LCB1211:
 @ src/soar_voxel.c:473: 	else if (CurrentProc->sPlayerPosY < 10) CurrentProc->sPlayerPosY = 10;
 	movs	r3, #10	@ tmp636,
 	str	r3, [r4, #48]	@ tmp636, CurrentProc_155(D)->sPlayerPosY
-	b	.L53		@
-.L137:
-	.align	2
+	b	.L52		@
 .L136:
+	.align	2
+.L135:
 	.word	m4aSongNumStart
 	.word	gKeyState
 	.word	.LANCHOR0
@@ -1852,7 +1849,5 @@ Proc_Soaring:
 	bx	r3
 .L35:
 	bx	r4
-.L40:
-	bx	r6
 .L39:
 	bx	r7

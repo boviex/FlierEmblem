@@ -154,7 +154,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	//stop map music??
 	Sound_FadeSongOut(10);
 	LoadSprite();
-	m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
+	// m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
 	m4aSongNumStart(0x58); //unused slot
 	gCurrentMusic = 0x58;
 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black

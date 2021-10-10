@@ -65,7 +65,7 @@ Render_arm:
 
 	strb r1, [sp, #o_oceanclock]
 	
-	lsl r10, r8, #4
+	lsl r10, r8, #3
 	add r10, #(MAX_Z_DISTANCE - 128) @r10 = far plane
 	mov r0, #MIN_Z_DISTANCE
 	add r11, r0, r8, lsl #1 @r11 = zdist
@@ -208,6 +208,8 @@ Render_arm:
 	lsr r3, r11, #1 @ zdist is in r11
 	ldrb r1, [r2, r3, lsl #8]
 	@pipeline stall
+	cmp r1, #0
+	ble Skip4Px
 	subs r6, r1, r5 @hos -= ybuffer[i]
 	ble CelShade
 	
@@ -297,7 +299,7 @@ Render_arm:
 	str r11, [sp, #o_zdist]
 
 	cmp r11, r10
-	ble Outer_Loop
+	blt Outer_Loop
 
 	@@vid_flip
 		ldr r11, [sp, #o_currproc]
@@ -313,6 +315,19 @@ Render_arm:
 	pop {r4-r11}
 	pop {r0}
 	bx r0
+
+	Skip4Px:
+	    add r4, #4
+		cmp r4, #MODE5_ROTATED_WIDTH
+		bge endInnerLoop
+		ldr r0, [sp, #o_dx]
+		ldr r1, [sp, #o_dy]
+		asr r0, #7
+		asr r1, #7
+		add r7, r7, r0, lsl #2 @increment offsetpoint.x by 4dx
+		add r8, r8, r1, lsl #2 @increment offsetpoint.y by 4dy
+		ldrb r5, [sp, r4] @ybuffer[i]
+		b InnerLoop
 
 	CheckShadow:
 		add r0, r4, #4
@@ -330,9 +345,12 @@ Render_arm:
 		cmp r6, #6 @ cel shade threshold
 		ble SkipDraw
 		sub r5, #1
+		add r3, r9, r4, lsl #6
+		add r3, r3, r4, lsl #8
+		add r6, r3, r5, lsl #1 @r6 is now the pixel we are drawing to
 		mov r3, #0x0000 @border clr
-		mov r6, #1
-		b CheckFog
+		strh r3, [r6]
+	    b SkipDraw
 
 	CelShade_ocean:
 		rsb r6, r6, #0 @-ylen
@@ -341,16 +359,53 @@ Render_arm:
 		cmp r11, #128
 		ble SkipDraw
 		sub r5, #1
-		mov r6, #1
 		@r3 = the pixel we are drawing over
 		add r3, r9, r4, lsl #6
 		add r3, r3, r4, lsl #8
-		add r3, r3, r5, lsl #1
-		ldrh r3, [r3]
+		add r6, r3, r5, lsl #1 @r6 is now the pixel we are drawing to
+		ldrh r0, [r6]
 
-		sub r2, r11, #32
-		lsr r2, #1
-		b SunsetFog
+		sub r2, r11, #64
+		@r1 = the pixel above where we would be drawing
+		ldrh r1, [r6, #2]
+		lsr r2, #5
+		@ add r2, r2, r2, lsr #3
+		
+		@ InlineBlend:
+		    ldr     r3, =0x03E07C1F         @ MASKLO: -g-|b-r
+		    push {r4-r7}
+		    mov     r6, r3, lsl #5          @ MASKHI: g-|b-r-
+			@ --- -g-|b-r
+	        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
+	        and     r5, r3, r1              @ y: -g-|b-r
+	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	        and     r7, r3, r4, lsr #5     @ blend(-g-|b-r)            
+	        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
+	        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
+	        and     r5, r3, r1, ror #16     @ y: -g-|b-r (ror16)
+	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	        and     r4, r3, r4, lsr #5      @ blend(-g-|b-r (ror16))
+	        @ --- mix -g-|b-r and b-r|-g-
+	        orr     r0, r7, r4, ror #16
+	        lsl r0, #16
+	        lsr r3, r0, #16 @@wipe top 2 bytes???
+	        pop {r4-r7}
+	    ldr r0, =(160<<1)
+	    strh r3, [r6]
+	    @draw 2px at a time?
+    	add r4, #2
+		cmp r4, #MODE5_ROTATED_WIDTH
+		bge endInnerLoop
+	    strh r3, [r6, r0] @only draw if definitely ok to
+		@preload for next loop
+		ldr r0, [sp, #o_dx]
+		ldr r1, [sp, #o_dy]
+		add r7, r7, r0, asr #7 @increment offsetpoint.x
+		add r8, r8, r1, asr #7 @increment offsetpoint.y
+		ldrb r5, [sp, r4] @ybuffer[i]
+		b InnerLoop
 
 	OutOfBounds: @skip other checks
 		mov r2, #(MAP_DIMENSIONS)
@@ -373,6 +428,8 @@ Render_arm:
 		lsr r3, r11, #1
 		ldrb r1, [r2, r3, lsl #8]
 		@pipeline stall
+		cmp r1, #0
+		ble Skip4Px
 		subs r6, r1, r5 @hos -= ybuffer[i]
 		ble CelShade_ocean
 
@@ -406,6 +463,8 @@ Render_arm:
 		lsr r3, r11, #1 @ zdist is in r11
 		ldrb r1, [r2, r3, lsl #8]
 		@pipeline stall
+		cmp r1, #0
+		ble Skip4Px
 		subs r6, r1, r5 @hos -= ybuffer[i]
 		ble CelShade_ocean
 		b UpdateYBuffer
