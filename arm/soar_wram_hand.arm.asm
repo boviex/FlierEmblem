@@ -293,7 +293,7 @@ Render_arm:
 	lsr r0, r11, #6
 	add r0, r0, r11, lsr #7
 	add r0, r0, r11, lsr #8
-	add r0, r0, r11, lsr #8
+	@ add r0, r0, r11, lsr #8
 	add r11, r0
 	add r11, #2
 	str r11, [sp, #o_zdist]

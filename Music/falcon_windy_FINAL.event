@@ -1191,9 +1191,12 @@ falcon_windy_FINAL_2_B2:
 falcon_windy_FINAL_3:
 	BYTE	KEYSH   falcon_windy_FINAL_key+0
 // 000   ----------------------------------------
-	BYTE		VOICE   50
+	BYTE		VOICE   41
 	BYTE		MODT    0
 	BYTE		LFOS    44
+	BYTE		MODT    0
+	BYTE		LFOS    44
+	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
 	BYTE		MODT    0
 	BYTE		LFOS    44
 	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
@@ -1210,19 +1213,29 @@ falcon_windy_FINAL_3:
 	BYTE		BEND    c_v+0
 	BYTE	W48
 // 001   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     An3   v112
 	BYTE	W96
 // 002   ----------------------------------------
+	BYTE		        Fs3   v060
+	BYTE		N96     Bn3   v112
 	BYTE	W96
 // 003   ----------------------------------------
+	BYTE		        Gn3   v060
+	BYTE		N96     Cn4   v112
 	BYTE	W96
 // 004   ----------------------------------------
+	BYTE		        An3   v060
+	BYTE		N96     Dn4   v112
 	BYTE	W96
 falcon_windy_FINAL_3_B1:
 // 005   ----------------------------------------
 falcon_windy_FINAL_3_005:
 	BYTE		N06     An2   v036
+	BYTE		N96     Cn3   v060
+	BYTE		TIE     En4 
 	BYTE	W06
-	BYTE		        En3   v008
+	BYTE		N06     En3   v008
 	BYTE	W06
 	BYTE		        An2   v016
 	BYTE	W06
@@ -1242,93 +1255,362 @@ falcon_windy_FINAL_3_005:
 	BYTE	W24
 	BYTE	PEND
 // 006   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_006:
+	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE	W06
+	BYTE		        An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE	PEND
+	BYTE		EOT     En4 
+	BYTE		N24     Gn3   v060
+	BYTE		N12     An3   v076
+	BYTE		N24     Dn4   v060
+	BYTE	W24
 // 007   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_007:
+	BYTE		N06     An2   v036
+	BYTE		N96     Cn4   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE		N48     Fn3   v060
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 008   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_008:
+	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
+	BYTE		N48     Fs3 
+	BYTE		N96     Dn4 
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE		N48     Gs3   v060
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 009   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 010   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_010:
+	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE	PEND
+	BYTE		EOT     En4 
+	BYTE		N06     An2   v008
+	BYTE		N48     Gn3   v060
+	BYTE		N48     Dn4 
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
 // 011   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_011:
+	BYTE		N06     An2   v036
+	BYTE		N48     Fs3   v060
+	BYTE		N48     Cn4 
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N48     Gs2   v060
+	BYTE		N06     An2   v008
+	BYTE		N48     Dn4   v060
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 012   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_012:
+	BYTE		N06     An2   v036
+	BYTE		N96     Cn4   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE	W06
+	BYTE		        An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 013   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 014   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_006
+	BYTE		EOT     En4 
+	BYTE		N24     Gn3   v060
+	BYTE		N12     An3   v076
+	BYTE		N24     Dn4   v060
+	BYTE	W24
 // 015   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_007
 // 016   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_008
 // 017   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 018   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_010
+	BYTE		EOT     En4 
+	BYTE		N06     An2   v008
+	BYTE		N48     Gn3   v060
+	BYTE		N48     Dn4 
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
 // 019   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_011
 // 020   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_020:
+	BYTE		N06     An2   v036
+	BYTE		N96     Dn4   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE	W06
+	BYTE		        An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 021   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+falcon_windy_FINAL_3_021:
+	BYTE		N06     An2   v036
+	BYTE		N96     Cs4   v060
+	BYTE	W06
+	BYTE		N06     En3   v008
+	BYTE	W06
+	BYTE		        An2   v016
+	BYTE	W06
+	BYTE		N12     An3   v036
+	BYTE	W12
+	BYTE		        An3   v076
+	BYTE	W18
+	BYTE		N06     An2   v008
+	BYTE	W06
+	BYTE		        An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
+	BYTE	PEND
 // 022   ----------------------------------------
+falcon_windy_FINAL_3_022:
+	BYTE		N96     An3   v060
+	BYTE		N96     Cn4 
+	BYTE		N96     En4 
 	BYTE	W96
+	BYTE	PEND
 // 023   ----------------------------------------
+falcon_windy_FINAL_3_023:
+	BYTE		N96     Gn3   v060
+	BYTE		N96     Bn3 
+	BYTE		N96     Dn4 
 	BYTE	W96
+	BYTE	PEND
 // 024   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 025   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     An3 
+	BYTE		N96     Cn4 
 	BYTE	W96
 // 026   ----------------------------------------
+falcon_windy_FINAL_3_026:
+	BYTE		N96     Fn3   v060
+	BYTE		N96     An3 
+	BYTE		N96     Cn4 
 	BYTE	W96
+	BYTE	PEND
 // 027   ----------------------------------------
-	BYTE	W96
+falcon_windy_FINAL_3_027:
+	BYTE		N96     Fn3   v060
+	BYTE		N96     Gn3 
+	BYTE		N48     Cn4 
+	BYTE	W48
+	BYTE		        Bn3 
+	BYTE	W48
+	BYTE	PEND
 // 028   ----------------------------------------
+	BYTE		N96     En3 
+	BYTE		N96     Gn3 
+	BYTE		N96     Bn3 
 	BYTE	W96
 // 029   ----------------------------------------
+	BYTE		        En3 
+	BYTE		N96     An3 
+	BYTE		N96     Cn4 
 	BYTE	W96
 // 030   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_022
 // 031   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 032   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 033   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     An3 
+	BYTE		N96     Cs4 
 	BYTE	W96
 // 034   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_026
 // 035   ----------------------------------------
+falcon_windy_FINAL_3_035:
+	BYTE		N96     Fn3   v060
+	BYTE		N96     As3 
+	BYTE		N96     Dn4 
 	BYTE	W96
+	BYTE	PEND
 // 036   ----------------------------------------
+falcon_windy_FINAL_3_036:
+	BYTE		N96     Gn3   v060
+	BYTE		N96     As3 
+	BYTE		N96     Ds4 
 	BYTE	W96
+	BYTE	PEND
 // 037   ----------------------------------------
+falcon_windy_FINAL_3_037:
+	BYTE		N96     Ds3   v060
+	BYTE		N96     As3 
+	BYTE		N96     Ds4 
 	BYTE	W96
+	BYTE	PEND
 // 038   ----------------------------------------
+falcon_windy_FINAL_3_038:
+	BYTE		TIE     Dn3   v060
+	BYTE		TIE     Fs3 
+	BYTE		TIE     Dn4 
 	BYTE	W96
+	BYTE	PEND
 // 039   ----------------------------------------
 	BYTE	W96
+	BYTE		EOT     Dn3 
+	BYTE		        Fs3 
+	BYTE		        Dn4 
 // 040   ----------------------------------------
+falcon_windy_FINAL_3_040:
+	BYTE		TIE     Dn3   v060
+	BYTE		TIE     Gs3 
+	BYTE		TIE     Dn4 
 	BYTE	W96
+	BYTE	PEND
 // 041   ----------------------------------------
 	BYTE	W96
+	BYTE		EOT     Dn3 
+	BYTE		        Gs3 
+	BYTE		        Dn4 
 	BYTE	GoTo
 	 POIN2	falcon_windy_FINAL_3_B1
 falcon_windy_FINAL_3_B2:
@@ -1337,96 +1619,166 @@ falcon_windy_FINAL_3_B2:
 	 POIN2	falcon_windy_FINAL_3_005
 // 043   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_006
+	BYTE		EOT     En4 
+	BYTE		N24     Gn3   v060
+	BYTE		N12     An3   v076
+	BYTE		N24     Dn4   v060
+	BYTE	W24
 // 044   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_007
 // 045   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_008
 // 046   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 047   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_010
+	BYTE		EOT     En4 
+	BYTE		N06     An2   v008
+	BYTE		N48     Gn3   v060
+	BYTE		N48     Dn4 
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
 // 048   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_011
 // 049   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_012
 // 050   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 051   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_006
+	BYTE		EOT     En4 
+	BYTE		N24     Gn3   v060
+	BYTE		N12     An3   v076
+	BYTE		N24     Dn4   v060
+	BYTE	W24
 // 052   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_007
 // 053   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_008
 // 054   ----------------------------------------
 	BYTE	PATT
 	 POIN2	falcon_windy_FINAL_3_005
 // 055   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_010
+	BYTE		EOT     En4 
+	BYTE		N06     An2   v008
+	BYTE		N48     Gn3   v060
+	BYTE		N48     Dn4 
+	BYTE	W06
+	BYTE		N06     An3   v036
+	BYTE	W06
+	BYTE		        An2   v008
+	BYTE	W06
+	BYTE		        En3   v016
+	BYTE	W06
+	BYTE		N12     An3   v076
+	BYTE	W24
 // 056   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_011
 // 057   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_020
 // 058   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_3_005
+	 POIN2	falcon_windy_FINAL_3_021
 // 059   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_022
 // 060   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 061   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 062   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     An3 
+	BYTE		N96     Cn4 
 	BYTE	W96
 // 063   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_026
 // 064   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_027
 // 065   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     Gn3 
+	BYTE		N96     Bn3 
 	BYTE	W96
 // 066   ----------------------------------------
+	BYTE		        En3 
+	BYTE		N96     An3 
+	BYTE		N96     Cn4 
 	BYTE	W96
 // 067   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_022
 // 068   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 069   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_023
 // 070   ----------------------------------------
+	BYTE		N96     En3   v060
+	BYTE		N96     An3 
+	BYTE		N96     Cs4 
 	BYTE	W96
 // 071   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_026
 // 072   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_035
 // 073   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_036
 // 074   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_037
 // 075   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_038
 // 076   ----------------------------------------
 	BYTE	W96
+	BYTE		EOT     Dn3 
+	BYTE		        Fs3 
+	BYTE		        Dn4 
 // 077   ----------------------------------------
-	BYTE	W96
+	BYTE	PATT
+	 POIN2	falcon_windy_FINAL_3_040
 // 078   ----------------------------------------
 	BYTE	W96
+	BYTE		EOT     Dn3 
+	BYTE		        Gs3 
+	BYTE		        Dn4 
 // 079   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Cn3   v060
+	BYTE		TIE     En4 
 	BYTE	W06
-	BYTE		        En3   v008
+	BYTE		N06     En3   v008
 	BYTE	W01
 	BYTE		VOL     124*falcon_windy_FINAL_mvl/mxv
 	BYTE	W05
@@ -1476,6 +1828,7 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W05
 // 080   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
 	BYTE	W01
 	BYTE		VOL     87*falcon_windy_FINAL_mvl/mxv
 	BYTE	W05
@@ -1517,7 +1870,10 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W02
 	BYTE		VOL     65*falcon_windy_FINAL_mvl/mxv
 	BYTE	W04
+	BYTE		EOT     En4 
+	BYTE		N24     Gn3   v060
 	BYTE		N12     An3   v076
+	BYTE		N24     Dn4   v060
 	BYTE	W02
 	BYTE		VOL     64*falcon_windy_FINAL_mvl/mxv
 	BYTE	W06
@@ -1529,6 +1885,7 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W04
 // 081   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Cn4   v060
 	BYTE	W02
 	BYTE		VOL     56*falcon_windy_FINAL_mvl/mxv
 	BYTE	W04
@@ -1555,6 +1912,7 @@ falcon_windy_FINAL_3_B2:
 	BYTE		        46*falcon_windy_FINAL_mvl/mxv
 	BYTE	W04
 	BYTE		N06     An2   v008
+	BYTE		N48     Fn3   v060
 	BYTE	W02
 	BYTE		VOL     45*falcon_windy_FINAL_mvl/mxv
 	BYTE	W04
@@ -1582,6 +1940,9 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W03
 // 082   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
+	BYTE		N48     Fs3 
+	BYTE		N96     Dn4 
 	BYTE	W03
 	BYTE		VOL     34*falcon_windy_FINAL_mvl/mxv
 	BYTE	W03
@@ -1608,6 +1969,7 @@ falcon_windy_FINAL_3_B2:
 	BYTE		        26*falcon_windy_FINAL_mvl/mxv
 	BYTE	W03
 	BYTE		N06     An2   v008
+	BYTE		N48     Gs3   v060
 	BYTE	W03
 	BYTE		VOL     25*falcon_windy_FINAL_mvl/mxv
 	BYTE	W03
@@ -1635,6 +1997,8 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W03
 // 083   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Cn3   v060
+	BYTE		TIE     En4 
 	BYTE	W04
 	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
 	BYTE	W02
@@ -1688,6 +2052,7 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W02
 // 084   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N96     Bn2   v060
 	BYTE	W04
 	BYTE		VOL     8*falcon_windy_FINAL_mvl/mxv
 	BYTE	W02
@@ -1713,7 +2078,10 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W06
 	BYTE		        5*falcon_windy_FINAL_mvl/mxv
 	BYTE	W01
+	BYTE		EOT     En4 
 	BYTE		N06     An2   v008
+	BYTE		N48     Gn3   v060
+	BYTE		N48     Dn4 
 	BYTE	W05
 	BYTE		VOL     5*falcon_windy_FINAL_mvl/mxv
 	BYTE	W01
@@ -1741,6 +2109,8 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W01
 // 085   ----------------------------------------
 	BYTE		N06     An2   v036
+	BYTE		N48     Fs3   v060
+	BYTE		N48     Cn4 
 	BYTE	W05
 	BYTE		VOL     2*falcon_windy_FINAL_mvl/mxv
 	BYTE	W01
@@ -1766,7 +2136,9 @@ falcon_windy_FINAL_3_B2:
 	BYTE	W06
 	BYTE		        1*falcon_windy_FINAL_mvl/mxv
 	BYTE	W01
+	BYTE		N48     Gs2   v060
 	BYTE		N06     An2   v008
+	BYTE		N48     Dn4   v060
 	BYTE	W05
 	BYTE		VOL     1*falcon_windy_FINAL_mvl/mxv
 	BYTE	W01
@@ -1791,6 +2163,7 @@ falcon_windy_FINAL_3_B2:
 // 086   ----------------------------------------
 	BYTE		        0*falcon_windy_FINAL_mvl/mxv
 	BYTE		N06     An2   v036
+	BYTE		N96     Cn4   v060
 	BYTE	W06
 	BYTE		VOL     0*falcon_windy_FINAL_mvl/mxv
 	BYTE		N06     En3   v008
@@ -1835,719 +2208,9 @@ falcon_windy_FINAL_3_B2:
 	BYTE		        0*falcon_windy_FINAL_mvl/mxv
 	BYTE	FINE
 
-//**************** Track 4 (Midi-Chn.4) ****************//
+//**************** Track 4 (Midi-Chn.5) ****************//
 
 falcon_windy_FINAL_4:
-	BYTE	KEYSH   falcon_windy_FINAL_key+0
-// 000   ----------------------------------------
-	BYTE		VOICE   41
-	BYTE		MODT    0
-	BYTE		LFOS    44
-	BYTE		MODT    0
-	BYTE		LFOS    44
-	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
-	BYTE	W03
-	BYTE		MOD     2
-	BYTE	W03
-	BYTE		PAN     c_v+0
-	BYTE	W03
-	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
-	BYTE	W03
-	BYTE	W36
-	BYTE		BEND    c_v+0
-	BYTE	W48
-// 001   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     An3   v112
-	BYTE	W96
-// 002   ----------------------------------------
-	BYTE		        Fs3   v060
-	BYTE		N96     Bn3   v112
-	BYTE	W96
-// 003   ----------------------------------------
-	BYTE		        Gn3   v060
-	BYTE		N96     Cn4   v112
-	BYTE	W96
-// 004   ----------------------------------------
-	BYTE		        An3   v060
-	BYTE		N96     Dn4   v112
-	BYTE	W96
-falcon_windy_FINAL_4_B1:
-// 005   ----------------------------------------
-falcon_windy_FINAL_4_005:
-	BYTE		N96     Cn3   v060
-	BYTE		TIE     An3 
-	BYTE		TIE     En4 
-	BYTE	W96
-	BYTE	PEND
-// 006   ----------------------------------------
-	BYTE		N96     Bn2 
-	BYTE	W72
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N24     Gn3 
-	BYTE		N24     Dn4 
-	BYTE	W24
-// 007   ----------------------------------------
-falcon_windy_FINAL_4_007:
-	BYTE		N96     An2   v060
-	BYTE		N48     En3 
-	BYTE		N96     Cn4 
-	BYTE	W48
-	BYTE		N48     Fn3 
-	BYTE	W48
-	BYTE	PEND
-// 008   ----------------------------------------
-falcon_windy_FINAL_4_008:
-	BYTE		N96     Bn2   v060
-	BYTE		N48     Fs3 
-	BYTE		N96     Dn4 
-	BYTE	W48
-	BYTE		N48     Gs3 
-	BYTE	W48
-	BYTE	PEND
-// 009   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 010   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W48
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N48     Gn3 
-	BYTE		N48     Dn4 
-	BYTE	W48
-// 011   ----------------------------------------
-falcon_windy_FINAL_4_011:
-	BYTE		N48     An2   v060
-	BYTE		N48     Fs3 
-	BYTE		N48     Cn4 
-	BYTE	W48
-	BYTE		        Gs2 
-	BYTE		N48     En3 
-	BYTE		N48     Dn4 
-	BYTE	W48
-	BYTE	PEND
-// 012   ----------------------------------------
-falcon_windy_FINAL_4_012:
-	BYTE		N96     An2   v060
-	BYTE		N96     En3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-	BYTE	PEND
-// 013   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 014   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W72
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N24     Gn3 
-	BYTE		N24     Dn4 
-	BYTE	W24
-// 015   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_007
-// 016   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_008
-// 017   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 018   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W48
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N48     Gn3 
-	BYTE		N48     Dn4 
-	BYTE	W48
-// 019   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_011
-// 020   ----------------------------------------
-falcon_windy_FINAL_4_020:
-	BYTE		TIE     An2   v060
-	BYTE		TIE     En3 
-	BYTE		N96     Dn4 
-	BYTE	W96
-	BYTE	PEND
-// 021   ----------------------------------------
-	BYTE		        Cs4 
-	BYTE	W96
-	BYTE		EOT     An2 
-	BYTE		        En3 
-// 022   ----------------------------------------
-falcon_windy_FINAL_4_022:
-	BYTE		N96     An3   v060
-	BYTE		N96     Cn4 
-	BYTE		N96     En4 
-	BYTE	W96
-	BYTE	PEND
-// 023   ----------------------------------------
-falcon_windy_FINAL_4_023:
-	BYTE		N96     Gn3   v060
-	BYTE		N96     Bn3 
-	BYTE		N96     Dn4 
-	BYTE	W96
-	BYTE	PEND
-// 024   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 025   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     An3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-// 026   ----------------------------------------
-falcon_windy_FINAL_4_026:
-	BYTE		N96     Fn3   v060
-	BYTE		N96     An3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-	BYTE	PEND
-// 027   ----------------------------------------
-falcon_windy_FINAL_4_027:
-	BYTE		N96     Fn3   v060
-	BYTE		N96     Gn3 
-	BYTE		N48     Cn4 
-	BYTE	W48
-	BYTE		        Bn3 
-	BYTE	W48
-	BYTE	PEND
-// 028   ----------------------------------------
-	BYTE		N96     En3 
-	BYTE		N96     Gn3 
-	BYTE		N96     Bn3 
-	BYTE	W96
-// 029   ----------------------------------------
-	BYTE		        En3 
-	BYTE		N96     An3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-// 030   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_022
-// 031   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 032   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 033   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     An3 
-	BYTE		N96     Cs4 
-	BYTE	W96
-// 034   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_026
-// 035   ----------------------------------------
-falcon_windy_FINAL_4_035:
-	BYTE		N96     Fn3   v060
-	BYTE		N96     As3 
-	BYTE		N96     Dn4 
-	BYTE	W96
-	BYTE	PEND
-// 036   ----------------------------------------
-falcon_windy_FINAL_4_036:
-	BYTE		N96     Gn3   v060
-	BYTE		N96     As3 
-	BYTE		N96     Ds4 
-	BYTE	W96
-	BYTE	PEND
-// 037   ----------------------------------------
-falcon_windy_FINAL_4_037:
-	BYTE		N96     Ds3   v060
-	BYTE		N96     As3 
-	BYTE		N96     Ds4 
-	BYTE	W96
-	BYTE	PEND
-// 038   ----------------------------------------
-falcon_windy_FINAL_4_038:
-	BYTE		TIE     Dn3   v060
-	BYTE		TIE     Fs3 
-	BYTE		TIE     Dn4 
-	BYTE	W96
-	BYTE	PEND
-// 039   ----------------------------------------
-	BYTE	W96
-	BYTE		EOT     Dn3 
-	BYTE		        Fs3 
-	BYTE		        Dn4 
-// 040   ----------------------------------------
-falcon_windy_FINAL_4_040:
-	BYTE		TIE     Dn3   v060
-	BYTE		TIE     Gs3 
-	BYTE		TIE     Dn4 
-	BYTE	W96
-	BYTE	PEND
-// 041   ----------------------------------------
-	BYTE	W96
-	BYTE		EOT     Dn3 
-	BYTE		        Gs3 
-	BYTE		        Dn4 
-	BYTE	GoTo
-	 POIN2	falcon_windy_FINAL_4_B1
-falcon_windy_FINAL_4_B2:
-// 042   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 043   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W72
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N24     Gn3 
-	BYTE		N24     Dn4 
-	BYTE	W24
-// 044   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_007
-// 045   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_008
-// 046   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 047   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W48
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N48     Gn3 
-	BYTE		N48     Dn4 
-	BYTE	W48
-// 048   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_011
-// 049   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_012
-// 050   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 051   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W72
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N24     Gn3 
-	BYTE		N24     Dn4 
-	BYTE	W24
-// 052   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_007
-// 053   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_008
-// 054   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_005
-// 055   ----------------------------------------
-	BYTE		N96     Bn2   v060
-	BYTE	W48
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N48     Gn3 
-	BYTE		N48     Dn4 
-	BYTE	W48
-// 056   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_011
-// 057   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_020
-// 058   ----------------------------------------
-	BYTE		N96     Cs4   v060
-	BYTE	W96
-	BYTE		EOT     An2 
-	BYTE		        En3 
-// 059   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_022
-// 060   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 061   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 062   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     An3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-// 063   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_026
-// 064   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_027
-// 065   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     Gn3 
-	BYTE		N96     Bn3 
-	BYTE	W96
-// 066   ----------------------------------------
-	BYTE		        En3 
-	BYTE		N96     An3 
-	BYTE		N96     Cn4 
-	BYTE	W96
-// 067   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_022
-// 068   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 069   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_023
-// 070   ----------------------------------------
-	BYTE		N96     En3   v060
-	BYTE		N96     An3 
-	BYTE		N96     Cs4 
-	BYTE	W96
-// 071   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_026
-// 072   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_035
-// 073   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_036
-// 074   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_037
-// 075   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_038
-// 076   ----------------------------------------
-	BYTE	W96
-	BYTE		EOT     Dn3 
-	BYTE		        Fs3 
-	BYTE		        Dn4 
-// 077   ----------------------------------------
-	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_4_040
-// 078   ----------------------------------------
-	BYTE	W96
-	BYTE		EOT     Dn3 
-	BYTE		        Gs3 
-	BYTE		        Dn4 
-// 079   ----------------------------------------
-	BYTE		N96     Cn3   v060
-	BYTE		TIE     An3 
-	BYTE		TIE     En4 
-	BYTE	W07
-	BYTE		VOL     124*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        122*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        119*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        116*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        114*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        111*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        109*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        106*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        103*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        101*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        98*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        97*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        94*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        92*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        90*falcon_windy_FINAL_mvl/mxv
-	BYTE	W05
-// 080   ----------------------------------------
-	BYTE		N96     Bn2 
-	BYTE	W01
-	BYTE		VOL     87*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        85*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        82*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        81*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        78*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        77*falcon_windy_FINAL_mvl/mxv
-	BYTE	W07
-	BYTE		        74*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        73*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        72*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        69*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        68*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        65*falcon_windy_FINAL_mvl/mxv
-	BYTE	W04
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N24     Gn3 
-	BYTE		N24     Dn4 
-	BYTE	W02
-	BYTE		VOL     64*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        61*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        60*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        59*falcon_windy_FINAL_mvl/mxv
-	BYTE	W04
-// 081   ----------------------------------------
-	BYTE		N96     An2 
-	BYTE		N48     En3 
-	BYTE		N96     Cn4 
-	BYTE	W02
-	BYTE		VOL     56*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        55*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        54*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        52*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        50*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        49*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        47*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        46*falcon_windy_FINAL_mvl/mxv
-	BYTE	W04
-	BYTE		N48     Fn3 
-	BYTE	W02
-	BYTE		VOL     45*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        43*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        42*falcon_windy_FINAL_mvl/mxv
-	BYTE	W07
-	BYTE		        41*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        39*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        37*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        36*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        35*falcon_windy_FINAL_mvl/mxv
-	BYTE	W03
-// 082   ----------------------------------------
-	BYTE		N96     Bn2 
-	BYTE		N48     Fs3 
-	BYTE		N96     Dn4 
-	BYTE	W03
-	BYTE		VOL     34*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        32*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        31*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        31*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        30*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        29*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        27*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        26*falcon_windy_FINAL_mvl/mxv
-	BYTE	W03
-	BYTE		N48     Gs3 
-	BYTE	W03
-	BYTE		VOL     25*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        24*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        23*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        23*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        22*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        21*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        20*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        19*falcon_windy_FINAL_mvl/mxv
-	BYTE	W03
-// 083   ----------------------------------------
-	BYTE		N96     Cn3 
-	BYTE		TIE     An3 
-	BYTE		TIE     En4 
-	BYTE	W04
-	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        17*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        16*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        16*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        15*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        14*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        13*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        13*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        12*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        12*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        11*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        11*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        10*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        10*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        9*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        8*falcon_windy_FINAL_mvl/mxv
-	BYTE	W02
-// 084   ----------------------------------------
-	BYTE		N96     Bn2 
-	BYTE	W04
-	BYTE		VOL     8*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        7*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        7*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        7*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        6*falcon_windy_FINAL_mvl/mxv
-	BYTE	W07
-	BYTE		        6*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        5*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        5*falcon_windy_FINAL_mvl/mxv
-	BYTE	W01
-	BYTE		EOT     An3 
-	BYTE		        En4 
-	BYTE		N48     Gn3 
-	BYTE		N48     Dn4 
-	BYTE	W05
-	BYTE		VOL     5*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        4*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        4*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        4*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        4*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        3*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        3*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        3*falcon_windy_FINAL_mvl/mxv
-	BYTE	W01
-// 085   ----------------------------------------
-	BYTE		N48     An2 
-	BYTE		N48     Fs3 
-	BYTE		N48     Cn4 
-	BYTE	W05
-	BYTE		VOL     2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        2*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W01
-	BYTE		N48     Gs2 
-	BYTE		N48     En3 
-	BYTE		N48     Dn4 
-	BYTE	W05
-	BYTE		VOL     1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W07
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        1*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-// 086   ----------------------------------------
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE		N96     An2 
-	BYTE		N96     En3 
-	BYTE		N96     Cn4 
-	BYTE	W06
-	BYTE		VOL     0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	W06
-// 087   ----------------------------------------
-	BYTE		        0*falcon_windy_FINAL_mvl/mxv
-	BYTE	FINE
-
-//**************** Track 5 (Midi-Chn.5) ****************//
-
-falcon_windy_FINAL_5:
 	BYTE	KEYSH   falcon_windy_FINAL_key+0
 // 000   ----------------------------------------
 	BYTE		VOICE   36
@@ -2634,9 +2297,9 @@ falcon_windy_FINAL_5:
 	BYTE	W01
 	BYTE		        c_v-59
 	BYTE	W01
-falcon_windy_FINAL_5_B1:
+falcon_windy_FINAL_4_B1:
 // 005   ----------------------------------------
-falcon_windy_FINAL_5_005:
+falcon_windy_FINAL_4_005:
 	BYTE		BEND    c_v+0
 	BYTE		N36     An1   v127
 	BYTE	W36
@@ -2650,7 +2313,7 @@ falcon_windy_FINAL_5_005:
 	BYTE	W06
 	BYTE	PEND
 // 006   ----------------------------------------
-falcon_windy_FINAL_5_006:
+falcon_windy_FINAL_4_006:
 	BYTE		N24     En1   v127
 	BYTE	W24
 	BYTE		BEND    c_v+63
@@ -2674,7 +2337,7 @@ falcon_windy_FINAL_5_006:
 	BYTE	W48
 	BYTE	PEND
 // 007   ----------------------------------------
-falcon_windy_FINAL_5_007:
+falcon_windy_FINAL_4_007:
 	BYTE		N36     Fn1   v127
 	BYTE	W36
 	BYTE		N12   
@@ -2687,7 +2350,7 @@ falcon_windy_FINAL_5_007:
 	BYTE	W12
 	BYTE	PEND
 // 008   ----------------------------------------
-falcon_windy_FINAL_5_008:
+falcon_windy_FINAL_4_008:
 	BYTE		N66     En1   v127
 	BYTE	W66
 	BYTE		N18     Fs1 
@@ -2696,7 +2359,7 @@ falcon_windy_FINAL_5_008:
 	BYTE	W12
 	BYTE	PEND
 // 009   ----------------------------------------
-falcon_windy_FINAL_5_009:
+falcon_windy_FINAL_4_009:
 	BYTE		N36     An1   v127
 	BYTE	W36
 	BYTE		N12     Gn1 
@@ -2709,7 +2372,7 @@ falcon_windy_FINAL_5_009:
 	BYTE	W06
 	BYTE	PEND
 // 010   ----------------------------------------
-falcon_windy_FINAL_5_010:
+falcon_windy_FINAL_4_010:
 	BYTE		N24     Gn1   v127
 	BYTE	W24
 	BYTE		BEND    c_v-32
@@ -2737,7 +2400,7 @@ falcon_windy_FINAL_5_010:
 	BYTE	W12
 	BYTE	PEND
 // 011   ----------------------------------------
-falcon_windy_FINAL_5_011:
+falcon_windy_FINAL_4_011:
 	BYTE		N24     Dn2   v127
 	BYTE	W24
 	BYTE		BEND    c_v-32
@@ -2765,7 +2428,7 @@ falcon_windy_FINAL_5_011:
 	BYTE	W12
 	BYTE	PEND
 // 012   ----------------------------------------
-falcon_windy_FINAL_5_012:
+falcon_windy_FINAL_4_012:
 	BYTE		N72     An1   v127
 	BYTE	W72
 	BYTE		BEND    c_v+63
@@ -2820,27 +2483,27 @@ falcon_windy_FINAL_5_012:
 	BYTE	PEND
 // 013   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_005
+	 POIN2	falcon_windy_FINAL_4_005
 // 014   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_006
+	 POIN2	falcon_windy_FINAL_4_006
 // 015   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_007
+	 POIN2	falcon_windy_FINAL_4_007
 // 016   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_008
+	 POIN2	falcon_windy_FINAL_4_008
 // 017   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_009
+	 POIN2	falcon_windy_FINAL_4_009
 // 018   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_010
+	 POIN2	falcon_windy_FINAL_4_010
 // 019   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_011
+	 POIN2	falcon_windy_FINAL_4_011
 // 020   ----------------------------------------
-falcon_windy_FINAL_5_020:
+falcon_windy_FINAL_4_020:
 	BYTE		N72     An1   v127
 	BYTE	W72
 	BYTE		N24     En1 
@@ -2850,7 +2513,7 @@ falcon_windy_FINAL_5_020:
 	BYTE		N96     An0 
 	BYTE	W96
 // 022   ----------------------------------------
-falcon_windy_FINAL_5_022:
+falcon_windy_FINAL_4_022:
 	BYTE		N12     Fn1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2863,7 +2526,7 @@ falcon_windy_FINAL_5_022:
 	BYTE	W12
 	BYTE	PEND
 // 023   ----------------------------------------
-falcon_windy_FINAL_5_023:
+falcon_windy_FINAL_4_023:
 	BYTE		N12     Fn1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2874,7 +2537,7 @@ falcon_windy_FINAL_5_023:
 	BYTE	W36
 	BYTE	PEND
 // 024   ----------------------------------------
-falcon_windy_FINAL_5_024:
+falcon_windy_FINAL_4_024:
 	BYTE		N12     En1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2887,7 +2550,7 @@ falcon_windy_FINAL_5_024:
 	BYTE	W12
 	BYTE	PEND
 // 025   ----------------------------------------
-falcon_windy_FINAL_5_025:
+falcon_windy_FINAL_4_025:
 	BYTE		N12     An1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2900,7 +2563,7 @@ falcon_windy_FINAL_5_025:
 	BYTE	W12
 	BYTE	PEND
 // 026   ----------------------------------------
-falcon_windy_FINAL_5_026:
+falcon_windy_FINAL_4_026:
 	BYTE		N12     Dn1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2913,7 +2576,7 @@ falcon_windy_FINAL_5_026:
 	BYTE	W12
 	BYTE	PEND
 // 027   ----------------------------------------
-falcon_windy_FINAL_5_027:
+falcon_windy_FINAL_4_027:
 	BYTE		N12     Gn1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2924,7 +2587,7 @@ falcon_windy_FINAL_5_027:
 	BYTE	W36
 	BYTE	PEND
 // 028   ----------------------------------------
-falcon_windy_FINAL_5_028:
+falcon_windy_FINAL_4_028:
 	BYTE		N12     Cn2   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2937,7 +2600,7 @@ falcon_windy_FINAL_5_028:
 	BYTE	W12
 	BYTE	PEND
 // 029   ----------------------------------------
-falcon_windy_FINAL_5_029:
+falcon_windy_FINAL_4_029:
 	BYTE		N12     An1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2949,21 +2612,21 @@ falcon_windy_FINAL_5_029:
 	BYTE	PEND
 // 030   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_022
+	 POIN2	falcon_windy_FINAL_4_022
 // 031   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_023
+	 POIN2	falcon_windy_FINAL_4_023
 // 032   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 033   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_025
+	 POIN2	falcon_windy_FINAL_4_025
 // 034   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_026
+	 POIN2	falcon_windy_FINAL_4_026
 // 035   ----------------------------------------
-falcon_windy_FINAL_5_035:
+falcon_windy_FINAL_4_035:
 	BYTE		N12     As1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2974,7 +2637,7 @@ falcon_windy_FINAL_5_035:
 	BYTE	W36
 	BYTE	PEND
 // 036   ----------------------------------------
-falcon_windy_FINAL_5_036:
+falcon_windy_FINAL_4_036:
 	BYTE		N12     Ds1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2987,7 +2650,7 @@ falcon_windy_FINAL_5_036:
 	BYTE	W12
 	BYTE	PEND
 // 037   ----------------------------------------
-falcon_windy_FINAL_5_037:
+falcon_windy_FINAL_4_037:
 	BYTE		N12     Cn2   v127
 	BYTE	W12
 	BYTE		N12   
@@ -2999,9 +2662,9 @@ falcon_windy_FINAL_5_037:
 	BYTE	PEND
 // 038   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 039   ----------------------------------------
-falcon_windy_FINAL_5_039:
+falcon_windy_FINAL_4_039:
 	BYTE		N12     En1   v127
 	BYTE	W12
 	BYTE		N12   
@@ -3013,9 +2676,9 @@ falcon_windy_FINAL_5_039:
 	BYTE	PEND
 // 040   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 041   ----------------------------------------
-falcon_windy_FINAL_5_041:
+falcon_windy_FINAL_4_041:
 	BYTE		BEND    c_v-64
 	BYTE		N24     En1   v127
 	BYTE	W09
@@ -3058,8 +2721,8 @@ falcon_windy_FINAL_5_041:
 	BYTE	W12
 	BYTE	PEND
 	BYTE	GoTo
-	 POIN2	falcon_windy_FINAL_5_B1
-falcon_windy_FINAL_5_B2:
+	 POIN2	falcon_windy_FINAL_4_B1
+falcon_windy_FINAL_4_B2:
 // 042   ----------------------------------------
 	BYTE		N36     An1   v127
 	BYTE	W36
@@ -3073,112 +2736,112 @@ falcon_windy_FINAL_5_B2:
 	BYTE	W06
 // 043   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_006
+	 POIN2	falcon_windy_FINAL_4_006
 // 044   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_007
+	 POIN2	falcon_windy_FINAL_4_007
 // 045   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_008
+	 POIN2	falcon_windy_FINAL_4_008
 // 046   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_009
+	 POIN2	falcon_windy_FINAL_4_009
 // 047   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_010
+	 POIN2	falcon_windy_FINAL_4_010
 // 048   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_011
+	 POIN2	falcon_windy_FINAL_4_011
 // 049   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_012
+	 POIN2	falcon_windy_FINAL_4_012
 // 050   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_005
+	 POIN2	falcon_windy_FINAL_4_005
 // 051   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_006
+	 POIN2	falcon_windy_FINAL_4_006
 // 052   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_007
+	 POIN2	falcon_windy_FINAL_4_007
 // 053   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_008
+	 POIN2	falcon_windy_FINAL_4_008
 // 054   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_009
+	 POIN2	falcon_windy_FINAL_4_009
 // 055   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_010
+	 POIN2	falcon_windy_FINAL_4_010
 // 056   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_011
+	 POIN2	falcon_windy_FINAL_4_011
 // 057   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_020
+	 POIN2	falcon_windy_FINAL_4_020
 // 058   ----------------------------------------
 	BYTE		N96     An0   v127
 	BYTE	W96
 // 059   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_022
+	 POIN2	falcon_windy_FINAL_4_022
 // 060   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_023
+	 POIN2	falcon_windy_FINAL_4_023
 // 061   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 062   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_025
+	 POIN2	falcon_windy_FINAL_4_025
 // 063   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_026
+	 POIN2	falcon_windy_FINAL_4_026
 // 064   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_027
+	 POIN2	falcon_windy_FINAL_4_027
 // 065   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_028
+	 POIN2	falcon_windy_FINAL_4_028
 // 066   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_029
+	 POIN2	falcon_windy_FINAL_4_029
 // 067   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_022
+	 POIN2	falcon_windy_FINAL_4_022
 // 068   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_023
+	 POIN2	falcon_windy_FINAL_4_023
 // 069   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 070   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_025
+	 POIN2	falcon_windy_FINAL_4_025
 // 071   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_026
+	 POIN2	falcon_windy_FINAL_4_026
 // 072   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_035
+	 POIN2	falcon_windy_FINAL_4_035
 // 073   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_036
+	 POIN2	falcon_windy_FINAL_4_036
 // 074   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_037
+	 POIN2	falcon_windy_FINAL_4_037
 // 075   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 076   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_039
+	 POIN2	falcon_windy_FINAL_4_039
 // 077   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_024
+	 POIN2	falcon_windy_FINAL_4_024
 // 078   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_5_041
+	 POIN2	falcon_windy_FINAL_4_041
 // 079   ----------------------------------------
 	BYTE		N36     An1   v127
 	BYTE	W07
@@ -3546,9 +3209,9 @@ falcon_windy_FINAL_5_B2:
 	BYTE		        0*falcon_windy_FINAL_mvl/mxv
 	BYTE	FINE
 
-//**************** Track 6 (Midi-Chn.6) ****************//
+//**************** Track 5 (Midi-Chn.6) ****************//
 
-falcon_windy_FINAL_6:
+falcon_windy_FINAL_5:
 	BYTE	KEYSH   falcon_windy_FINAL_key+0
 // 000   ----------------------------------------
 	BYTE		VOICE   122
@@ -3667,9 +3330,9 @@ falcon_windy_FINAL_6:
 	BYTE	W06
 	BYTE		N12   
 	BYTE	W12
-falcon_windy_FINAL_6_B1:
+falcon_windy_FINAL_5_B1:
 // 005   ----------------------------------------
-falcon_windy_FINAL_6_005:
+falcon_windy_FINAL_5_005:
 	BYTE		N06     Gs1   v020
 	BYTE		N12     As1   v092
 	BYTE	W12
@@ -3704,54 +3367,54 @@ falcon_windy_FINAL_6_005:
 	BYTE	PEND
 // 006   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 007   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 008   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 009   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 010   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 011   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 012   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 013   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 014   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 015   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 016   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 017   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 018   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 019   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 020   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 021   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 022   ----------------------------------------
-falcon_windy_FINAL_6_022:
+falcon_windy_FINAL_5_022:
 	BYTE		N06     Gs1   v036
 	BYTE		N12     As1   v092
 	BYTE	W12
@@ -3786,175 +3449,175 @@ falcon_windy_FINAL_6_022:
 	BYTE	PEND
 // 023   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 024   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 025   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 026   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 027   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 028   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 029   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 030   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 031   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 032   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 033   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 034   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 035   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 036   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 037   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 038   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 039   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 040   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 041   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 	BYTE	GoTo
-	 POIN2	falcon_windy_FINAL_6_B1
-falcon_windy_FINAL_6_B2:
+	 POIN2	falcon_windy_FINAL_5_B1
+falcon_windy_FINAL_5_B2:
 // 042   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 043   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 044   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 045   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 046   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 047   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 048   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 049   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 050   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 051   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 052   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 053   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 054   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 055   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 056   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 057   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 058   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_005
+	 POIN2	falcon_windy_FINAL_5_005
 // 059   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 060   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 061   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 062   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 063   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 064   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 065   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 066   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 067   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 068   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 069   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 070   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 071   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 072   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 073   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 074   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 075   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 076   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 077   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 078   ----------------------------------------
 	BYTE	PATT
-	 POIN2	falcon_windy_FINAL_6_022
+	 POIN2	falcon_windy_FINAL_5_022
 // 079   ----------------------------------------
 	BYTE		N06     Gs1   v020
 	BYTE		N12     As1   v092
@@ -4448,15 +4111,15 @@ falcon_windy_FINAL_6_B2:
 	BYTE		VOL     0*falcon_windy_FINAL_mvl/mxv
 	BYTE	FINE
 
-//**************** Track 7 (Midi-Chn.7) ****************//
+//**************** Track 6 (Midi-Chn.7) ****************//
 
-falcon_windy_FINAL_7:
+falcon_windy_FINAL_6:
 	BYTE	KEYSH   falcon_windy_FINAL_key+0
 // 000   ----------------------------------------
-	BYTE		VOICE   3
+	BYTE		VOICE   2
 	BYTE		MODT    0
 	BYTE		LFOS    44
-	BYTE		VOL     67*falcon_windy_FINAL_mvl/mxv
+	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
 	BYTE		TIE     Cn3   v044
 	BYTE	W96
 // 001   ----------------------------------------
@@ -4467,7 +4130,7 @@ falcon_windy_FINAL_7:
 	BYTE	W96
 // 004   ----------------------------------------
 	BYTE	W96
-falcon_windy_FINAL_7_B1:
+falcon_windy_FINAL_6_B1:
 // 005   ----------------------------------------
 	BYTE	W96
 // 006   ----------------------------------------
@@ -4544,8 +4207,8 @@ falcon_windy_FINAL_7_B1:
 	BYTE	W96
 	BYTE		EOT     Cn3 
 	BYTE	GoTo
-	 POIN2	falcon_windy_FINAL_7_B1
-falcon_windy_FINAL_7_B2:
+	 POIN2	falcon_windy_FINAL_6_B1
+falcon_windy_FINAL_6_B2:
 // 042   ----------------------------------------
 	BYTE	W96
 // 043   ----------------------------------------
@@ -4643,7 +4306,7 @@ falcon_windy_FINAL_7_B2:
 	ALIGN 4
 
 falcon_windy_FINAL:
-	BYTE	7	// NumTrks
+	BYTE	6	// NumTrks
 	BYTE	0	// NumBlks
 	BYTE	falcon_windy_FINAL_pri	// Priority
 	BYTE	falcon_windy_FINAL_rev	// Reverb.
@@ -4656,6 +4319,5 @@ falcon_windy_FINAL:
 	POIN2	falcon_windy_FINAL_4
 	POIN2	falcon_windy_FINAL_5
 	POIN2	falcon_windy_FINAL_6
-	POIN2	falcon_windy_FINAL_7
 
 	

@@ -90,7 +90,7 @@ void SoarVBlankInterrupt()
 	if ((animClock < 0x10) | (animClock > 0x30))	g_REG_BG2X-=0x30; //the same as eirika's map sprite?
 	else if (g_REG_BG2X<0x9fd0) g_REG_BG2X+=0x30;
 
-	if (animClock == 0x20) m4aSongNumStart(0xa6);
+	if ((animClock == 0x20) && (gChapterData.muteSfxOption == 0)) m4aSongNumStart(0xa6);
 
 	#ifdef __FPSCOUNT__
 	if (animClock == 0) //resets once per 63 frames so close enough
@@ -154,7 +154,7 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	Sound_FadeSongOut(10);
 	LoadSprite();
 	// m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
-	m4aSongNumStart(0x58); //unused slot
+	if (gChapterData.unk41_1 == 0) m4aSongNumStart(0x58); //unused slot //if muted option is false
 	gCurrentMusic = 0x58;
 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 
@@ -343,7 +343,7 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 	{
 		if (getPtHeight_thumb(CurrentProc->sFocusPtX, CurrentProc->sFocusPtY) > (CurrentProc->sPlayerPosZ - (2*CAMERA_Z_STEP)))
 		{
-			m4aSongNumStart(0x73);
+			if (gChapterData.muteSfxOption == 0) m4aSongNumStart(0x73); //phase transition
 			EndLoop(CurrentProc);
 			return 0;
 		}
@@ -397,7 +397,7 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 		{
 			CurrentProc->landingTransition = TRUE;
 		}
-		else m4aSongNumStart(0x6c); //invalid sfx
+		else if (gChapterData.muteSfxOption == 0) m4aSongNumStart(0x6c); //invalid sfx
 	};
 
 	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
