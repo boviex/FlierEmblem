@@ -33,9 +33,14 @@
 //songs
 
 {
-SongTable(0x58, falcon_windy_FINAL, 1)
-#include "falcon_windy_FINAL.event"
+SongTable(0x58, falcon_wav_FINAL, 1)
+#include "falcon_wav_FINAL.event"
 }
+
+ALIGN 4
+Falcon_WavData:
+#incbin "samples/falcon_bg_wavdata.dmp"
+ALIGN 4
 
 //installation of ipatix's sound mixer. Essential if you want to use GS synths; also makes most music sound better by reducing background noise.
 
@@ -122,7 +127,8 @@ VoiceDirect(MusicVoices,0x7,0x3c,0x028F524,0x0,0x0,0x0,0xff,0xf5,0xa0,0xa0)
 //8 celesta - C4
 VoiceDirect(MusicVoices,0x8,0x3c,0x04C4758,0x0,0x0,0x0,0xff,0x0,0xff,0xa5)
 //9
-VoiceDummy(MusicVoices,0x9)
+// VoiceDummy(MusicVoices,0x9)
+VoiceDirect(MusicVoices,0x9,0x3c, Falcon_WavData, 0, 0, 0, 0xff, 0, 0xff, 0)
 //10 music box - C4
 VoiceDirect(MusicVoices,0xa,0x3c,0x02C0D0C,0x0,0x0,0x0,0xff,0x0,0xff,0xe0)
 //11 vibraphone (same sample as celesta? recommend use 8 instead) - C4
@@ -178,7 +184,8 @@ VoiceDirect(MusicVoices,0x23,0x3c,0x02962B0,0x0,0x0,0x0,0x60,0x0,0xff,0x90)
 //36 slap bass - C2 (-1)
 VoiceDirect(MusicVoices,0x24,0x3c,0x02AC224,0x0,0x0,0x0,0xff,0xfb,0x80,0xa5)
 //37
-VoiceDummy(MusicVoices,0x25)
+// VoiceDummy(MusicVoices,0x25)
+VoiceWave(MusicVoices, 0x25, AlusqWave, 0x0,0x0, 0x0, 0xf, 0x0)
 //38 synth bass 1 - C1
 VoiceDirect(MusicVoices,0x26,0x3c,0x04CD8AC,0x0,0x0,0x0,0xff,0xeb,0x60,0xa5)
 //39 synth bass 2 - C2 (-1)
@@ -476,6 +483,9 @@ BYTE $00 $00 $00 $40 $20 $89 $05 $01 $00 $00 $00 $00 $00 $00 $00 $00 $80 $02 $00
 
 GSSaw:
 BYTE $00 $00 $00 $40 $20 $89 $05 $01 $00 $00 $00 $00 $00 $00 $00 $00 $80 $01 $00 $00
+
+AlusqWave:
+BYTE $11 $12 $23 $58 $ac $de $ef $ff $d7 $20 $00 $37 $bf $fb $73 $00
 
 #define GSSquareMacro(InitialDutyCycle,CycleSpeed,CycleAmplitude,CycleOffset) "BYTE $00 $00 $00 $40 $20 $89 $05 $01 $00 $00 $00 $00 $00 $00 $00 $00 $80 $00 InitialDutyCycle CycleSpeed CycleAmplitude CycleOffset $00 $00"
 

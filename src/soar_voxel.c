@@ -153,8 +153,8 @@ void SetUpNewWMGraphics(SoarProc* CurrentProc){
 	//stop map music??
 	Sound_FadeSongOut(10);
 	LoadSprite();
-	// m4aSongNumStart(0x4e); //windy with birds (make this a separate track from bgm and it can play alongside)
 	if (gChapterData.unk41_1 == 0) m4aSongNumStart(0x58); //unused slot //if muted option is false
+	else if (gChapterData.muteSfxOption == 0) m4aSongNumStart(0x4e); //windy (play if sfx but no music)
 	gCurrentMusic = 0x58;
 	CpuFastFill16(0, VRAM, (MODE5_WIDTH*MODE5_HEIGHT<<1)); //make it black
 
@@ -271,6 +271,7 @@ void EndLoop(SoarProc* CurrentProc){
 	//actually ending the loop
 	BreakProcLoop(CurrentProc);
 	// REG_WAITCNT = 0x45b7; //restore this
+	Sound_FadeSongOut(10);
 };
 
 void BumpScreen(int direction){

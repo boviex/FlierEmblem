@@ -4116,10 +4116,10 @@ falcon_windy_FINAL_5_B2:
 falcon_windy_FINAL_6:
 	BYTE	KEYSH   falcon_windy_FINAL_key+0
 // 000   ----------------------------------------
-	BYTE		VOICE   2
+	BYTE		VOICE   3
 	BYTE		MODT    0
 	BYTE		LFOS    44
-	BYTE		VOL     18*falcon_windy_FINAL_mvl/mxv
+	BYTE		VOL     68*falcon_windy_FINAL_mvl/mxv
 	BYTE		TIE     Cn3   v044
 	BYTE	W96
 // 001   ----------------------------------------
