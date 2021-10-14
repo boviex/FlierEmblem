@@ -24,9 +24,9 @@ falcon_wav_FINAL_1:
 	BYTE		MODT    0
 	BYTE		LFOS    44
 	BYTE		VOL     127*falcon_wav_FINAL_mvl/mxv
-	BYTE		TIE     Cn3   v044
 	BYTE	W96
 // 001   ----------------------------------------
+	BYTE		TIE     Cn3   v127
 	BYTE	W96
 // 002   ----------------------------------------
 	BYTE	W96
