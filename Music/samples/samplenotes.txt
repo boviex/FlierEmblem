@@ -1,0 +1,17 @@
+22050 samples/s
+1323000 samples/min
+10700 samples/beat
+42677 samples/bar
+170709.6 samples for 4 bars
+
+after trimming 4 bars of silence:
+loop start at: 170710
+end: 1749774
+
+size:1ab323
+
+
+new sample:
+
+loop from 170714
+to 1741729
