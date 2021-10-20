@@ -1,0 +1,26 @@
+
+////////////////////////////////////////////////////
+//                                                //
+// Disassembled with Nintenlord's Event Assembler //
+// Version: 11.1.0.0                              //
+// Game: FE8                                      //
+// File: FlierEmblem.event_assembler.gba          //
+// Offset: $9F35FC                                //
+//                                                //
+////////////////////////////////////////////////////
+
+
+
+ORG $9F35FC
+LABEL 0x9
+SVAL 0x2 0xA
+CALL 0x9EE2E8
+TEXTSHOW 0xC13
+TEXTEND
+REMA
+FADI 16
+MNCH 0x17
+ASMC 0x8659D
+REMU 0x1
+ENDB
+

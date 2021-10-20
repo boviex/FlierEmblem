@@ -38,6 +38,16 @@ POIN NewTitleLogo
 ORG $c5830
 POIN NewTitleScroll
 
+ORG $99e64  
+POIN NewPrepScreenShopList
+
+ORG $c2fc
+SHORT 0 //always load the next destination
+
+//make all playable units into fliers
+#include "unitfix.event"
+
+
 //world map menu pointer is at a3e208 and is read at 4ed5a.
 ORG 0xa3e208
 POIN newWMMenu
@@ -74,6 +84,10 @@ ALIGN 4
 #include "Events/newCh1.event"
 }
 #include "Events/unlockAllLoc.event"
+
+ALIGN 4
+NewPrepScreenShopList:
+SHLI $01 $14 $1F $2D $38 $45 $3F $4B ChestKey DoorKey ElysianWhip
 
 ALIGN 4 
 newWMMenu:

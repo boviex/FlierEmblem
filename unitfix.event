@@ -1,0 +1,165 @@
+//Converted from unitfix.ups using CUPS
+
+PUSH
+ORG $8b4435 //ross
+BYTE PegasusKnight
+ORG $8b4449 //garcia
+BYTE WyvernRider
+ORG $8b4719 //colm
+BYTE PegasusKnight
+ORG $8b45ed //neimi
+BYTE PegasusKnight
+ORG $8b4919 //artur
+BYTE PegasusKnight
+ORG $8B4BD5 //more artur
+BYTE PegasusKnight
+ORG $8b4bfd //lute
+BYTE PegasusKnight
+ORG $8b5a65 //ephraim
+BYTE WyvernRider
+ORG $8b5a79 //forde
+BYTE WyvernRider
+ORG $8b5a8d //kyle
+BYTE WyvernRider
+ORG $8b5aa1 //orson
+BYTE WyvernKnight
+ORG $8b4cd9 //larachel
+BYTE PegasusKnight
+ORG $8b4d65
+BYTE PegasusKnight
+ORG $8b4ced //rennac
+BYTE FalcoKnight
+ORG $8b4d8d
+BYTE FalcoKnight
+ORG $8b4d01 //dozla
+BYTE WyvernLord
+ORG $8b4d79
+BYTE WyvernLord
+ORG $8b5915 //joshua
+BYTE WyvernRider
+ORG $8b9ccd //larachel
+BYTE PegasusKnight
+ORG $8c4031
+BYTE PegasusKnight
+ORG $8b9ce1 //dozla
+BYTE WyvernLord
+ORG $8c401d
+BYTE WyvernLord
+ORG $8baf11 //amelia
+BYTE PegasusKnight
+ORG $8bbf91 //rennac
+BYTE FalcoKnight
+ORG 0x8b593d
+BYTE 0x1f
+ORG 0x8b5951
+BYTE 0x48
+ORG 0x8b59c9
+BYTE 0x48
+ORG 0x8b5d49
+BYTE 0x1f
+ORG 0x8b5d5d
+BYTE 0x1f
+ORG 0x8b5d71
+BYTE 0x1f
+ORG 0x8b5dfd
+BYTE 0x1f
+ORG 0x8b5e11
+BYTE 0x1f
+ORG 0x8b5e25
+BYTE 0x1f
+ORG 0x8b5e95
+BYTE 0x1f
+ORG 0x8b5ea9
+BYTE 0x1f
+ORG 0x8b5ebd
+BYTE 0x1f
+ORG 0x8b5ed1
+BYTE 0x23
+ORG 0x8b5f7d
+BYTE 0x1f
+ORG 0x8b5f91
+BYTE 0x1f
+ORG 0x8b5fa5
+BYTE 0x1f
+ORG 0x8b80f9
+BYTE 0x48
+ORG 0x8b81ad
+BYTE 0x48
+ORG 0x8b81c1
+BYTE 0x21
+ORG 0x8b81d5
+BYTE 0x49
+ORG 0x8b8351
+BYTE 0x21
+ORG 0x8b8825
+BYTE 0x48
+ORG 0x8b898d
+BYTE 0x21
+ORG 0x8b89a1
+BYTE 0x20
+ORG 0x8b89b5
+BYTE 0x48
+ORG 0x8ba185
+BYTE 0x21
+ORG 0x8ba5d1
+BYTE 0x48
+ORG 0x8ba5f9
+BYTE 0x21
+ORG 0x8ba60d
+BYTE 0x21
+ORG 0x8ba621
+BYTE 0x48
+ORG 0x8ba671
+BYTE 0x48
+ORG 0x8bcad5
+BYTE 0x20
+ORG 0x8bcafd
+BYTE 0x21
+ORG 0x8c26b1
+BYTE 0x48
+ORG 0x8c2891
+BYTE 0x48
+ORG 0x8c29a9
+BYTE 0x21
+ORG 0x8c2fb1
+BYTE 0x21
+ORG 0x8c3169
+BYTE 0x21
+ORG 0x8c33d5
+BYTE 0x48
+ORG 0x8c33e9
+BYTE 0x21
+ORG 0x8c33fd
+BYTE 0x49
+ORG 0x8c48ad
+BYTE 0x48
+ORG 0x8c4ab5
+BYTE 0x48
+ORG 0x8c4d85
+BYTE 0x21
+ORG 0x8c4d99
+BYTE 0x48
+ORG 0x8c5289
+BYTE 0x48
+ORG 0x8c529d
+BYTE 0x20
+ORG 0x8c6445
+BYTE 0x20
+ORG 0x8c646d
+BYTE 0x49
+ORG 0x8c6715
+BYTE 0x20
+ORG 0x8c6b29
+BYTE 0x20
+ORG 0x8c6bdd
+BYTE 0x20
+ORG 0x8c6c55
+BYTE 0x20
+ORG 0x8c6ca5
+BYTE 0x20
+ORG 0x8c72d9
+BYTE 0x21
+ORG 0x8c72ed
+BYTE 0x21
+
+POP

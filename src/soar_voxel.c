@@ -468,4 +468,3 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 
 	return 1;
 };
-
