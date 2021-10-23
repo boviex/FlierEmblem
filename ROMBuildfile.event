@@ -42,7 +42,7 @@ ORG $99e64
 POIN NewPrepScreenShopList
 
 ORG $c2fc
-SHORT 0 //always load the next destination
+SHORT 0 //don't skip if the next location already exists
 
 //make all playable units into fliers
 #include "unitfix.event"
