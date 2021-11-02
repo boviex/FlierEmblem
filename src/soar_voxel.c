@@ -316,7 +316,7 @@ static inline int getPtHeight_thumb(int ptx, int pty){
 int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 {
 
-	CurrentProc->oceanOffset += cam_dx_Angles[(CurrentProc->oceanClock>>2)]; //was oceanDelta but it's just a sin table so can use this lol
+	CurrentProc->oceanOffset += (cam_dx_Angles[(CurrentProc->oceanClock>>2)]|1); //was oceanDelta but it's just a sin table so can use this lol
 	CurrentProc->oceanClock = (CurrentProc->oceanClock + 1) & 0x3F;
 
 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))

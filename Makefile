@@ -89,6 +89,9 @@ CDEPFLAGS = -MD -MT $*.o -MT $*.asm -MF $(DEPSDIR)/$(notdir $*).d -MP
 EDEPS := $(EADEP) $(BUILDFILE) $(EADEPFLAGS)
 
 #special arm file rules
+$(ROM): $(CLEANROM) $(BUILDFILE) $(LASMFILES) $(LYNFILES) $(OFILES) $(ASMFILES) 
+	$(shell cp $< $@)
+	$(CORE) $(COREFLAGS)
 
 %.arm.lyn.event: %.arm.event
 	@echo "$(notdir $<) => $(notdir $@)"
@@ -142,11 +145,6 @@ patch: $(UPS);
 $(UPS): $(ROM)
 	ups/ups diff -b $(CLEANROM) -m $< -o $@
 rom: $(ROM)
-$(ROM): $(CLEANROM) $(BUILDFILE) $(LASMFILES) $(LYNFILES) $(OFILES) $(ASMFILES) 
-# 	$(DMPFILES)
-# 	$(shell python3 'scripts/edeps_wrapper.py' $(EDEPS)) # i give up lol
-	$(shell cp $< $@)
-	$(CORE) $(COREFLAGS)
 objects: $(OFILES);
 asmgen: $(ASMFILES);
 events: $(LYNFILES);
