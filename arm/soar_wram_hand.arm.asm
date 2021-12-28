@@ -28,8 +28,8 @@
     .set MIN_Z_DISTANCE, 24
     .set MAX_Z_DISTANCE, 512
     .set MAX_Z_DISTANCE_LOG2, 9
-    .set MAP_DIMENSIONS_LOG2, 10
-    .set MAP_DIMENSIONS, 1024
+    .set MAP_DIMENSIONS_LOG2, 9
+    .set MAP_DIMENSIONS, 512
     .set SHADOW_DISTANCE, (MIN_Z_DISTANCE+16)
     .set FOG_DISTANCE, (MAX_Z_DISTANCE>>1)
 
@@ -179,7 +179,7 @@ Render_arm:
 	orr r0, r7, r8
 	cmp r0, #0
 	blt OutOfBounds
-	cmp r0, #(1024<<8)
+	cmp r0, #(MAP_DIMENSIONS<<8)
 	bge OutOfBounds
 
 	ldr r2, =heightMap
@@ -192,7 +192,7 @@ Render_arm:
 
 	@pipeline stall
 	cmp r1, #8
-	ble addOcean
+	@ ble addOcean
 
 	@get screen height
 	GetScrHeight:
@@ -223,8 +223,8 @@ Render_arm:
 		@if sunsetval < 8, get clr into r1
 
 		NotShadow:
-		cmp r12, #0 @if daytime
-		bgt LoadSunset
+		@ cmp r12, #0 @if daytime
+		@ bgt LoadSunset
 			ldr r3, =colourMap
 			asr r1, r8, #8
 			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
@@ -423,20 +423,21 @@ Render_arm:
 		b InnerLoop
 
 	OutOfBounds: @skip other checks
-		ldr r2, =#(MAP_DIMENSIONS-1)
-		lsr r3, r7, #8
-		lsr r0, r8, #8
-		and r3, r2 @mod 1024
-		and r0, r2 @mod 1024
-		ldr r2, =oceanMap
-		lsr r3, #1
-		@ asr r0, #1 @half size oceanmap is accounted for below
-		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
-		ldrb r3, [sp, #o_oceanclock]
-		@ mov r1, #0
-		add r0, r0, r3, lsr #0 @offset by this much?
-		ldrb r0, [r2, r0]
-		@ lsr r1, r1, r0, lsr #4 @new height
+		@ ldr r2, =#(MAP_DIMENSIONS-1)
+		@ lsr r3, r7, #8
+		@ lsr r0, r8, #8
+		@ and r3, r2 @mod 1024
+		@ and r0, r2 @mod 1024
+		@ ldr r2, =oceanMap
+		@ lsr r3, #1
+		@ @ asr r0, #1 @half size oceanmap is accounted for below
+		@ add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
+		@ ldrb r3, [sp, #o_oceanclock]
+		@ @ mov r1, #0
+		@ add r0, r0, r3, lsr #0 @offset by this much?
+		@ ldrb r0, [r2, r0]
+		@ @ lsr r1, r1, r0, lsr #4 @new height
+			mov r0, #0
 		add r2, r10, r0, lsr #4
 		add r2, r2, r14, lsl #16
 		lsr r3, r11, #1
@@ -461,16 +462,17 @@ Render_arm:
 		@r3 = x
 		@r1 = current height, we want to load up the ocean noisemap and modify
 		@impact should be heaviest at r1 = 0 decreasing as r1 goes to 8
-		asr r3, #1 @half size oceanmap
-		@ asr r0, #1 @half size oceanmap is accounted for below
-		add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
-		ldrb r3, [sp, #o_oceanclock]
-		ldr r2, =oceanMap
-		add r0, r0, r3, lsr #0 @offset by this much?
-		ldrb r0, [r2, r0]
-		lsr r2, r1, #2
-		lsr r0, #4 @divide the new height by 8
-		add r1, r1, r0, lsr r2 @new height
+		@ asr r3, #1 @half size oceanmap
+		@ @ asr r0, #1 @half size oceanmap is accounted for below
+		@ add r0, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
+		@ ldrb r3, [sp, #o_oceanclock]
+		@ ldr r2, =oceanMap
+		@ add r0, r0, r3, lsr #0 @offset by this much?
+		@ ldrb r0, [r2, r0]
+		@ lsr r2, r1, #2
+		@ lsr r0, #4 @divide the new height by 8
+		@ add r1, r1, r0, lsr r2 @new height
+		mov r1, #0
 		@getscrheight
 		add r2, r10, r1
 		add r2, r2, r14, lsl #16
@@ -531,54 +533,54 @@ Render_arm:
 		b InlineBlend
 
 
-	LoadSunset:
-		cmp r12, #8
-		bne BlendColours
-			ldr r3, =colourMap_sunset
-			asr r1, r8, #8
-			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
-			asr r1, r7, #8
-			add r3, r3, r1, lsl #1
-			ldrh r3, [r3]
-			b CheckFog
+	@ LoadSunset:
+	@ 	cmp r12, #8
+	@ 	bne BlendColours
+	@ 		ldr r3, =colourMap_sunset
+	@ 		asr r1, r8, #8
+	@ 		add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+	@ 		asr r1, r7, #8
+	@ 		add r3, r3, r1, lsl #1
+	@ 		ldrh r3, [r3]
+	@ 		b CheckFog
 
-		BlendColours:
-			ldr r3, =colourMap
-			asr r1, r8, #8
-			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
-			asr r1, r7, #8
-			add r3, r3, r1, lsl #1
-			ldrh r0, [r3]
-			ldr r3, =colourMap_sunset
-			asr r1, r8, #8
-			add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
-			asr r1, r7, #8
-			add r3, r3, r1, lsl #1
-			ldrh r1, [r3]
+	@ 	BlendColours:
+	@ 		ldr r3, =colourMap
+	@ 		asr r1, r8, #8
+	@ 		add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+	@ 		asr r1, r7, #8
+	@ 		add r3, r3, r1, lsl #1
+	@ 		ldrh r0, [r3]
+	@ 		ldr r3, =colourMap_sunset
+	@ 		asr r1, r8, #8
+	@ 		add r3, r3, r1, lsl #(MAP_DIMENSIONS_LOG2+1)
+	@ 		asr r1, r7, #8
+	@ 		add r3, r3, r1, lsl #1
+	@ 		ldrh r1, [r3]
 
-				@colour blending inline
-				lsl     r2, r12, #2               @alpha x 4
-			    ldr     r3, =0x03E07C1F         @ MASKLO: -g-|b-r
-			    push {r4-r7}
-			    mov     r6, r3, lsl #5          @ MASKHI: g-|b-r-
-				@ --- -g-|b-r
-		        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
-		        and     r5, r3, r1              @ y: -g-|b-r
-		        sub     r5, r5, r4, lsr #5      @ z: y-x
-		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		        and     r7, r3, r4, lsr #5     @ blend(-g-|b-r)            
-		        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
-		        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
-		        and     r5, r3, r1, ror #16     @ y: -g-|b-r (ror16)
-		        sub     r5, r5, r4, lsr #5      @ z: y-x
-		        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
-		        and     r4, r3, r4, lsr #5      @ blend(-g-|b-r (ror16))
-		        @ --- mix -g-|b-r and b-r|-g-
-		        orr     r0, r7, r4, ror #16
-		        lsl r0, #16
-		        lsr r3, r0, #16 @@wipe top 2 bytes???
-		        pop {r4-r7}
-			b CheckFog
+	@ 			@colour blending inline
+	@ 			lsl     r2, r12, #2               @alpha x 4
+	@ 		    ldr     r3, =0x03E07C1F         @ MASKLO: -g-|b-r
+	@ 		    push {r4-r7}
+	@ 		    mov     r6, r3, lsl #5          @ MASKHI: g-|b-r-
+	@ 			@ --- -g-|b-r
+	@ 	        and     r4, r6, r0, lsl #5      @ x/32: (-g-|b-r)
+	@ 	        and     r5, r3, r1              @ y: -g-|b-r
+	@ 	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	@ 	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	@ 	        and     r7, r3, r4, lsr #5     @ blend(-g-|b-r)            
+	@ 	        @ --- b-r|-g- (rotated by 16 for cheapskatiness)
+	@ 	        and     r4, r6, r0, ror #11     @ x/32: -g-|b-r (ror16)
+	@ 	        and     r5, r3, r1, ror #16     @ y: -g-|b-r (ror16)
+	@ 	        sub     r5, r5, r4, lsr #5      @ z: y-x
+	@ 	        mla     r4, r5, r2, r4         @ z: (y-x)*w   x*32
+	@ 	        and     r4, r3, r4, lsr #5      @ blend(-g-|b-r (ror16))
+	@ 	        @ --- mix -g-|b-r and b-r|-g-
+	@ 	        orr     r0, r7, r4, ror #16
+	@ 	        lsl r0, #16
+	@ 	        lsr r3, r0, #16 @@wipe top 2 bytes???
+	@ 	        pop {r4-r7}
+	@ 		b CheckFog
 
 
 	.pool

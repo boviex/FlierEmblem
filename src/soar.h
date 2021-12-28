@@ -22,8 +22,8 @@
 #define SHADOW_DISTANCE MIN_Z_DISTANCE+16
 #define FOG_DISTANCE (MAX_Z_DISTANCE>>1)
 #define NUM_ALTITUDES 16
-#define MAP_DIMENSIONS 1024
-#define MAP_DIMENSIONS_LOG2 10
+#define MAP_DIMENSIONS 512
+#define MAP_DIMENSIONS_LOG2 9
 #define MAP_YOFS 170
 #define INC_ZSTEP ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 

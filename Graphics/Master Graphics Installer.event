@@ -50,22 +50,22 @@ ALIGN 4
 SkyBG:
 #incbin "sky_wrap.img.bin"
 ALIGN 4
-SkyBG_sunset:
-#incbin "sky_wrap_sunset.img.bin"
-ALIGN 4
-SkyBG_lighter:
-#incbin "sky_wrap_lighter.img.bin"
-ALIGN 4
-SkyBG_darker:
-#incbin "sky_wrap_darker.img.bin"
-ALIGN 4
+// SkyBG_sunset:
+// #incbin "sky_wrap_sunset.img.bin"
+// ALIGN 4
+// SkyBG_lighter:
+// #incbin "sky_wrap_lighter.img.bin"
+// ALIGN 4
+// SkyBG_darker:
+// #incbin "sky_wrap_darker.img.bin"
+// ALIGN 4
 
 colourMap:
 #incbin "ue4_magvel_wmap.img.bin"
 ALIGN 4
-colourMap_sunset:
-#incbin "Magvel_Map_sunset.img.bin"
-ALIGN 4
-oceanMap:
-#incbin "oceanmap.img.bin"
-ALIGN 4
+// colourMap_sunset:
+// #incbin "Magvel_Map_sunset.img.bin"
+// ALIGN 4
+// oceanMap:
+// #incbin "oceanmap.img.bin"
+// ALIGN 4

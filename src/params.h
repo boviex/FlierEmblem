@@ -11,6 +11,6 @@
 #define MODE5_HEIGHT 128
 #define MODE5_WIDTH 160
 
-#define SCALING_FACTOR 4
+#define SCALING_FACTOR 3
 
 #endif

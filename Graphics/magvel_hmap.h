@@ -3,11 +3,12 @@
 
 //======================================================================
 //
-//	magvel_hmap, 1024x1024@8, 
+//	magvel_hmap, 512x512@8, 
+//	+ palette 256 entries, not compressed
 //	+ bitmap not compressed
-//	Total size: 1048576 = 1048576
+//	Total size: 512 + 262144 = 262656
 //
-//	Time-stamp: 2021-10-10, 12:12:38
+//	Time-stamp: 2021-12-28, 17:55:32
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.6
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -16,8 +17,11 @@
 #ifndef GRIT_MAGVEL_HMAP_H
 #define GRIT_MAGVEL_HMAP_H
 
-#define magvel_hmapBitmapLen 1048576
-extern const unsigned short magvel_hmapBitmap[524288];
+#define magvel_hmapBitmapLen 262144
+extern const unsigned short magvel_hmapBitmap[131072];
+
+#define magvel_hmapPalLen 512
+extern const unsigned short magvel_hmapPal[256];
 
 #endif // GRIT_MAGVEL_HMAP_H
 

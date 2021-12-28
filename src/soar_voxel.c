@@ -35,7 +35,7 @@ extern const ProcCode Proc_Soaring[] = { //expose it to lyn
   PROC_END
 }; 
 
-extern const int skies[] = {(int)(&SkyBG), (int)(&SkyBG), (int)(&SkyBG_lighter), (int)(&SkyBG_darker), (int)(&SkyBG_sunset)};
+extern const int skies[] = {(int)(&SkyBG)};
 extern const u16 fogClrs[] = {0x7f74, 0x7f74, 0x6a8d, 0x51c7, 0x34e0};
 
 //LUTs
@@ -316,8 +316,8 @@ static inline int getPtHeight_thumb(int ptx, int pty){
 int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 {
 
-	CurrentProc->oceanOffset += (cam_dx_Angles[(CurrentProc->oceanClock>>2)]|1); //was oceanDelta but it's just a sin table so can use this lol
-	CurrentProc->oceanClock = (CurrentProc->oceanClock + 1) & 0x3F;
+	// CurrentProc->oceanOffset += (cam_dx_Angles[(CurrentProc->oceanClock>>2)]|1); //was oceanDelta but it's just a sin table so can use this lol
+	// CurrentProc->oceanClock = (CurrentProc->oceanClock + 1) & 0x3F;
 
 	if ((CurrentProc->takeOffTransition) & (CurrentProc->sPlayerStepZ < (CAMERA_NUM_STEPS-3)))
 	{
@@ -395,23 +395,23 @@ int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break
 
 	if (gKeyState.pressedKeys & SELECT_BUTTON) CurrentProc->ShowFPS ^= 1;
 
-	if ((gKeyState.pressedKeys & L_BUTTON) && (CurrentProc->sunTransition==0)){
-		if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
-		else CurrentProc->sunTransition = 1;
-		CurrentProc->sunsetVal += CurrentProc->sunTransition;
-	};
+	// if ((gKeyState.pressedKeys & L_BUTTON) && (CurrentProc->sunTransition==0)){
+	// 	if (CurrentProc->sunsetVal) CurrentProc->sunTransition = -1;
+	// 	else CurrentProc->sunTransition = 1;
+	// 	CurrentProc->sunsetVal += CurrentProc->sunTransition;
+	// };
 
-	if (CurrentProc->sunTransition!=0)
-	{
-		if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
-		{
-			CurrentProc->sunsetVal += CurrentProc->sunTransition;
-		}
-		else
-		{
-			CurrentProc->sunTransition = 0;
-		}
-	};
+	// if (CurrentProc->sunTransition!=0)
+	// {
+	// 	if ((CurrentProc->sunsetVal > 0) & (CurrentProc->sunsetVal < 8))
+	// 	{
+	// 		CurrentProc->sunsetVal += CurrentProc->sunTransition;
+	// 	}
+	// 	else
+	// 	{
+	// 		CurrentProc->sunTransition = 0;
+	// 	}
+	// };
 
 	if (gKeyState.pressedKeys & R_BUTTON){
 		CurrentProc->ShowMap ^= 1;
