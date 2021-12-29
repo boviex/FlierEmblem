@@ -25,7 +25,7 @@
     .set CPUSET_32BIT,     (1 << 26)
     .set CPUSET_SRC_FIXED, (1 << 24)
 
-    .set MIN_Z_DISTANCE, 24
+    .set MIN_Z_DISTANCE, 12
     .set MAX_Z_DISTANCE, 512
     .set MAX_Z_DISTANCE_LOG2, 9
     .set MAP_DIMENSIONS_LOG2, 9

@@ -1507,40 +1507,40 @@ thumb_loop:
 	.size	cam_pivot_dx_Angles, 32
 cam_pivot_dx_Angles:
 	.short	0
-	.short	24
-	.short	45
-	.short	58
-	.short	64
-	.short	58
-	.short	45
-	.short	24
+	.short	12
+	.short	22
+	.short	29
+	.short	32
+	.short	29
+	.short	22
+	.short	12
 	.short	0
-	.short	-24
-	.short	-45
-	.short	-58
-	.short	-64
-	.short	-58
-	.short	-45
-	.short	-24
+	.short	-12
+	.short	-22
+	.short	-29
+	.short	-32
+	.short	-29
+	.short	-22
+	.short	-12
 	.type	cam_pivot_dy_Angles, %object
 	.size	cam_pivot_dy_Angles, 32
 cam_pivot_dy_Angles:
-	.short	-64
-	.short	-58
-	.short	-45
-	.short	-24
+	.short	-32
+	.short	-29
+	.short	-22
+	.short	-12
 	.short	0
-	.short	24
-	.short	45
-	.short	58
-	.short	64
-	.short	58
-	.short	45
-	.short	24
+	.short	12
+	.short	22
+	.short	29
+	.short	32
+	.short	29
+	.short	22
+	.short	12
 	.short	0
-	.short	-24
-	.short	-45
-	.short	-58
+	.short	-12
+	.short	-22
+	.short	-29
 	.type	cam_dx_Angles, %object
 	.size	cam_dx_Angles, 32
 cam_dx_Angles:
