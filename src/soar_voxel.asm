@@ -577,7 +577,7 @@ SetUpNewWMGraphics:
 @ src/soar_voxel.c:122: 	    CurrentProc->vid_page = (u16*)(0x600A000);
 	ldr	r3, .L42+8	@ tmp149,
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
-	adds	r0, r0, #170	@ tmp143,
+	adds	r0, r0, #85	@ tmp143,
 @ src/soar_voxel.c:109: 	CurrentProc->sPlayerPosY = ((WM_CURSOR[1]*MAP_DIMENSIONS/480)>>8)+ MAP_YOFS;
 	str	r0, [r7, #48]	@ tmp143, CurrentProc_15(D)->sPlayerPosY
 @ src/soar_voxel.c:122: 	    CurrentProc->vid_page = (u16*)(0x600A000);

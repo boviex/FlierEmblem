@@ -22,10 +22,10 @@
 081C2824 skies
 081C2838 Proc_Soaring
 081C28E0 NewWMLoop
-081C2BDC clr_blend_asm_ofs
-081C2BDC clr_blend_asm
-081C2C2C Render_arm_ofs
-081C2C2C Render_arm
+081C2BD4 clr_blend_asm_ofs
+081C2BD4 clr_blend_asm
+081C2C24 Render_arm_ofs
+081C2C24 Render_arm
 08EFB2E0 Chname
 08EFB5EC ChFont
 08EFBFCC ChTable

@@ -24,7 +24,7 @@
 #define NUM_ALTITUDES 16
 #define MAP_DIMENSIONS 512
 #define MAP_DIMENSIONS_LOG2 9
-#define MAP_YOFS 170
+#define MAP_YOFS 85
 #define INC_ZSTEP ((zdist>>6)+(zdist>>7)+((zdist>>8)<<2)+2)
 
 #define SKY_COLOUR 0x7f0f

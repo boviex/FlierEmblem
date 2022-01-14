@@ -90,9 +90,9 @@ static inline void UpdateSprites(SoarProc* CurrentProc){
 	u8 loc = 0;
 
 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
-		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-		posX >>= 6;
-		posY = (posY-MAP_YOFS)>>6;
+		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+		posX >>= 5;
+		posY = (posY-MAP_YOFS)>>5;
 		loc = WorldMapNodes[posY][posX];
 	};
 	CurrentProc->location = translatedLocations[loc];

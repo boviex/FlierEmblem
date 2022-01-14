@@ -33,7 +33,7 @@ NewWMLoop:
 @ arm/soar_wram.arm.c:58: 	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca00); //player frames
 	tst	r3, #48	@ _11,
 @ arm/soar_wram.arm.c:9: void NewWMLoop(SoarProc* CurrentProc){
-	mov	r4, r0	@ CurrentProc, tmp264
+	mov	r4, r0	@ CurrentProc, tmp263
 	sub	sp, sp, #12	@,,
 @ arm/soar_wram.arm.c:58: 	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca00); //player frames
 	beq	.L39		@,
@@ -57,9 +57,9 @@ NewWMLoop:
 	ldr	r3, .L45+12	@,
 	mov	r1, #104	@,
 	mov	r0, #8	@,
-	ldr	r5, .L45+16	@ tmp263,
+	ldr	r5, .L45+16	@ tmp262,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 @ arm/soar_wram.arm.c:63: 	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
 	ldrb	r3, [r4, #69]	@ zero_extendqisi2	@ _15, *CurrentProc_6(D)
 @ arm/soar_wram.arm.c:63: 	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
@@ -110,38 +110,36 @@ NewWMLoop:
 	str	ip, [sp]	@ tmp216,
 	lsr	r2, r2, #16	@,,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 .L8:
 @ arm/soar_wram.arm.c:88: 	int posY = CurrentProc->sFocusPtY;
 	ldr	r3, [r4, #76]	@ posY, CurrentProc_6(D)->sFocusPtY
 @ arm/soar_wram.arm.c:92: 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
-	ldr	r2, .L45+28	@ tmp219,
+	sub	r2, r3, #86	@ tmp218, posY,
 @ arm/soar_wram.arm.c:92: 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
-	sub	r1, r3, #171	@ tmp218, posY,
-@ arm/soar_wram.arm.c:92: 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
-	cmp	r1, r2	@ tmp218, tmp219
+	cmp	r2, #340	@ tmp218,
 @ arm/soar_wram.arm.c:87: 	int posX = CurrentProc->sFocusPtX;
 	ldr	r7, [r4, #72]	@ posX, CurrentProc_6(D)->sFocusPtX
 @ arm/soar_wram.arm.c:92: 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
 	bhi	.L15		@,
 @ arm/soar_wram.arm.c:92: 	if ((posY > MAP_YOFS) && (posY < (MAP_DIMENSIONS - MAP_YOFS)) && (posX > 0) && (posX < MAP_DIMENSIONS)) {
-	ldr	r2, .L45+32	@ tmp223,
-	sub	r1, r7, #1	@ tmp222, posX,
-	cmp	r1, r2	@ tmp222, tmp223
+	ldr	r2, .L45+28	@ tmp222,
+	sub	r1, r7, #1	@ tmp221, posX,
+	cmp	r1, r2	@ tmp221, tmp222
 	bls	.L42		@,
 .L15:
 @ arm/soar_wram.arm.c:98: 	CurrentProc->location = translatedLocations[loc];
-	ldr	r3, .L45+36	@ tmp220,
+	ldr	r3, .L45+32	@ tmp219,
 	ldrb	r3, [r3]	@ zero_extendqisi2	@ translatedLocations[0], translatedLocations[0]
 	str	r3, [r4, #80]	@ translatedLocations[0], CurrentProc_6(D)->location
 .L14:
 @ arm/soar_wram.arm.c:12: 	if (thumb_loop(CurrentProc)){
 	mov	r0, r4	@, CurrentProc
-	ldr	r3, .L45+40	@ tmp257,
+	ldr	r3, .L45+36	@ tmp256,
 	mov	lr, pc
-	bx	r3		@ tmp257
+	bx	r3		@ tmp256
 @ arm/soar_wram.arm.c:12: 	if (thumb_loop(CurrentProc)){
-	cmp	r0, #0	@ tmp265,
+	cmp	r0, #0	@ tmp264,
 	bne	.L43		@,
 @ arm/soar_wram.arm.c:17: };
 	add	sp, sp, #12	@,,
@@ -155,24 +153,24 @@ NewWMLoop:
 	beq	.L11		@,
 	b	.L8		@
 .L42:
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
 	ldrb	r2, [r4, #69]	@ zero_extendqisi2	@ *CurrentProc_6(D), *CurrentProc_6(D)
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
 	tst	r2, #1	@ *CurrentProc_6(D),
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-	sub	r6, r3, #170	@ _132, posY,
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+	sub	r6, r3, #85	@ _132, posY,
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
 	bne	.L44		@,
 .L16:
 @ arm/soar_wram.arm.c:96: 		loc = WorldMapNodes[posY][posX];
-	ldr	r2, .L45+44	@ tmp240,
-@ arm/soar_wram.arm.c:95: 		posY = (posY-MAP_YOFS)>>6;
-	asr	r3, r6, #6	@ posY, _132,
+	ldr	r2, .L45+40	@ tmp239,
+@ arm/soar_wram.arm.c:95: 		posY = (posY-MAP_YOFS)>>5;
+	asr	r3, r6, #5	@ posY, _132,
 @ arm/soar_wram.arm.c:96: 		loc = WorldMapNodes[posY][posX];
-	add	r3, r2, r3, lsl #4	@ tmp244, tmp240, posY,
-	ldrb	r3, [r3, r7, asr #6]	@ zero_extendqisi2	@ loc, WorldMapNodes[posY_55][posX_53]
+	add	r3, r2, r3, lsl #4	@ tmp243, tmp239, posY,
+	ldrb	r3, [r3, r7, asr #5]	@ zero_extendqisi2	@ loc, WorldMapNodes[posY_55][posX_53]
 @ arm/soar_wram.arm.c:98: 	CurrentProc->location = translatedLocations[loc];
-	ldr	r2, .L45+36	@ tmp246,
+	ldr	r2, .L45+32	@ tmp245,
 	ldrb	r2, [r2, r3]	@ zero_extendqisi2	@ translatedLocations[_58], translatedLocations[_58]
 @ arm/soar_wram.arm.c:99: 	if (loc>0) {
 	cmp	r3, #0	@ loc,
@@ -182,16 +180,16 @@ NewWMLoop:
 	beq	.L14		@,
 @ arm/soar_wram.arm.c:100: 		ObjInsertSafe(8, 0x10, 0x10, &gObj_32x8, (0xca3c+(loc<<2))); //draw in the top corner if we're there
 	mov	r2, #16	@,
-	lsl	r3, r3, #18	@ tmp252, loc,
-	add	r3, r3, #-905969664	@ tmp255, tmp252,
-	add	r3, r3, #3932160	@ tmp255, tmp255,
-	lsr	r3, r3, r2	@ tmp254, tmp255,
-	str	r3, [sp]	@ tmp254,
+	lsl	r3, r3, #18	@ tmp251, loc,
+	add	r3, r3, #-905969664	@ tmp254, tmp251,
+	add	r3, r3, #3932160	@ tmp254, tmp254,
+	lsr	r3, r3, r2	@ tmp253, tmp254,
+	str	r3, [sp]	@ tmp253,
 	mov	r0, #8	@,
 	mov	r1, r2	@,
-	ldr	r3, .L45+48	@,
+	ldr	r3, .L45+44	@,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 	b	.L14		@
 .L39:
 @ arm/soar_wram.arm.c:58: 	if (animClock < 0x10) ObjInsertSafe(8, 0x68, 0x58, &gObj_32x32, 0xca00); //player frames
@@ -200,10 +198,10 @@ NewWMLoop:
 	mov	r2, #88	@,
 	mov	r1, #104	@,
 	mov	r0, #8	@,
-	ldr	r5, .L45+16	@ tmp263,
+	ldr	r5, .L45+16	@ tmp262,
 	str	ip, [sp]	@ tmp169,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 @ arm/soar_wram.arm.c:63: 	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
 	ldrb	r3, [r4, #69]	@ zero_extendqisi2	@ _15, *CurrentProc_6(D)
 @ arm/soar_wram.arm.c:63: 	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
@@ -211,14 +209,14 @@ NewWMLoop:
 	beq	.L6		@,
 .L40:
 @ arm/soar_wram.arm.c:63: 	if (CurrentProc->ShowMap) ObjInsertSafe(8, 176, 0, &gObj_64x64, 0x2a60); //draw minimap
-	ldr	r3, .L45+52	@ tmp191,
+	ldr	r3, .L45+48	@ tmp191,
 	mov	r2, #0	@,
 	str	r3, [sp]	@ tmp191,
 	mov	r1, #176	@,
-	ldr	r3, .L45+56	@,
+	ldr	r3, .L45+52	@,
 	mov	r0, #8	@,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 @ arm/soar_wram.arm.c:65: 	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
 	ldrb	r3, [r4, #69]	@ zero_extendqisi2	@ _15, *CurrentProc_6(D)
 @ arm/soar_wram.arm.c:65: 	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
@@ -228,7 +226,7 @@ NewWMLoop:
 @ arm/soar_wram.arm.c:65: 	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
 	mov	r2, #0	@,
 @ arm/soar_wram.arm.c:65: 	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
-	ldr	r1, .L45+60	@ tmp197,
+	ldr	r1, .L45+56	@ tmp197,
 @ arm/soar_wram.arm.c:65: 	if (CurrentProc->ShowFPS) ObjInsertSafe(8, 0, 0, &gObj_8x8, (0xcaa1 + (FPS_CURRENT))); //fps counter
 	ldr	r1, [r1, #4092]	@ MEM[(int *)33816572B], MEM[(int *)33816572B]
 	sub	r1, r1, #13632	@ tmp200, MEM[(int *)33816572B],
@@ -238,21 +236,21 @@ NewWMLoop:
 	str	r1, [sp]	@ tmp202,
 	mov	r0, #8	@,
 	mov	r1, r2	@,
-	ldr	r3, .L45+64	@,
+	ldr	r3, .L45+60	@,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 	b	.L7		@
 .L43:
 @ arm/soar_wram.arm.c:13: 		iwram_Render_arm(CurrentProc);
 	mov	r0, r4	@, CurrentProc
-	ldr	r3, .L45+68	@ tmp258,
+	ldr	r3, .L45+64	@ tmp257,
 	mov	lr, pc
-	bx	r3		@ tmp258
+	bx	r3		@ tmp257
 @ arm/soar_wram.arm.c:15: 		FPS_COUNTER += 1;
-	ldr	r2, .L45+60	@ tmp259,
+	ldr	r2, .L45+56	@ tmp258,
 	ldr	r3, [r2, #4088]	@ MEM[(int *)33816568B], MEM[(int *)33816568B]
-	add	r3, r3, #1	@ tmp261, MEM[(int *)33816568B],
-	str	r3, [r2, #4088]	@ tmp261, MEM[(int *)33816568B]
+	add	r3, r3, #1	@ tmp260, MEM[(int *)33816568B],
+	str	r3, [r2, #4088]	@ tmp260, MEM[(int *)33816568B]
 @ arm/soar_wram.arm.c:17: };
 	add	sp, sp, #12	@,,
 	@ sp needed	@
@@ -266,23 +264,23 @@ NewWMLoop:
 	mov	r1, #128	@ prephitmp_116,
 	b	.L11		@
 .L44:
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-	asr	r1, r7, #4	@ tmp233, posX,
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-	ldr	r3, .L45+72	@ tmp238,
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-	asr	r2, r6, #4	@ tmp230, _132,
-@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>4)), (posY-MAP_YOFS)>>4, &gObj_8x8, 0xca60); //draw cursor on minimap
-	add	r1, r1, #176	@ tmp235, tmp233,
-	lsl	r2, r2, #16	@, tmp230,
-	lsl	r1, r1, #16	@, tmp235,
-	str	r3, [sp]	@ tmp238,
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+	asr	r1, r7, #3	@ tmp232, posX,
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+	ldr	r3, .L45+68	@ tmp237,
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+	asr	r2, r6, #3	@ tmp229, _132,
+@ arm/soar_wram.arm.c:93: 		if (CurrentProc->ShowMap) ObjInsertSafe(8, (176 + (posX>>3)), (posY-MAP_YOFS)>>3, &gObj_8x8, 0xca60); //draw cursor on minimap
+	add	r1, r1, #176	@ tmp234, tmp232,
+	lsl	r2, r2, #16	@, tmp229,
+	lsl	r1, r1, #16	@, tmp234,
+	str	r3, [sp]	@ tmp237,
 	mov	r0, #8	@,
-	ldr	r3, .L45+64	@,
+	ldr	r3, .L45+60	@,
 	lsr	r2, r2, #16	@,,
 	lsr	r1, r1, #16	@,,
 	mov	lr, pc
-	bx	r5		@ tmp263
+	bx	r5		@ tmp262
 	b	.L16		@
 .L46:
 	.align	2
@@ -294,8 +292,7 @@ NewWMLoop:
 	.word	ObjInsertSafe
 	.word	50343936
 	.word	gObj_aff32x32
-	.word	682
-	.word	1022
+	.word	510
 	.word	translatedLocations
 	.word	thumb_loop
 	.word	WorldMapNodes
