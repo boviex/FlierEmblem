@@ -310,7 +310,7 @@ void BumpScreen(int direction){
 
 static inline int getPtHeight_thumb(int ptx, int pty){
 	if((ptx >= MAP_DIMENSIONS)||(pty >= MAP_DIMENSIONS)||(ptx<0)||(pty<0)) return 0;
-	return heightMap[(pty<<MAP_DIMENSIONS_LOG2)+ptx];
+	return heightMap[((pty>>1)<<(MAP_DIMENSIONS_LOG2-1))+(ptx>>1)];
 };
 
 int thumb_loop(SoarProc* CurrentProc) //return 1 if continuing, else 0 to break

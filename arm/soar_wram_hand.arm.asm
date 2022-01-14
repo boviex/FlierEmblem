@@ -183,9 +183,9 @@ Render_arm:
 	bge OutOfBounds
 
 	ldr r2, =heightMap
-	asr r3, r7, #8
-	asr r0, r8, #8
-	add r1, r3, r0, lsl #(MAP_DIMENSIONS_LOG2)
+	asr r3, r7, #9
+	asr r0, r8, #9
+	add r1, r3, r0, lsl #(MAP_DIMENSIONS_LOG2-1)
 
 	ldrb r1, [r2, r1]
 	@r1 = map height
