@@ -1,4 +1,6 @@
 	.cpu arm7tdmi
+	.arch armv4t
+	.fpu softvfp
 	.eabi_attribute 23, 1	@ Tag_ABI_FP_number_model
 	.eabi_attribute 24, 1	@ Tag_ABI_align8_needed
 	.eabi_attribute 25, 1	@ Tag_ABI_align8_preserved
@@ -7,7 +9,7 @@
 	.eabi_attribute 34, 0	@ Tag_CPU_unaligned_access
 	.eabi_attribute 18, 4	@ Tag_ABI_PCS_wchar_t
 	.file	"hostable.c"
-@ GNU C17 (devkitARM release 56) version 11.1.0 (arm-none-eabi)
+@ GNU C17 (devkitARM release 58) version 12.1.0 (arm-none-eabi)
 @	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.18-GMP
 
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -12956,4 +12958,4 @@ hosTables:
 	.ascii	"aaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddd"
 	.ascii	"ddddddeeeeeeeeeeeeeeeeffffffffffffffffggggggggggggg"
 	.ascii	"gghhhhhhhhhhhhhhh"
-	.ident	"GCC: (devkitARM release 56) 11.1.0"
+	.ident	"GCC: (devkitARM release 58) 12.1.0"

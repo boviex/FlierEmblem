@@ -1,4 +1,6 @@
 	.cpu arm7tdmi
+	.arch armv4t
+	.fpu softvfp
 	.eabi_attribute 23, 1	@ Tag_ABI_FP_number_model
 	.eabi_attribute 24, 1	@ Tag_ABI_align8_needed
 	.eabi_attribute 25, 1	@ Tag_ABI_align8_preserved
@@ -7,7 +9,7 @@
 	.eabi_attribute 34, 0	@ Tag_CPU_unaligned_access
 	.eabi_attribute 18, 4	@ Tag_ABI_PCS_wchar_t
 	.file	"soar_m7.c"
-@ GNU C17 (devkitARM release 56) version 11.1.0 (arm-none-eabi)
+@ GNU C17 (devkitARM release 58) version 12.1.0 (arm-none-eabi)
 @	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.18-GMP
 
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -17,11 +19,9 @@
 	.global	__aeabi_idiv
 	.align	1
 	.global	m7HblCallBack
-	.arch armv4t
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	m7HblCallBack, %function
 m7HblCallBack:
 	@ Function supports interworking.
@@ -170,7 +170,6 @@ m7HblCallBack:
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	NewWMLoop, %function
 NewWMLoop:
 	@ Function supports interworking.
@@ -217,6 +216,7 @@ NewWMLoop:
 @ src/soar_m7.c:124: 		sPlayerPosZ += 0x10;
 	ldr	r4, .L38+8	@ tmp185,
 	ldr	r3, [r4]	@ _13, MEM[(volatile s32 *)50351896B]
+@ src/soar_m7.c:124: 		sPlayerPosZ += 0x10;
 	adds	r3, r3, #16	@ _15,
 	str	r3, [r4]	@ _15, MEM[(volatile s32 *)50351896B]
 .L10:
@@ -231,6 +231,7 @@ NewWMLoop:
 	ble	.L11		@,
 @ src/soar_m7.c:127: 		if (sPlayerPosZ > 0) sPlayerPosZ-= 0x10;
 	ldr	r4, [r3]	@ _17, MEM[(volatile s32 *)50351896B]
+@ src/soar_m7.c:127: 		if (sPlayerPosZ > 0) sPlayerPosZ-= 0x10;
 	subs	r4, r4, #16	@ _18,
 	str	r4, [r3]	@ _18, MEM[(volatile s32 *)50351896B]
 .L11:
@@ -347,7 +348,6 @@ NewWMLoop:
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	SetUpNewWMGraphics, %function
 SetUpNewWMGraphics:
 	@ Function supports interworking.
@@ -445,7 +445,6 @@ SetUpNewWMGraphics:
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	CreateNewWorldMap, %function
 CreateNewWorldMap:
 	@ Function supports interworking.
@@ -482,7 +481,6 @@ CreateNewWorldMap:
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	SoarUsability, %function
 SoarUsability:
 	@ Function supports interworking.
@@ -499,7 +497,6 @@ SoarUsability:
 	.syntax unified
 	.code	16
 	.thumb_func
-	.fpu softvfp
 	.type	SoarEffect, %function
 SoarEffect:
 	@ Function supports interworking.
@@ -592,7 +589,7 @@ ProcWorldMap_new:
 	.short	0
 @ lArg:
 	.word	0
-	.ident	"GCC: (devkitARM release 56) 11.1.0"
+	.ident	"GCC: (devkitARM release 58) 12.1.0"
 	.text
 	.code 16
 	.align	1
